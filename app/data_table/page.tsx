@@ -1,7 +1,7 @@
 import { Task, columns } from "./columns"
 import { DataTable } from "./data-table"
 
-async function getData(): Promise<Payment[]> {
+async function getData(): Promise<Task[]> {
   // Fetch data from your API here.
   return [
     {
