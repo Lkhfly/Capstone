@@ -1,7 +1,7 @@
 "use client"
 import React, { PureComponent, useEffect, useState } from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Label,ZAxis, ZAxisProps, ResponsiveContainer } from 'recharts';
-import { getData } from "../data_table/page"
+import { getData } from '../firebase/config';
 import { Task } from '../data_table/columns';
 
 
@@ -26,6 +26,7 @@ export default function Example() {
                 <div className="custom-tooltip">
                     <p>{`ID: ${payload[0].payload.id}`}</p>
                     <p>{`Priority: ${payload[0].payload.priority}`}</p>
+                    <p>{`Budget: ${payload[0].payload.budget}`}</p>
                 </div>
             );
         }

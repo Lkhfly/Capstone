@@ -30,6 +30,7 @@ return (
     <p className = "font-bold">Effort x Impact Chart of all the PFCs</p>
     <Example />
     <p className = "font-light mt-2">(To be implemented : allow users able to choose and customize the axes)</p>
+    <p className = "font-light mt-2">Think of way to show duplicated value</p>
   </div>
 )
   }

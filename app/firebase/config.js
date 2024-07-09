@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps } from "firebase/app";
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, doc,collection, getDocs } from 'firebase/firestore';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -22,3 +22,19 @@ let firebase_app = getApps().length === 0 ? initializeApp(firebaseConfig) : getA
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 export default db
+
+
+//Firebase retrieve all data
+export async function getData() {
+  // Fetch data from your API here.
+const querySnapshot = await getDocs(collection(db, "pfc"));
+const return_stuff = []
+querySnapshot.forEach((doc) => {
+  console.log(`${doc.id} => ${doc.data()}`);
+  return_stuff.push(doc.data())
+});
+if(typeof window !== 'undefined'){
+  localStorage.setItem('data', return_stuff);
+}
+  return return_stuff
+}
