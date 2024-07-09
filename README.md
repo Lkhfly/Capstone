@@ -1,8 +1,8 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Tech stack : Front-end is Next.js/React.js, Back-end is Firebase, some UI components based on UI library /shadcn, CSS used is Tailwind, charts is based on Recharts
 
 ## Getting Started
-
-First, run the development server:
+1. First, install all core dependencies with **npm install**3.
+2. Second, run the development server:
 
 ```bash
 npm run dev
@@ -14,9 +14,9 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Thirdly, open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. You can see the main code by going into /app folder, where /add-data, /chart, /data-table are folders repping the pages.
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
