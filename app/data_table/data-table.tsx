@@ -119,7 +119,7 @@ export function DataTable<TData, TValue>({
       </div>
     <div className="rounded-md border">
       <Table>
-        <TableHeader>
+        <TableHeader >
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
@@ -137,23 +137,25 @@ export function DataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
+        <TableBody >
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                data-state={row.getIsSelected() && "selected"}
+                data-state={row.getIsSelected() && "selected"} 
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="text-center">
+                  <TableCell key={cell.id} className="text-center" >
+                    <h3 className = "line-clamp-4">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </h3>
                   </TableCell>
                 ))}
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h- text-center">
+              <TableCell colSpan={columns.length} className="h- text-center line-clamp-1">
                 No results.
               </TableCell>
             </TableRow>

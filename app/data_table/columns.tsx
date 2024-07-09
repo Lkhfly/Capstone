@@ -13,6 +13,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
 // Shape of data
 export type Task = {
@@ -24,7 +29,8 @@ export type Task = {
   impact : number
   effort : number
   type: string,
-  pie : number
+  pie : number, 
+  description : string
 }
 
 export const columns: ColumnDef<Task>[] = [
@@ -37,7 +43,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant = "destructive"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="ml-3"
+          className="ml-1"
         >
           Task ID
         </Button>
@@ -51,7 +57,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="ml-4"
+          className="ml-0"
         >
           Status
         </Button>
@@ -65,7 +71,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                  className="ml-5"
+                  
         >
           Department
         </Button>
@@ -79,7 +85,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-3"
+                    className="ml-1"
         >
         Type
         </Button>
@@ -95,7 +101,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="default"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="ml-4"
+          className="ml-0"
         >
         PIE Score
         </Button>
@@ -109,7 +115,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-4"
+                    className="ml-0"
         >
         Priority
         </Button>
@@ -123,7 +129,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-4"
+                    className="ml-0"
         >
         Impact
         </Button>
@@ -137,21 +143,32 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-2"
+                    className="ml-0"
         >
         Effort
         </Button>
       )
     },
   },
+  {
+    accessorKey: "description",
+    header: ({ column }) => {
+      return (
+<Popover >
+  <PopoverTrigger className="ml-12">Description</PopoverTrigger>
+  <PopoverContent>To view Description in detail, please check out Task Details</PopoverContent>
+</Popover>
 
+      )
+    },
+  },
   {
     accessorKey: "budget",
     header: ({ column }) => {
       return (
         <Button
           variant="default"
-          className="ml-2"
+          className="ml-0"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >Budget
         </Button>
@@ -186,10 +203,10 @@ export const columns: ColumnDef<Task>[] = [
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(task.id)}
             >
-              Copy task ID
+              Copy PFC ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View task details</DropdownMenuItem>
+            <DropdownMenuItem>View PFC details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
