@@ -17,9 +17,7 @@
 //   )
 // }
 
-import React, { PureComponent } from 'react';
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Label,ResponsiveContainer } from 'recharts';
-import { getData } from "../data_table/page"
+import React from 'react';
 import Example from './chart';
 
 

@@ -18,14 +18,14 @@ const MyForm = () => {
   });
   const [error, setError] = useState("")
 
-  const handleInputChangeString = (e) => {
+  const handleInputChangeString = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
-  const handleInputChangeNumber = (e) => {
+  const handleInputChangeNumber = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
