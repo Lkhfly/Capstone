@@ -1,5 +1,5 @@
 "use client"
-import React, { useState,useEffect } from 'react';
+import React, { FormEvent, useState,useEffect } from 'react';
 import db from "../firebase/config";
 import { collection, addDoc } from 'firebase/firestore';
 
@@ -41,7 +41,7 @@ const MyForm = () => {
     }));
   }, [formData.impact,formData.priority, formData.effort ]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const docRef = await addDoc(collection(db, 'pfc'), formData);
