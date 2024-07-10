@@ -18,7 +18,7 @@ const MyForm = () => {
   });
   const [error, setError] = useState("")
 
-  const handleInputChangeString = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleInputChangeDescription = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -30,6 +30,20 @@ const MyForm = () => {
     setFormData((prevData) => ({
       ...prevData,
       [name]: parseInt(value),
+    }));
+  };
+  const handleInputChangeString = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+  const handleInputChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
     }));
   };
   //calculate pie
@@ -85,10 +99,10 @@ const MyForm = () => {
         <textarea
           id="description"
           name="description"
-          rows="4"
-          cols="50"
+          rows={4}
+          cols={50}
           value={formData.description}
-          onChange={handleInputChangeString}
+          onChange={handleInputChangeDescription}
           required
         ></textarea>
       </div>
@@ -165,7 +179,7 @@ const MyForm = () => {
           <select
             name="department"
             value={formData.department}
-            onChange={handleInputChangeString}
+            onChange={handleInputChangeSelect}
             required
             className = "ml-3 font-light"
           >
@@ -182,7 +196,7 @@ const MyForm = () => {
           <select
             name="status"
             value={formData.status}
-            onChange={handleInputChangeString}
+            onChange={handleInputChangeSelect}
             required
             className = "ml-3 font-light"
           >
@@ -200,7 +214,7 @@ const MyForm = () => {
           <select
             name="type"
             value={formData.type}
-            onChange={handleInputChangeString}
+            onChange={handleInputChangeSelect}
             required
             className = "ml-3 font-light"
           >

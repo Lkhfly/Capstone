@@ -1,12 +1,16 @@
 "use client"
 import React, { PureComponent, useEffect, useState } from 'react';
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Label,ZAxis, ZAxisProps, ResponsiveContainer } from 'recharts';
+import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip,TooltipProps, Label,ZAxis, ZAxisProps, ResponsiveContainer } from 'recharts';
+import {
+    ValueType,
+    NameType,
+} from 'recharts/types/component/DefaultTooltipContent';
 import { getData } from '../firebase/config';
 import { Task } from '../data_table/columns';
 
 
 export default function Example() {
-    const [data, setData] = useState()
+    const [data, setData] = useState(Array<Task >)
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -20,7 +24,11 @@ export default function Example() {
     }, []);
 
 
-    const CustomTooltip = ({ active, payload }) => {
+const CustomTooltip = ({
+    active,
+    payload,
+    label,
+}: TooltipProps<ValueType, NameType>) => {
         if (active && payload && payload.length) {
             return (
                 <div className="custom-tooltip">
@@ -47,7 +55,7 @@ export default function Example() {
             <Label value="Impact" offset={5} position="bottom" className='font-bold'/>
           </XAxis>
           <YAxis type="number" dataKey="effort" name="effort" ticks = {[0,2,4,6,8,10]} domain = {[0,10]}>
-            <Label value="Effort" offset={10} position="left" angle="-90" className='font-bold'/>
+            <Label value="Effort" offset={10} position="left" angle={-90} className='font-bold'/>
           </YAxis>
           <ZAxis type="number" dataKey="priority" name="priority" range = {[30,100]}>
           </ZAxis>
