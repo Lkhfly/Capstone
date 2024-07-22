@@ -21,27 +21,36 @@ import {
 
 // Shape of data
 export type Task = {
-  id: string
-  budget: number
-  status: "Submitted" | "Under Review" | "Approved" | "Declined"
-  department: string,
-  priority : number
-  impact : number
-  effort : number
-  type: string,
-  pie : number, 
-  description : string
+    title : string, 
+    station : string,
+    date_sub : string,
+    date_comp : string,
+    emp_name : string,
+    gm_id : string,
+    job : string,
+    department : string,
+    group : number,
+    shift_number : number,
+    team : number,
+    recurring : string,
+    frequency : string,
+    category : string,
+    description : string,
+    important : string,
+    budget : number,
+    uid : string, 
+    status : string
 }
 
 export const columns: ColumnDef<Task>[] = [
 
   // Task ID
   {
-    accessorKey: "id",
+    accessorKey: "uid",
     header: ({ column }) => {
       return (
         <Button
-          variant = "destructive"
+          variant = "ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="ml-1"
         >
@@ -51,6 +60,50 @@ export const columns: ColumnDef<Task>[] = [
     },
   },
   {
+    accessorKey: "title",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="ml-0"
+        >
+          Title
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "date_sub",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                  
+        >
+          Date Submitted
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "category",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="ml-4"
+        >
+        Type
+        </Button>
+      )
+    },
+  },
+
+// Weighted
+  {
     accessorKey: "status",
     header: ({ column }) => {
       return (
@@ -59,7 +112,35 @@ export const columns: ColumnDef<Task>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="ml-0"
         >
-          Status
+        Status
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "group",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="ml-0"
+        >
+        Group
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "team",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    className="ml-0"
+        >
+        Team
         </Button>
       )
     },
@@ -71,104 +152,46 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                  
+                    className="ml-0"
         >
-          Department
+        Department
         </Button>
       )
     },
   },
   {
-    accessorKey: "type",
+    accessorKey: "station",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-1"
+                    className="ml-0"
         >
-        Type
+        Station
         </Button>
       )
     },
   },
+//   {
+//     accessorKey: "description",
+//     header: ({ column }) => {
+//       return (
+// <Popover >
+//   <PopoverTrigger className="ml-12">Description</PopoverTrigger>
+//   <PopoverContent>To view Description in detail, please check out Task Details</PopoverContent>
+// </Popover>
 
-// Weighted
-  {
-    accessorKey: "pie",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="default"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="ml-0"
-        >
-        PIE Score
-        </Button>
-      )
-    },
-  },
-  {
-    accessorKey: "priority",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-0"
-        >
-        Priority
-        </Button>
-      )
-    },
-  },
-  {
-    accessorKey: "impact",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-0"
-        >
-        Impact
-        </Button>
-      )
-    },
-  },
-  {
-    accessorKey: "effort",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-0"
-        >
-        Effort
-        </Button>
-      )
-    },
-  },
-  {
-    accessorKey: "description",
-    header: ({ column }) => {
-      return (
-<Popover >
-  <PopoverTrigger className="ml-12">Description</PopoverTrigger>
-  <PopoverContent>To view Description in detail, please check out Task Details</PopoverContent>
-</Popover>
-
-      )
-    },
-  },
+//       )
+//     },
+//   },
   {
     accessorKey: "budget",
     header: ({ column }) => {
       return (
         <Button
-          variant="default"
-          className="ml-0"
+          variant="ghost"
+          className="ml-5"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >Budget
         </Button>
@@ -201,7 +224,7 @@ export const columns: ColumnDef<Task>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(task.id)}
+              onClick={() => navigator.clipboard.writeText(task.uid)}
             >
               Copy PFC ID
             </DropdownMenuItem>

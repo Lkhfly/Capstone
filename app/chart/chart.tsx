@@ -32,7 +32,7 @@ const CustomTooltip = ({
         if (active && payload && payload.length) {
             return (
                 <div className="custom-tooltip">
-                    <p>{`ID: ${payload[0].payload.id}`}</p>
+                    <p>{`ID: ${payload[0].payload.uid}`}</p>
                     <p>{`Priority: ${payload[0].payload.priority}`}</p>
                     <p>{`Budget: ${payload[0].payload.budget}`}</p>
                 </div>

@@ -82,9 +82,9 @@ export function DataTable<TData, TValue>({
         />
         <Input
           placeholder="Filter by type..."
-          value={(table.getColumn("type")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("category")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("type")?.setFilterValue(event.target.value)
+            table.getColumn("category")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -119,7 +119,7 @@ export function DataTable<TData, TValue>({
       </div>
     <div className="rounded-md border">
       <Table>
-        <TableHeader >
+        <TableHeader className = "bg-slate-200">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
