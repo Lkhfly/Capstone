@@ -1,6 +1,10 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { BarChart, Bar, PieChart, Pie, Legend, ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip,TooltipProps, Label, ZAxis, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, PieChart, Pie, Legend, ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip,TooltipProps, Label, ZAxis, ZAxisProps,ResponsiveContainer } from 'recharts';
+import {
+    ValueType,
+    NameType,
+} from 'recharts/types/component/DefaultTooltipContent';
 import { getData } from '../firebase/config';
 import { Task } from '../data_table/columns';
 
