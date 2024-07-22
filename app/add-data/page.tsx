@@ -372,8 +372,13 @@ const MyForm = () => {
           />
         </label>
       </div>
-
-      <button type="submit" className = "mt-5 bg-blue-950 text-white font-bold py-2 px-4 rounded-full">Submit PFC Request</button>
+      <div>
+        <h1 className = "font-medium mt-2">
+          Upload any relevant pictures or documents you may have :
+        </h1>
+      <button disabled className = "mt-2   font-bold border-solid border-2 py-2 px-4 rounded-full">Upload</button>
+      </div>
+      <button type="submit" className = "mt-10 bg-blue-950 text-white font-bold py-2 px-4 rounded-full">Submit PFC Request</button>
 
 {/* Notification */}
       <div>
