@@ -19,12 +19,14 @@
 
 import React from 'react';
 import Example from './chart';
-
+//import Home from "@/app/page";
+import Home  from "../page"
 
 
 export default function Chart() {
 return (
   <div className="container mx-auto py-10">
+      <Home />
     <p className = "font-bold">Effort x Impact Chart of all the PFCs</p>
     <Example />
     <p className = "font-light mt-2">(To be implemented : allow users able to choose and customize the axes)</p>
