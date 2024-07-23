@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { BarChart, Bar, PieChart, Pie, Legend, ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip,TooltipProps, Label, ZAxis, ZAxisProps,ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, PieChart, Pie, Legend, ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip,TooltipProps, Label, ZAxis, ZAxisProps,ResponsiveContainer,Cell,Sector } from 'recharts';
 import {
     ValueType,
     NameType,
@@ -48,7 +48,9 @@ export default function Example() {
         { name: 'Jun', uv: 2390, pv: 3800, amt: 2500 },
         { name: 'Jul', uv: 3490, pv: 4300, amt: 2100 },
     ];
+const COLORS = ["#2C3E50", "#34495E", "#7F8C8D", "#BDC3C7", "#95A5A6", "#E74C3C", "#C0392B", "#2980B9", "#3498DB", "#16A085"
 
+];
     const renderCustomLabel = ({ name }: { name: string }) => name;
 
     const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
@@ -95,9 +97,16 @@ export default function Example() {
                         cy="50%"
                         outerRadius={80}
                         fill="#8884d8"
-                        label={renderCustomLabel}
-                    />
-                    <Pie dataKey="value" data={data02} cx="70%" cy="50%" outerRadius={80} fill="#82ca9d" label={renderCustomLabel} />
+                        label={renderCustomLabel}>
+                            {data.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))} 
+                        </Pie>
+                    <Pie dataKey="value" data={data02} cx="70%" cy="50%" outerRadius={80} fill="#82ca9d" label={renderCustomLabel}>
+                            {data.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))} 
+                    </Pie>
                     <Tooltip />
                 </PieChart>
             </ResponsiveContainer>

@@ -3,26 +3,33 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Image from "next/image";
 import Link from "next/link";
+import Logo from "./image_comp.png"
 import { Button } from "@/components/ui/button";
-
 const NavBar = () => {
 
 
     return (
         <div>
-            <header className="bg-blue-950 py-4 mb-5">
+            <header className="bg-[#21559F] py-3 mb-5">
                 <div className="container mx-auto flex items-center justify-between">
-                    <div className="text-white text-2xl font-bold">
-                            <Link href="/">GM</Link>
+                    <div className="text-white text-2xl font-bold font-sans">
+                      <Link href="/">
+                            <Image 
+                              src={Logo} // Path to your logo image
+                              alt="Logo"
+                              width={50} // Adjust width as needed
+                              height={50} // Adjust height as needed
+                            />
+                      </Link>
                     </div>
                     <nav>
-                        <Button className="bg-transparent text-white hover:bg-blue-800">
+                        <Button className="bg-transparent text-white hover:bg-[#1A4B8F]">
                             <Link href="/data_table">Data Table</Link>
                         </Button>
-                        <Button className="bg-transparent text-white hover:bg-blue-800 ml-4">
+                        <Button className="bg-transparent text-white hover:bg-[#1A4B8F] ml-4">
                             <Link href="/chart">Chart</Link>
                         </Button>
-                        <Button className="bg-transparent text-white hover:bg-blue-800 ml-4">
+                        <Button className="bg-transparent text-white hover:bg-[#1A4B8F] ml-4">
                             <Link href="/add-data">Add new PFC</Link>
                         </Button>
                     </nav>
