@@ -30,7 +30,6 @@ export async function getData() {
 const querySnapshot = await getDocs(collection(db, "pfc"));
 const return_stuff = []
 querySnapshot.forEach((doc) => {
-  console.log(`${doc.id} => ${doc.data()}`);
   return_stuff.push(doc.data())
 });
 if(typeof window !== 'undefined'){

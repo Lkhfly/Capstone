@@ -78,7 +78,7 @@ export function DataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn("department")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm ml-3"
         />
         <Input
           placeholder="Filter by type..."
@@ -86,7 +86,7 @@ export function DataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn("category")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm ml-3"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

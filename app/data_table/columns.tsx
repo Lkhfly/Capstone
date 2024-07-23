@@ -66,7 +66,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="ml-3"
+          className="ml-5 pl-10"
         >
           Title
         </Button>
@@ -94,7 +94,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-6"
+                    className="ml-5"
         >
         Type
         </Button>
@@ -110,7 +110,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="ml-2"
+          className="ml-1"
         >
         Status
         </Button>
@@ -124,7 +124,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-3"
+                    className="ml-1"
         >
         Group
         </Button>
@@ -138,7 +138,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-2"
+                    className="ml-0"
         >
         Team
         </Button>
@@ -152,7 +152,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-2"
+                    className="ml-1"
         >
         Department
         </Button>

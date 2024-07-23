@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Capstone Project - PFC",
+  title: "GM PFC Management Tool",
   description: "PFC",
 };
 
