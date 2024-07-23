@@ -66,7 +66,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="ml-0"
+          className="ml-3"
         >
           Title
         </Button>
@@ -80,7 +80,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                  
+          className = "ml-3"  
         >
           Date Submitted
         </Button>
@@ -94,7 +94,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-4"
+                    className="ml-6"
         >
         Type
         </Button>
@@ -110,7 +110,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="ml-0"
+          className="ml-2"
         >
         Status
         </Button>
@@ -124,7 +124,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-0"
+                    className="ml-3"
         >
         Group
         </Button>
@@ -138,7 +138,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-0"
+                    className="ml-2"
         >
         Team
         </Button>
@@ -152,7 +152,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-0"
+                    className="ml-2"
         >
         Department
         </Button>
@@ -166,7 +166,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-0"
+                    className="ml-1"
         >
         Station
         </Button>
@@ -185,29 +185,29 @@ export const columns: ColumnDef<Task>[] = [
 //       )
 //     },
 //   },
-  {
-    accessorKey: "budget",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          className="ml-5"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >Budget
-        </Button>
-      )
-    },
-    cell: ({ row }) => {
-      const budget = parseFloat(row.getValue("budget"))
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(budget)
+  // {
+  //   accessorKey: "budget",
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button
+  //         variant="ghost"
+  //         className="ml-5"
+  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //       >Budget
+  //       </Button>
+  //     )
+  //   },
+  //   cell: ({ row }) => {
+  //     const budget = parseFloat(row.getValue("budget"))
+  //     const formatted = new Intl.NumberFormat("en-US", {
+  //       style: "currency",
+  //       currency: "USD",
+  //     }).format(budget)
  
-      return <div className="text-center font-medium">{formatted}</div>
+  //     return <div className="text-center font-medium">{formatted}</div>
 
-    },
-  },
+  //   },
+  // },
   {
     id: "actions",
     cell: ({ row }) => {

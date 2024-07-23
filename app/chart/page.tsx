@@ -20,17 +20,19 @@
 import React from 'react';
 import Example from './chart';
 //import Home from "@/app/page";
-import Home  from "../page"
+import NavBar from '@/components/ui/navbar';
 
 
 export default function Chart() {
 return (
-  <div className="container mx-auto py-10">
-      <Home />
-
-    <Example />
-    <p className = "font-light mt-2">(To be implemented : allow users able to choose and customize the axes)</p>
-    <p className = "font-light mt-2">Think of way to show duplicated value</p>
+  <div>
+    <NavBar />
+    <div className="container mx-auto py-5">
+            <h2 className="font-bold text-2xl mb-10">PFC Overview and Visualization</h2>
+      <Example />
+      {/* <p className = "font-light mt-2">(To be implemented : allow users able to choose and customize the axes)</p>
+      <p className = "font-light mt-2">Think of way to show duplicated value</p> */}
+    </div>
   </div>
 )
   }

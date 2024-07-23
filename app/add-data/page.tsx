@@ -2,7 +2,7 @@
 import React, { FormEvent, useState,useEffect } from 'react';
 import db from "../firebase/config";
 import { collection, addDoc } from 'firebase/firestore';
-import Home  from "../page"
+import NavBar from '@/components/ui/navbar';
 
 const MyForm = () => {
   // const [formData, setFormData] = useState({
@@ -113,9 +113,10 @@ const MyForm = () => {
   };
 
   return (
-  <div className="container mx-auto py-10">
-    <Home/>
-    <h3 className = "mb-10 text-2xl font-extrabold">PFC (Plan For Change) Submission Form </h3>
+  <div>
+  <NavBar />
+  <div className="container mx-auto py-5">
+    <h3 className = "mb-10 text-2xl font-bold">PFC (Plan For Change) Submission Form </h3>
     <form onSubmit={handleSubmit}>
 
 {/* First group of input starts*/}
@@ -166,7 +167,7 @@ const MyForm = () => {
           <label className = "font-medium">
             Date of PFC Submission :  
             <input
-              type="text" required
+              type="date" required
               name="date_sub"
               value={formData.date_sub}
               onChange={handleInputChangeString}
@@ -193,7 +194,7 @@ const MyForm = () => {
           <label className = "font-medium">
             Date PFC Completed :  
             <input
-              type="text" required
+              type="date" required
               name="date_comp"
               value={formData.date_comp}
               onChange={handleInputChangeString}
@@ -220,7 +221,7 @@ const MyForm = () => {
           <label className = "font-medium">
             Group # :  
             <input
-              type="number" required
+              type="number" required min = {0}
               name="group"
               value={formData.group}
               onChange={handleInputChangeNumber}
@@ -233,7 +234,7 @@ const MyForm = () => {
           <label className = "font-medium">
             Shift # :  
             <input
-              type="number" required
+              type="number" required min = {0}
               name="shift_number"
               value={formData.shift_number}
               onChange={handleInputChangeNumber}
@@ -259,7 +260,7 @@ const MyForm = () => {
           <label className = "font-medium">
             Team # : 
             <input
-              type="number" required
+              type="number" required min = {0}
               name="team"
               value={formData.team}
               onChange={handleInputChangeNumber}
@@ -361,7 +362,7 @@ const MyForm = () => {
         ></textarea>
       </div>
 {/* Description ends */}
-      <div>
+      {/* <div>
         <label className = "font-medium">
           Budget :
           <input
@@ -373,7 +374,7 @@ const MyForm = () => {
             className = "ml-3 font-light border-solid border-2 rounded-lg"
           />
         </label>
-      </div>
+      </div> */}
       <div>
         <h1 className = "font-medium mt-2">
           Upload any relevant pictures or documents you may have :
@@ -388,6 +389,7 @@ const MyForm = () => {
         </label>
       </div>
     </form>
+  </div>
   </div>
   );
 };

@@ -1,18 +1,19 @@
-"use client"
 import { columns } from "./columns"
 import { DataTable } from "./data-table"
 import { getData } from "../firebase/config";
-import Home  from "../page"
+import NavBar from "@/components/ui/navbar";
 
 
 export default async function DemoPage() {
   const data = await getData()
   return (
-
-    <div className="container mx-auto py-10">
-        <Home />
-      <h2 className="font-bold text-2xl">Data Table of PFCs</h2>
+    <div>
+    <NavBar />
+    <div className="container mx-auto py-5">
+        
+      <h2 className="font-bold text-2xl mb-5">Data Table of PFCs</h2>
       <DataTable columns={columns} data={data} />
+    </div>
     </div>
   )
 }
