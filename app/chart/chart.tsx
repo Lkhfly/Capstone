@@ -7,6 +7,7 @@ import {
 } from 'recharts/types/component/DefaultTooltipContent';
 import { getData } from '../firebase/config';
 import { Task } from '../data_table/columns';
+import { FormControl, FormGroup, FormControlLabel, Checkbox, FormLabel } from '@mui/material';
 
 export default function Example() {
     const [data, setData] = useState<Task[]>([]);
@@ -22,6 +23,7 @@ export default function Example() {
         };
         fetchData();
     }, []);
+
 
     const data01 = [
         { name: 'Safety', value: 400 },

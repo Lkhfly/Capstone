@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Image from "next/image";
 import Link from "next/link";
-import Logo from "./image_comp.png"
+import Logo from "./logo2.png"
 import { Button } from "@/components/ui/button";
 const NavBar = () => {
 
@@ -14,11 +14,11 @@ const NavBar = () => {
                 <div className="container mx-auto flex items-center justify-between">
                     <div className="text-white text-2xl font-bold font-sans">
                       <Link href="/">
-                            <Image 
+                            <Image
                               src={Logo} // Path to your logo image
                               alt="Logo"
-                              width={50} // Adjust width as needed
-                              height={50} // Adjust height as needed
+                              width={95} // Adjust width as needed
+                              height={95} // Adjust height as needed
                             />
                       </Link>
                     </div>
