@@ -40,17 +40,21 @@ export default function Example() {
     ];
 
     const data03 = [
-        { name: 'Jan', uv: 4000, pv: 2400, amt: 2400 },
-        { name: 'Feb', uv: 3000, pv: 1398, amt: 2210 },
-        { name: 'Mar', uv: 2000, pv: 9800, amt: 2290 },
-        { name: 'Apr', uv: 2780, pv: 3908, amt: 2000 },
-        { name: 'May', uv: 1890, pv: 4800, amt: 2181 },
-        { name: 'Jun', uv: 2390, pv: 3800, amt: 2500 },
-        { name: 'Jul', uv: 3490, pv: 4300, amt: 2100 },
+        { name: 'Jan', uv: 4000, pfc: 2400, amt: 2400 },
+        { name: 'Feb', uv: 3000, pfc: 1398, amt: 2210 },
+        { name: 'Mar', uv: 2000, pfc: 9800, amt: 2290 },
+        { name: 'Apr', uv: 2780, pfc: 3908, amt: 2000 },
+        { name: 'May', uv: 1890, pfc: 4800, amt: 2181 },
+        { name: 'Jun', uv: 2390, pfc: 3800, amt: 2500 },
+        { name: 'Jul', uv: 3490, pfc: 4300, amt: 2100 },
     ];
-const COLORS = ["#2C3E50", "#34495E", "#7F8C8D", "#BDC3C7", "#95A5A6", "#E74C3C", "#C0392B", "#2980B9", "#3498DB", "#16A085"
+//const COLORS = ["#2C3E50", "#34495E", "#7F8C8D", "#BDC3C7", "#95A5A6", "#E74C3C", "#C0392B", "#2980B9", "#3498DB", "#16A085"
+const COLORS = ["#FFD166", "#90BE6D", "#F67280", "#A2CFFF", "#FFF59D", "#7EA7D6","#2C3E50"];
 
-];
+
+
+
+
     const renderCustomLabel = ({ name }: { name: string }) => name;
 
     const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
@@ -81,7 +85,7 @@ const COLORS = ["#2C3E50", "#34495E", "#7F8C8D", "#BDC3C7", "#95A5A6", "#E74C3C"
                     <Tooltip />
                     <Legend />
                     <CartesianGrid strokeDasharray="3 3" />
-                    <Bar dataKey="pv" fill="#8884d8" background={{ fill: '#eee' }} />
+                    <Bar dataKey="pfc" fill="#8884d8" background={{ fill: '#eee' }} />
                 </BarChart>
             </ResponsiveContainer>
             
