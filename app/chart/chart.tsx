@@ -1,13 +1,9 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { BarChart, Bar, PieChart, Pie, Legend, ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip,TooltipProps, Label, ZAxis, ZAxisProps,ResponsiveContainer,Cell,Sector } from 'recharts';
-import {
-    ValueType,
-    NameType,
-} from 'recharts/types/component/DefaultTooltipContent';
+import { BarChart, Bar, PieChart, Pie, Legend, ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, TooltipProps, Label, ZAxis, ResponsiveContainer, Cell } from 'recharts';
 import { getData } from '../firebase/config';
 import { Task } from '../data_table/columns';
-import { FormControl, FormGroup, FormControlLabel, Checkbox, FormLabel } from '@mui/material';
+import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 
 export default function Example() {
     const [data, setData] = useState<Task[]>([]);
@@ -16,6 +12,7 @@ export default function Example() {
         const fetchData = async () => {
             try {
                 const docSnap = await getData();
+                console.log("Fetched Data: ", docSnap);
                 setData(docSnap);
             } catch (error) {
                 console.error("Error fetching the document: ", error);
@@ -23,7 +20,6 @@ export default function Example() {
         };
         fetchData();
     }, []);
-
 
     const data01 = [
         { name: 'Safety', value: 400 },
@@ -50,12 +46,22 @@ export default function Example() {
         { name: 'Jun', uv: 2390, pfc: 3800, amt: 2500 },
         { name: 'Jul', uv: 3490, pfc: 4300, amt: 2100 },
     ];
-//const COLORS = ["#2C3E50", "#34495E", "#7F8C8D", "#BDC3C7", "#95A5A6", "#E74C3C", "#C0392B", "#2980B9", "#3498DB", "#16A085"
-const COLORS = ["#FFD166", "#90BE6D", "#F67280", "#A2CFFF", "#FFF59D", "#7EA7D6","#2C3E50"];
 
+    const data4 = [
+        { impact: 7, effort: 7.5, priority: 3.64, uid: '1' },
+        { impact: 8, effort: 3.79, priority: 0.23, uid: '2' },
+        { impact: 8.9, effort: 0.99, priority: 1.32, uid: '3' },
+        { impact: 1.82, effort: 2.02, priority: 0.89, uid: '4' },
+        { impact: 0.33, effort: 3.29, priority: 2.69, uid: '5' },
+        { impact: 1.5, effort: 8.3, priority: 1.7, uid: '6' },
+        { impact: 8.7, effort: 3.0, priority: 0.9, uid: '7' },
+        { impact: 2.1, effort: 1.8, priority: 2.5, uid: '8' },
+        { impact: 3, effort: 7.8, priority: 1.2, uid: '9' },
+        { impact: 8, effort: 8, priority: 3.3, uid: '10' },
+        // Add more data points as needed
+    ];
 
-
-
+    const COLORS = ["#FFD166", "#90BE6D", "#F67280", "#A2CFFF", "#FFF59D", "#7EA7D6", "#2C3E50"];
 
     const renderCustomLabel = ({ name }: { name: string }) => name;
 
@@ -77,7 +83,7 @@ const COLORS = ["#FFD166", "#90BE6D", "#F67280", "#A2CFFF", "#FFF59D", "#7EA7D6"
             {/* Bar Chart */}
             <p className="font-bold mb-5">Number of PFCs over the months</p>
             <ResponsiveContainer width="90%" height={500}>
-            <BarChart
+                <BarChart
                     data={data03}
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                     barSize={20}
@@ -90,11 +96,11 @@ const COLORS = ["#FFD166", "#90BE6D", "#F67280", "#A2CFFF", "#FFF59D", "#7EA7D6"
                     <Bar dataKey="pfc" fill="#8884d8" background={{ fill: '#eee' }} />
                 </BarChart>
             </ResponsiveContainer>
-            
+
             {/* Pie Chart */}
             <p className="font-bold">PFC Volume Categorization</p>
             <ResponsiveContainer width="100%" height={400}>
-            <PieChart>
+                <PieChart>
                     <Pie
                         dataKey="value"
                         isAnimationActive={true}
@@ -103,25 +109,33 @@ const COLORS = ["#FFD166", "#90BE6D", "#F67280", "#A2CFFF", "#FFF59D", "#7EA7D6"
                         cy="50%"
                         outerRadius={80}
                         fill="#8884d8"
-                        label={renderCustomLabel}>
-                            {data.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))} 
-                        </Pie>
-                    <Pie dataKey="value" data={data02} cx="70%" cy="50%" outerRadius={80} fill="#82ca9d" label={renderCustomLabel}>
-                            {data.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))} 
+                        label={renderCustomLabel}
+                    >
+                        {data01.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                    </Pie>
+                    <Pie
+                        dataKey="value"
+                        data={data02}
+                        cx="70%"
+                        cy="50%"
+                        outerRadius={80}
+                        fill="#82ca9d"
+                        label={renderCustomLabel}
+                    >
+                        {data02.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
                     </Pie>
                     <Tooltip />
                 </PieChart>
             </ResponsiveContainer>
 
-
             {/* Scatter Effort x Impact Chart */}
             <p className="font-bold mb-5">Effort x Impact Chart of all the PFCs</p>
             <ResponsiveContainer width="100%" height={400}>
-            <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                     <CartesianGrid />
                     <XAxis type="number" dataKey="impact" name="impact" ticks={[0, 2, 4, 6, 8, 10]} domain={[0, 10]} allowDuplicatedCategory={false}>
                         <Label value="Impact" offset={5} position="bottom" className='font-bold' />
@@ -131,7 +145,7 @@ const COLORS = ["#FFD166", "#90BE6D", "#F67280", "#A2CFFF", "#FFF59D", "#7EA7D6"
                     </YAxis>
                     <ZAxis type="number" dataKey="priority" name="priority" range={[30, 100]} />
                     <Tooltip content={<CustomTooltip />} cursor={{ strokeDasharray: '3 3' }} />
-                    <Scatter name="A school" data={data} fill="#8884d8" />
+                    <Scatter name="PFCs" data={data4} fill="#8884d8" />
                 </ScatterChart>
             </ResponsiveContainer>
         </div>
