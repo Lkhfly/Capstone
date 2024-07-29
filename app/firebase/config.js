@@ -32,8 +32,8 @@ const return_stuff = []
 querySnapshot.forEach((doc) => {
   return_stuff.push(doc.data())
 });
-if(typeof window !== 'undefined'){
-  localStorage.setItem('data', return_stuff);
-}
+// if(typeof window !== 'undefined'){
+//   localStorage.setItem('data', return_stuff);
+// }
   return return_stuff
 }
