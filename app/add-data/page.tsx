@@ -131,6 +131,7 @@ const MyForm = () => {
                     name="title"
                     value={formData.title}
                     onChange={handleInputChangeString}
+                    style={{ width: '900px' }}
                     className="ml-3 font-light border-solid border-2 rounded-lg"
                 />
               </label>
