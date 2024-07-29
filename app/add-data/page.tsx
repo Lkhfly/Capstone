@@ -319,19 +319,19 @@ const MyForm = () => {
                   <FormLabel component="legend">Select Categories</FormLabel>
                   <FormGroup>
                     <FormControlLabel
-                        control={<Checkbox checked={safety} onChange={handleChange} name="safety" />}
+                        control={<Checkbox value = {formData.category} checked={safety} onChange={handleChange} name="safety" />}
                         label="Safety"
                     />
                     <FormControlLabel
-                        control={<Checkbox checked={quality} onChange={handleChange} name="quality" />}
+                        control={<Checkbox checked={quality} value = {formData.category} onChange={handleChange} name="quality" />}
                         label="Quality"
                     />
                     <FormControlLabel
-                        control={<Checkbox checked={throughput} onChange={handleChange} name="throughput" />}
+                        control={<Checkbox checked={throughput}  value = {formData.category}onChange={handleChange} name="throughput" />}
                         label="Throughput"
                     />
                     <FormControlLabel
-                        control={<Checkbox checked={pipCost} onChange={handleChange} name="pipCost" />}
+                        control={<Checkbox checked={pipCost}  value = {formData.category} onChange={handleChange} name="pipCost" />}
                         label="PIP/Cost"
                     />
                   </FormGroup>
