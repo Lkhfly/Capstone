@@ -1,6 +1,11 @@
+"use client";
+
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore, doc,collection, getDocs } from 'firebase/firestore';
+import { getAuth } from "firebase/auth";
+
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -20,8 +25,9 @@ const firebaseConfig = {
 let firebase_app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
-export default db
+//export default db
 
 
 //Firebase retrieve all data
@@ -33,7 +39,9 @@ querySnapshot.forEach((doc) => {
   return_stuff.push(doc.data())
 });
 if(typeof window !== 'undefined'){
-  localStorage.setItem('data', return_stuff);
+  localStorage.setItem('data', JSON.stringify(return_stuff));
 }
   return return_stuff
 }
+
+export {app, auth, db};
