@@ -235,6 +235,7 @@ const MyForm = () => {
 
             {/* Category (Multi-select with Checkboxes) */}
             <div className="mt-4">
+
               <FormControl component="fieldset">
                 <FormLabel component="legend">What is this PFC related to?</FormLabel>
                 <FormGroup>
@@ -253,6 +254,7 @@ const MyForm = () => {
                   ))}
                 </FormGroup>
               </FormControl>
+
             </div>
 
             <hr className="mt-5" />

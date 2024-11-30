@@ -31,6 +31,7 @@ export {app, auth, db};
 //Firebase retrieve all data
 export async function getData() {
   // Fetch data from your API here.
+
   const querySnapshot = await getDocs(collection(db, "pfc"));
   const return_stuff = []
   querySnapshot.forEach((doc) => {
@@ -39,5 +40,6 @@ export async function getData() {
    if(typeof window !== 'undefined'){
      localStorage.setItem('data', return_stuff);
    }
+
   return return_stuff
 }
