@@ -94,7 +94,7 @@ const Login = () => {
                             {isSigningIn ? 'Signing In...' : 'Sign In'}
                         </button>
                     </form>
-                    <p className="text-center text-sm">Don't have an account?
+                    <p className="text-center text-sm">Dont have an account?
                         <Link href="/auth/register" className="hover:underline font-bold">
                             Sign up
                         </Link>
