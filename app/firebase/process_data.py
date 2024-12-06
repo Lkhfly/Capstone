@@ -23,5 +23,9 @@ def process_data():
     # return jsonify({"message": "File processed successfully", "data": grouped_data})
     print(grouped_data)
 
+    # Return a JSON response with the processed data
+    return jsonify({"message": "File processed successfully", "data": grouped_data})
+
+
 if __name__ == "__main__":
     app.run(port=5000)
