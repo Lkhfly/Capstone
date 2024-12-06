@@ -148,11 +148,13 @@ const MyForm = () => {
 //   }
 // };
 
-const handleFile = async (e) => {
-  const file = e.target.files[0]
-  if (file) {
+
+const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const files = e.target.files; // Get the files from the input
+  if (files && files[0]) { // Check if files exists and has at least one file
+    const file = files[0];
     const formData = new FormData();
-    formData.append('file', file)
+    formData.append('file', file);
 
     try {
       // Send the file to the back-end without handling any specific response data
@@ -162,16 +164,14 @@ const handleFile = async (e) => {
         },
       });
 
-          console.log("File uploaded successfully.");
-        } catch (error) {
-          console.error("Error uploading file:", error);
-        }
-
+      console.log("File uploaded successfully.");
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  } else {
+    console.warn("No file selected.");
   }
-} 
-
-
-
+};
 
 
 
