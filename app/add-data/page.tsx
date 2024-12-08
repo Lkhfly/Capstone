@@ -407,7 +407,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
           {/* First group of input end */}
           <hr className="mt-5"></hr>
           {/* Select start */}
-          <div className="mt-5">
+          {/* <div className="mt-5">
             <label className="font-medium">
               Is this a recurring issue?
               <select
@@ -442,7 +442,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                 <option value="Not Applicable">Not Applicable</option>
               </select>
             </label>
-          </div>
+          </div> */}
           <div className="mt-4">
             <label className="font-medium">
               What is this PFC related to? Select all that apply.
@@ -1033,7 +1033,6 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
           </form>
         </div>
       </div>
-    </div>
   );
 };
 
