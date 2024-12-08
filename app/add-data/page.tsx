@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 import React, { FormEvent, useState } from 'react';
-import db from "../firebase/config";
+import {db} from "../firebase/config";
 import { collection, addDoc } from 'firebase/firestore';
 import NavBar from '@/components/ui/navbar';
 import { FormControl, FormGroup, FormControlLabel, Checkbox, FormLabel } from '@mui/material';
@@ -13,14 +13,14 @@ import severity_image from "../../components/ui/severity.png"
 
 const MyForm = () => {
   const [formData, setFormData] = useState({
-    title: '',
-    station: '',
-    date_sub: '',
-    date_comp: '',
-    emp_name: '',
-    gm_id: '',
-    job: '',
-    department: '',
+    title: "",
+    station: "",
+    date_sub: "",
+    date_comp: "",
+    emp_name: "",
+    gm_id: "",
+    job: "",
+    department: "",
     group: 0,
     shift_number: 0,
     team: 0,
@@ -103,14 +103,14 @@ const MyForm = () => {
       const docRef = await addDoc(collection(db, 'pfc'), formData);
       setError('Document written with ID: ' + docRef.id);
       setFormData({
-        title: '',
-        station: '',
-        date_sub: '',
-        date_comp: '',
-        emp_name: '',
-        gm_id: '',
-        job: '',
-        department: '',
+        title: "",
+        station: "",
+        date_sub: "",
+        date_comp: "",
+        emp_name: "",
+        gm_id: "",
+        job: "",
+        department: "",
         group: 0,
         shift_number: 0,
         team: 0,
@@ -745,7 +745,6 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                 </select>
               </label>
             </div>
-
             <div className="mt-5">
               <label className="font-medium">
                 Is it task-based or equipment design based ?
@@ -990,19 +989,20 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
             {/* Description starts */}
             <div className="mt-5">
               <label htmlFor="description" className="block font-medium">
-                Describe the problem you are submitting a PFC for:
+                Describe the problem:
               </label>
               <textarea
                   id="description"
                   name="description"
                   rows={4}
-                  cols={50}
                   value={formData.description}
                   onChange={handleInputChangeDescription}
                   required
                   className="border-solid border-2 rounded-lg"
               ></textarea>
             </div>
+
+            {/* Why it's important */}
             <div>
               <label htmlFor="important" className="block font-medium">
                 Explain in 1-2 sentences why this PFC is important:
@@ -1011,7 +1011,6 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   id="important"
                   name="important"
                   rows={2}
-                  cols={50}
                   value={formData.important}
                   onChange={handleInputChangeDescription}
                   required
@@ -1026,6 +1025,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
             <button type="submit" className="mt-10 bg-blue-950 text-white font-bold py-2 px-4 rounded-full">
               Submit PFC Request
             </button>
+
             {/* Notification */}
             <div>
               <label>{error}</label>
