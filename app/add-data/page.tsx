@@ -58,15 +58,6 @@ const MyForm = () => {
   });
   const [error, setError] = useState("");
 
-  // Handle input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
   const handleInputChangeDescription = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -104,22 +95,6 @@ const MyForm = () => {
       ...prevData,
       [name]: parseInt(value),
     }));
-  };
-
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setFormData((prevData) => {
-      let newCategories = [...prevData.category];
-      if (checked) {
-        newCategories.push(name);
-      } else {
-        newCategories = newCategories.filter((item) => item !== name);
-      }
-      return {
-        ...prevData,
-        category: newCategories,
-      };
-    });
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -1021,7 +996,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   name="description"
                   rows={4}
                   value={formData.description}
-                  onChange={handleInputChange}
+                  onChange={handleInputChangeDescription}
                   required
                   className="border-solid border-2 rounded-lg"
               ></textarea>
@@ -1037,7 +1012,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   name="important"
                   rows={2}
                   value={formData.important}
-                  onChange={handleInputChange}
+                  onChange={handleInputChangeDescription}
                   required
                   className="border-solid border-2 rounded-lg"
               ></textarea>
