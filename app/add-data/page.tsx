@@ -215,14 +215,24 @@ const MyForm = () => {
 
 const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
   const files = e.target.files; // Get the files from the input
-  if (files && files[0]) { // Check if files exists and has at least one file
+  if (files && files[0]) { // Check if files exist and has at least one file
     const file = files[0];
     const formData = new FormData();
     formData.append('file', file);
 
+    // Check if 'quality' or 'throughput' is selected and append the respective field to formData
+    if (quality1) {
+      formData.append('quality', quality1.toString());
+    } else if (throughput1) {
+      formData.append('throughput', throughput1.toString());
+    } else {
+      console.warn("Neither quality nor throughput selected.");
+      return; // Exit early if neither is selected
+    }
+
     try {
       // Send the file to the back-end without handling any specific response data
-      await axios.post('http://localhost:5000/process_data', formData, {
+      await axios.post('http://localhost:5000/process_data_excel', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -236,6 +246,39 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     console.warn("No file selected.");
   }
 };
+
+
+const handleReconcile = async () => {
+  const data = new FormData();
+
+if (throughput1 || quality1) {
+  data.append("station", formData.station.toString());
+  data.append("downtime", formData.downtime.toString());
+  data.append("stops", formData.stops.toString())
+}
+  
+  try {
+    const response = await fetch("http://localhost:5000/process_data_reconcile", {
+      method: "POST",
+      body: data,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to submit data");
+    }
+
+    const result = await response.json();
+    console.log("Response from backend:", result);
+  } catch (error) {
+    console.error("Error submitting data:", error);
+  }
+};
+
+
+
+
+
+
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -1019,10 +1062,27 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
               ></textarea>
             </div>
             {/* Description ends */}
-            <div>
-              <h1>Upload Excel File</h1>
-              <input type = "file" onChange = {(e) => handleFile(e)} />
-            </div>
+
+           
+            
+          <div>
+            {quality1 || throughput1 ? (
+              <>
+            <h1>Upload Excel File</h1>
+            <input type="file" onChange={(e) => handleFile(e)} />
+              </>) : null}
+          </div>
+           
+          <div>
+            {quality1 || throughput1 ? (
+              <>
+            <button type = "button" className="mt-8 bg-blue-950 text-white font-bold py-2 px-4 rounded-full" onClick = {handleReconcile}>
+              Reconcile
+            </button>
+              </>) : null}
+          </div>
+          
+            
             <button type="submit" className="mt-10 bg-blue-950 text-white font-bold py-2 px-4 rounded-full">
               Submit PFC Request
             </button>
@@ -1033,7 +1093,6 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
           </form>
         </div>
       </div>
-    </div>
   );
 };
 
