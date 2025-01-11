@@ -1,5 +1,7 @@
 "use client";
-import axios from "axios";
+
+import axios from 'axios';
+
 
 import React, { FormEvent, useState } from 'react';
 import {db} from "../firebase/config";
@@ -38,22 +40,22 @@ const MyForm = () => {
     cost : 0,
     headcount : 0,
     // Throughput
-    downtime : 0,
-    stops : 0,
+    downtime : 0, 
+    stops : 0, 
     downtime_expected : 0,
-    stops_expected : 0,
-    // Quality
-    level1 : 0,
-    level2 : 0,
-    level3 : 0,
-    level4 : 0,
+    stops_expected : 0, 
+    // Quality 
+    level1 : 0, 
+    level2 : 0, 
+    level3 : 0, 
+    level4 : 0, 
     fault : 0,
     // Safety
     frequency: '',
     task_or_equipment: '',
-    severity : 0,
-    frequency_exposure : 0,
-    occurrence : 0,
+    severity : 0, 
+    frequency_exposure : 0, 
+    occurrence : 0, 
     people_at_risk : 0
   });
   const [error, setError] = useState("");
@@ -128,22 +130,22 @@ const MyForm = () => {
         cost : 0,
         headcount : 0,
         // Throughput
-        downtime : 0,
-        stops : 0,
+        downtime : 0, 
+        stops : 0, 
         downtime_expected : 0,
-        stops_expected : 0,
-        // Quality
-        level1 : 0,
-        level2 : 0,
-        level3 : 0,
-        level4 : 0,
+        stops_expected : 0, 
+        // Quality 
+        level1 : 0, 
+        level2 : 0, 
+        level3 : 0, 
+        level4 : 0, 
         fault : 0,
         // Safety
         frequency: '',
         task_or_equipment: '',
-        severity : 0,
-        frequency_exposure : 0,
-        occurrence : 0,
+        severity : 0, 
+        frequency_exposure : 0, 
+        occurrence : 0, 
         people_at_risk : 0
       });
     } catch (e) {
@@ -213,29 +215,30 @@ const MyForm = () => {
 // };
 
 
-  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files; // Get the files from the input
-    if (files && files[0]) { // Check if files exists and has at least one file
-      const file = files[0];
-      const formData = new FormData();
-      formData.append('file', file);
+const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const files = e.target.files; // Get the files from the input
+  if (files && files[0]) { // Check if files exists and has at least one file
+    const file = files[0];
+    const formData = new FormData();
+    formData.append('file', file);
 
-      try {
-        // Send the file to the back-end without handling any specific response data
-        await axios.post('http://localhost:5000/process_data', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+    try {
+      // Send the file to the back-end without handling any specific response data
+      await axios.post('http://localhost:5000/process_data', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
-        console.log("File uploaded successfully.");
-      } catch (error) {
-        console.error("Error uploading file:", error);
-      }
-    } else {
-      console.warn("No file selected.");
+      console.log("File uploaded successfully.");
+    } catch (error) {
+      console.error("Error uploading file:", error);
     }
-  };
+  } else {
+    console.warn("No file selected.");
+  }
+};
+
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -248,166 +251,169 @@ const MyForm = () => {
   };
 
   return (
-      <div>
-        <NavBar />
-        <div className="container mx-auto py-5">
-          <h3 className="mb-10 text-2xl font-bold">PFC (Plan For Change) Submission Form</h3>
-          <form onSubmit={handleSubmit}>
-            {/* First group of input starts */}
+
+    <div>
+      <NavBar />
+      <div className="container mx-auto py-5">
+        <h3 className="mb-10 text-2xl font-bold">PFC (Plan For Change) Submission Form</h3>
+        <form onSubmit={handleSubmit}>
+          {/* First group of input starts */}
+          <div>
+            <label className="font-medium">
+              Title of PFC:
+              <input
+                type="text"
+                required
+                name="title"
+                value={formData.title}
+                onChange={handleInputChangeString}
+                style={{ width: '900px' }}
+                className="ml-3 font-light border-solid border-2 rounded-lg"
+              />
+            </label>
+          </div>
+          <hr className="mt-5"></hr>
+          <div className="grid grid-cols-2 mt-5 gap-3">
+
             <div>
               <label className="font-medium">
-                Title of PFC:
+                Station Number:
                 <input
-                    type="text"
-                    required
-                    name="title"
-                    value={formData.title}
-                    onChange={handleInputChangeString}
-                    style={{ width: '900px' }}
-                    className="ml-3 font-light border-solid border-2 rounded-lg"
+
+                  type="text"
+                  required
+                  name="station"
+                  value={formData.station}
+                  onChange={handleInputChangeString}
+                  className="ml-3 font-light border-solid border-2 rounded-lg"
                 />
               </label>
             </div>
-            <hr className="mt-5"></hr>
-            <div className="grid grid-cols-2 mt-5 gap-3">
-              <div>
-                <label className="font-medium">
-                  Station Number:
-                  <input
-                      type="text"
-                      required
-                      name="station"
-                      value={formData.station}
-                      onChange={handleInputChangeString}
-                      className="ml-3 font-light border-solid border-2 rounded-lg"
-                  />
-                </label>
-              </div>
-              <div>
-                <label className="font-medium">
-                  Employee Name:
-                  <input
-                      type="text"
-                      required
-                      name="emp_name"
-                      value={formData.emp_name}
-                      onChange={handleInputChangeString}
-                      className="ml-3 font-light border-solid border-2 rounded-lg"
-                  />
-                </label>
-              </div>
-              <div>
-                <label className="font-medium">
-                  Date of PFC Submission:
-                  <input
-                      type="date"
-                      required
-                      name="date_sub"
-                      value={formData.date_sub}
-                      onChange={handleInputChangeString}
-                      className="ml-3 font-light border-solid border-2 rounded-lg"
-                  />
-                </label>
-              </div>
-              <div>
-                <label className="font-medium">
-                  GMID:
-                  <input
-                      type="text"
-                      required
-                      name="gm_id"
-                      value={formData.gm_id}
-                      onChange={handleInputChangeString}
-                      className="ml-3 font-light border-solid border-2 rounded-lg"
-                  />
-                </label>
-              </div>
-              <div>
-                <label className="font-medium">
-                  Date PFC Completed:
-                  <input
-                      type="date"
-                      required
-                      name="date_comp"
-                      value={formData.date_comp}
-                      onChange={handleInputChangeString}
-                      className="ml-3 font-light border-solid border-2 rounded-lg"
-                  />
-                </label>
-              </div>
-              <div>
-                <label className="font-medium">
-                  Job Position:
-                  <input
-                      type="text"
-                      required
-                      name="job"
-                      value={formData.job}
-                      onChange={handleInputChangeString}
-                      className="ml-3 font-light border-solid border-2 rounded-lg"
-                  />
-                </label>
-              </div>
-              <div>
-                <label className="font-medium">
-                  Group #:
-                  <input
-                      type="number"
-                      required
-                      min={0}
-                      name="group"
-                      value={formData.group}
-                      onChange={handleInputChangeNumber}
-                      className="ml-3 font-light border-solid border-2 rounded-lg"
-                  />
-                </label>
-              </div>
-              <div>
-                <label className="font-medium">
-                  Shift #:
-                  <input
-                      type="number"
-                      required
-                      min={0}
-                      name="shift_number"
-                      value={formData.shift_number}
-                      onChange={handleInputChangeNumber}
-                      className="ml-3 font-light border-solid border-2 rounded-lg"
-                  />
-                </label>
-              </div>
-              <div>
-                <label className="font-medium">
-                  Department:
-                  <input
-                      type="text"
-                      required
-                      name="department"
-                      value={formData.department}
-                      onChange={handleInputChangeString}
-                      className="ml-3 font-light border-solid border-2 rounded-lg"
-                  />
-                </label>
-              </div>
-              <div>
-                <label className="font-medium">
-                  Team #:
-                  <input
-                      type="number"
-                      required
-                      min={0}
-                      name="team"
-                      value={formData.team}
-                      onChange={handleInputChangeNumber}
-                      className="ml-3 font-light border-solid border-2 rounded-lg"
-                  />
-                </label>
-              </div>
+            <div>
+              <label className="font-medium">
+                Employee Name:
+                <input
+                  type="text"
+                  required
+                  name="emp_name"
+                  value={formData.emp_name}
+                  onChange={handleInputChangeString}
+                  className="ml-3 font-light border-solid border-2 rounded-lg"
+                />
+              </label>
             </div>
-            {/* First group of input end */}
-            <hr className="mt-5"></hr>
-            {/* Select start */}
-            {/* <div className="mt-5">
+            <div>
+              <label className="font-medium">
+                Date of PFC Submission:
+                <input
+                  type="date"
+                  required
+                  name="date_sub"
+                  value={formData.date_sub}
+                  onChange={handleInputChangeString}
+                  className="ml-3 font-light border-solid border-2 rounded-lg"
+                />
+              </label>
+            </div>
+            <div>
+              <label className="font-medium">
+                GMID:
+                <input
+                  type="text"
+                  required
+                  name="gm_id"
+                  value={formData.gm_id}
+                  onChange={handleInputChangeString}
+                  className="ml-3 font-light border-solid border-2 rounded-lg"
+                />
+              </label>
+            </div>
+            <div>
+              <label className="font-medium">
+                Date PFC Completed:
+                <input
+                  type="date"
+                  required
+                  name="date_comp"
+                  value={formData.date_comp}
+                  onChange={handleInputChangeString}
+                  className="ml-3 font-light border-solid border-2 rounded-lg"
+                />
+              </label>
+            </div>
+            <div>
+              <label className="font-medium">
+                Job Position:
+                <input
+                  type="text"
+                  required
+                  name="job"
+                  value={formData.job}
+                  onChange={handleInputChangeString}
+                  className="ml-3 font-light border-solid border-2 rounded-lg"
+                />
+              </label>
+            </div>
+            <div>
+              <label className="font-medium">
+                Group #:
+                <input
+                  type="number"
+                  required
+                  min={0}
+                  name="group"
+                  value={formData.group}
+                  onChange={handleInputChangeNumber}
+                  className="ml-3 font-light border-solid border-2 rounded-lg"
+                />
+              </label>
+            </div>
+            <div>
+              <label className="font-medium">
+                Shift #:
+                <input
+                  type="number"
+                  required
+                  min={0}
+                  name="shift_number"
+                  value={formData.shift_number}
+                  onChange={handleInputChangeNumber}
+                  className="ml-3 font-light border-solid border-2 rounded-lg"
+                />
+              </label>
+            </div>
+            <div>
+              <label className="font-medium">
+                Department:
+                <input
+                  type="text"
+                  required
+                  name="department"
+                  value={formData.department}
+                  onChange={handleInputChangeString}
+                  className="ml-3 font-light border-solid border-2 rounded-lg"
+                />
+              </label>
+            </div>
+            <div>
+              <label className="font-medium">
+                Team #:
+                <input
+                  type="number"
+                  required
+                  min={0}
+                  name="team"
+                  value={formData.team}
+                  onChange={handleInputChangeNumber}
+                  className="ml-3 font-light border-solid border-2 rounded-lg"
+                />
+              </label>
+            </div>
+          </div>
+          {/* First group of input end */}
+          <hr className="mt-5"></hr>
+          {/* Select start */}
+          {/* <div className="mt-5">
             <label className="font-medium">
               Is this a recurring issue?
               <select
@@ -443,148 +449,149 @@ const MyForm = () => {
               </select>
             </label>
           </div> */}
-            <div className="mt-4">
-              <label className="font-medium">
-                What is this PFC related to? Select all that apply.
-                <div>
-                  <FormControl component="fieldset">
-                    <FormLabel component="legend">Select Categories</FormLabel>
-                    <FormGroup>
-                      <FormControlLabel
-                          control={<Checkbox value={formData.category} checked={safety} onChange={handleChange} name="safety" />}
-                          label="Safety"
-                      />
-                      <FormControlLabel
-                          control={<Checkbox checked={quality} value={formData.category} onChange={handleChange} name="quality" />}
-                          label="Quality"
-                      />
-                      <FormControlLabel
-                          control={<Checkbox checked={throughput} value={formData.category} onChange={handleChange} name="throughput" />}
-                          label="Throughput"
-                      />
-                      <FormControlLabel
-                          control={<Checkbox checked={pipCost}  value = {formData.category} onChange={handleChange} name="pipCost" />}
-                          label="Cost"
-                      />
-                      <FormControlLabel
-                          control={<Checkbox name="NA" />}
-                          label="N/A"
-                      />
-                    </FormGroup>
-                  </FormControl>
+          <div className="mt-4">
+            <label className="font-medium">
+              What is this PFC related to? Select all that apply.
+              <div>
+                <FormControl component="fieldset">
+                  <FormLabel component="legend">Select Categories</FormLabel>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={<Checkbox value={formData.category} checked={safety} onChange={handleChange} name="safety" />}
+                      label="Safety"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={quality} value={formData.category} onChange={handleChange} name="quality" />}
+                      label="Quality"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={throughput} value={formData.category} onChange={handleChange} name="throughput" />}
+                      label="Throughput"
+                    />
+                    <FormControlLabel
+                        control={<Checkbox checked={pipCost}  value = {formData.category} onChange={handleChange} name="pipCost" />}
+                        label="Cost"
+                    />
+                    <FormControlLabel
+                        control={<Checkbox name="NA" />}
+                        label="N/A"
+                    />
+                  </FormGroup>
+                </FormControl>
                 </div>
               </label>
             </div>
             {/* Select end */}
 
-            {/* NewPart starts */}
-            <div>
+          {/* NewPart starts */}
+          <div>
 
-              {/* Cost Page */}
-              {pipCost1 && (<div className = "Cost Page">
-                <hr className="mt-5 mb-5"></hr>
-                <h1 className="font-medium mt-2 mb-2">Enter an estimated cost reduction</h1>
-                <div>
-                  <label className="font-medium">
-                    Cost:
-                    <input
-                        type="number"
-                        required
-                        name="cost"
-                        value={formData.cost}
-                        onChange={handleInputChangeNumber}
-                        className="ml-3 font-light border-solid border-2 rounded-lg"
-                    />
-                  </label>
-                </div>
+            {/* Cost Page */}
+            {pipCost1 && (<div className = "Cost Page">
+              <hr className="mt-5 mb-5"></hr>
+              <h1 className="font-medium mt-2 mb-2">Enter an estimated cost reduction</h1>
+              <div>
+                <label className="font-medium">
+                  Cost:
+                  <input
+                      type="number"
+                      required
+                      name="cost"
+                      value={formData.cost}
+                      onChange={handleInputChangeNumber}
+                      className="ml-3 font-light border-solid border-2 rounded-lg"
+                  />
+                </label>
+              </div>
 
-                <h1 className="font-medium mt-5 mb-2">Enter an estimated headcount reduction</h1>
-                <div>
-                  <label className="font-medium">
-                    Cost:
-                    <input
-                        type="number"
-                        required
-                        name="headcount"
-                        value={formData.headcount}
-                        onChange={handleInputChangeNumber}
-                        className="ml-3 font-light border-solid border-2 rounded-lg"
-                    />
-                  </label>
-                </div>
-                <hr className="mt-5 mb-5"></hr>
-              </div>)}
+              <h1 className="font-medium mt-5 mb-2">Enter an estimated headcount reduction</h1>
+              <div>
+                <label className="font-medium">
+                  Cost:
+                  <input
+                      type="number"
+                      required
+                      name="headcount"
+                      value={formData.headcount}
+                      onChange={handleInputChangeNumber}
+                      className="ml-3 font-light border-solid border-2 rounded-lg"
+                  />
+                </label>
+              </div>
+              <hr className="mt-5 mb-5"></hr>
+            </div>)}
 
-              {/* Throughput */}
-              {throughput1 && (<div>
-                <h1 className="font-medium mt-2 mb-2">Enter the amount of downtime in seconds from the Excel file</h1>
-                <div>
-                  <label className="font-medium">
-                    Number:
-                    <input
-                        type="number"
-                        required
-                        name="downtime"
-                        value={formData.downtime}
-                        onChange={handleInputChangeNumber}
-                        className="ml-3 font-light border-solid border-2 rounded-lg"
-                    />
-                  </label>
-                </div>
+            {/* Throughput */}
+            {throughput1 && (<div>
+              <h1 className="font-medium mt-2 mb-2">Enter the amount of downtime in seconds from the Excel file</h1>
+              <div>
+                <label className="font-medium">
+                  Number:
+                  <input
+                      type="number"
+                      required
+                      name="downtime"
+                      value={formData.downtime}
+                      onChange={handleInputChangeNumber}
+                      className="ml-3 font-light border-solid border-2 rounded-lg"
+                  />
+                </label>
+              </div>
 
-                <h1 className="font-medium mt-5 mb-2">Enter the number of stops from the Excel file</h1>
-                <div>
-                  <label className="font-medium">
-                    Number:
-                    <input
-                        type="number"
-                        required
-                        name="stops"
-                        value={formData.stops}
-                        onChange={handleInputChangeNumber}
-                        className="ml-3 font-light border-solid border-2 rounded-lg"
-                    />
-                  </label>
-                </div>
+              <h1 className="font-medium mt-5 mb-2">Enter the number of stops from the Excel file</h1>
+              <div>
+                <label className="font-medium">
+                  Number:
+                  <input
+                      type="number"
+                      required
+                      name="stops"
+                      value={formData.stops}
+                      onChange={handleInputChangeNumber}
+                      className="ml-3 font-light border-solid border-2 rounded-lg"
+                  />
+                </label>
+              </div>
 
-                <h1 className="font-medium mt-5 mb-2">Enter the estimated amount of downtime in seconds expected to be reduced as a result of this PFC</h1>
-                <div>
-                  <label className="font-medium">
-                    Number:
-                    <input
-                        type="number"
-                        required
-                        name="downtime_expected"
-                        value={formData.downtime_expected}
-                        onChange={handleInputChangeNumber}
-                        className="ml-3 font-light border-solid border-2 rounded-lg"
-                    />
-                  </label>
-                </div>
+              <h1 className="font-medium mt-5 mb-2">Enter the estimated amount of downtime in seconds expected to be reduced as a result of this PFC</h1>
+              <div>
+                <label className="font-medium">
+                  Number:
+                  <input
+                      type="number"
+                      required
+                      name="downtime_expected"
+                      value={formData.downtime_expected}
+                      onChange={handleInputChangeNumber}
+                      className="ml-3 font-light border-solid border-2 rounded-lg"
+                  />
+                </label>
+              </div>
 
-                <h1 className="font-medium mt-5 mb-2">Enter the estimated number of stops expected to be reduced as a result of this PFC</h1>
-                <div>
-                  <label className="font-medium">
-                    Number:
-                    <input
-                        type="number"
-                        required
-                        name="stops_expected"
-                        value={formData.stops_expected}
-                        onChange={handleInputChangeNumber}
-                        className="ml-3 font-light border-solid border-2 rounded-lg"
-                    />
-                  </label>
-                </div>
-                <hr className="mt-5 mb-5"></hr>
-              </div>)}
+              <h1 className="font-medium mt-5 mb-2">Enter the estimated number of stops expected to be reduced as a result of this PFC</h1>
+              <div>
+                <label className="font-medium">
+                  Number:
+                  <input
+                      type="number"
+                      required
+                      name="stops_expected"
+                      value={formData.stops_expected}
+                      onChange={handleInputChangeNumber}
+                      className="ml-3 font-light border-solid border-2 rounded-lg"
+                  />
+                </label>
+              </div>
 
-              {/* Quality */}
-              {quality1 && (<div>
-                <div>
-                  {/* <h1 className="font-medium mt-5 mb-2">According to the defect entry, refer to the excel file for the following entries</h1> */}
+              <hr className="mt-5 mb-5"></hr>
+            </div>)}
 
-                  {/* <div className = "mb-2">
+            {/* Quality */}
+            {quality1 && (<div>
+              <div>
+              {/* <h1 className="font-medium mt-5 mb-2">According to the defect entry, refer to the excel file for the following entries</h1> */}
+
+              {/* <div className = "mb-2">
                 <label className="font-medium">
                   Level 1:
                   <input
@@ -653,78 +660,78 @@ const MyForm = () => {
                   />
                 </label>
               </div> */}
-                </div>
+              </div>
 
-                <div>
-                  <h1 className="font-medium mt-5 mb-2">
-                    According to the defect entry, refer to the excel file for the following entries
-                  </h1>
+              <div>
+                <h1 className="font-medium mt-5 mb-2">
+                  According to the defect entry, refer to the excel file for the following entries
+                </h1>
 
-                  {/* Align fields with flexbox */}
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center">
-                      <label className="font-medium w-24">Level 1:</label>
-                      <input
-                          type="number"
-                          required
-                          name="level1"
-                          value={formData.level1}
-                          onChange={handleInputChangeNumber}
-                          className="w-38 font-light border-solid border-2 rounded-lg"
-                      />
-                    </div>
-                    <div className="flex items-center">
-                      <label className="font-medium w-24">Level 2:</label>
-                      <input
-                          type="number"
-                          required
-                          name="level2"
-                          value={formData.level2}
-                          onChange={handleInputChangeNumber}
-                          className="w-38 font-light border-solid border-2 rounded-lg"
-                      />
-                    </div>
-                    <div className="flex items-center">
-                      <label className="font-medium w-24">Level 3:</label>
-                      <input
-                          type="number"
-                          required
-                          name="level3"
-                          value={formData.level3}
-                          onChange={handleInputChangeNumber}
-                          className="w-38 font-light border-solid border-2 rounded-lg"
-                      />
-                    </div>
-                    <div className="flex items-center">
-                      <label className="font-medium w-24">Level 4:</label>
-                      <input
-                          type="number"
-                          required
-                          name="level4"
-                          value={formData.level4}
-                          onChange={handleInputChangeNumber}
-                          className="w-38 font-light border-solid border-2 rounded-lg"
-                      />
-                    </div>
-                    <div className="flex items-center">
-                      <label className="font-medium w-24">Fault:</label>
-                      <input
-                          type="number"
-                          required
-                          name="fault"
-                          value={formData.fault}
-                          onChange={handleInputChangeNumber}
-                          className="w-38 font-light border-solid border-2 rounded-lg"
-                      />
-                    </div>
+                {/* Align fields with flexbox */}
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center">
+                    <label className="font-medium w-24">Level 1:</label>
+                    <input
+                      type="number"
+                      required
+                      name="level1"
+                      value={formData.level1}
+                      onChange={handleInputChangeNumber}
+                      className="w-38 font-light border-solid border-2 rounded-lg"
+                    />
                   </div>
-
-                  <hr className="mt-5 mb-5" />
+                  <div className="flex items-center">
+                    <label className="font-medium w-24">Level 2:</label>
+                    <input
+                      type="number"
+                      required
+                      name="level2"
+                      value={formData.level2}
+                      onChange={handleInputChangeNumber}
+                      className="w-38 font-light border-solid border-2 rounded-lg"
+                    />
+                  </div>
+                  <div className="flex items-center">
+                    <label className="font-medium w-24">Level 3:</label>
+                    <input
+                      type="number"
+                      required
+                      name="level3"
+                      value={formData.level3}
+                      onChange={handleInputChangeNumber}
+                      className="w-38 font-light border-solid border-2 rounded-lg"
+                    />
+                  </div>
+                  <div className="flex items-center">
+                    <label className="font-medium w-24">Level 4:</label>
+                    <input
+                      type="number"
+                      required
+                      name="level4"
+                      value={formData.level4}
+                      onChange={handleInputChangeNumber}
+                      className="w-38 font-light border-solid border-2 rounded-lg"
+                    />
+                  </div>
+                  <div className="flex items-center">
+                    <label className="font-medium w-24">Fault:</label>
+                    <input
+                      type="number"
+                      required
+                      name="fault"
+                      value={formData.fault}
+                      onChange={handleInputChangeNumber}
+                      className="w-38 font-light border-solid border-2 rounded-lg"
+                    />
+                  </div>
                 </div>
-              </div>)}
 
-              {/* Safety */}
-              {/* <div>
+                <hr className="mt-5 mb-5" />
+              </div>
+            </div>)}
+
+            {/* Safety */}
+            {/* <div>
             <div className="mt-4">
               <label className="font-medium">
                  How frequently would you say this issue occur?
@@ -847,144 +854,144 @@ const MyForm = () => {
 
 
             </div> */}
-              {safety1 && (<div>
-                <div className="flex flex-col gap-5 mt-4">
-                  <div className="flex items-center">
-                    <label className="font-medium w-60">
-                      How frequently would you say this issue occurs?
-                    </label>
-                    <select
-                        name="frequency"
-                        value={formData.frequency}
-                        onChange={handleInputChangeSelect}
-                        required
-                        className="w-36 font-light border-solid border-2 rounded-lg"
-                    >
-                      <option value="">Select an option</option>
-                      <option value="Once a month">Once a month</option>
-                      <option value="Once a week">Once a week</option>
-                      <option value="Several times a week">Several times a week</option>
-                      <option value="Once a shift">Once a shift</option>
-                      <option value="Several times a shift">Several times a shift</option>
-                      <option value="Not Applicable">Not Applicable</option>
-                    </select>
+            {safety1 && (<div>
+              <div className="flex flex-col gap-5 mt-4">
+                <div className="flex items-center">
+                  <label className="font-medium w-60">
+                    How frequently would you say this issue occurs?
+                  </label>
+                  <select
+                    name="frequency"
+                    value={formData.frequency}
+                    onChange={handleInputChangeSelect}
+                    required
+                    className="w-36 font-light border-solid border-2 rounded-lg"
+                  >
+                    <option value="">Select an option</option>
+                    <option value="Once a month">Once a month</option>
+                    <option value="Once a week">Once a week</option>
+                    <option value="Several times a week">Several times a week</option>
+                    <option value="Once a shift">Once a shift</option>
+                    <option value="Several times a shift">Several times a shift</option>
+                    <option value="Not Applicable">Not Applicable</option>
+                  </select>
 
-                  </div>
-                  {/* Popup Modal */}
+                </div>
+                {/* Popup Modal */}
 
-                  <div className="flex items-center">
-                    <label className="font-medium w-60">
-                      Is it task-based or equipment design-based?
-                    </label>
-                    <select
-                        name="task_or_equipment"
-                        value={formData.task_or_equipment}
-                        onChange={handleInputChangeSelect}
-                        required
-                        className="w-36 font-light border-solid border-2 rounded-lg"
-                    >
-                      <option value="">Select an option</option>
-                      <option value="Task Based">Task Based</option>
-                      <option value="Equipment Design">Equipment Design</option>
-                      <option value="Chemical Agent Exposure">Chemical Agent Exposure</option>
-                    </select>
-                  </div>
-
-                  <div className="flex items-center">
-                    <label className="font-medium w-60">Rate the severity potential</label>
-                    <select
-                        name="severity"
-                        value={formData.severity}
-                        onChange={handleInputChangeSelectNumber}
-                        required
-                        className="w-36 font-light border-solid border-2 rounded-lg"
-                    >
-                      <option value="">Select an option</option>
-                      <option value={15}>15</option>
-                      <option value={10}>10</option>
-                      <option value={6}>6</option>
-                      <option value={4}>4</option>
-                      <option value={2}>2</option>
-                      <option value={1}>1</option>
-                    </select>
-                    <InfoIcon className="text-gray-500 cursor-pointer ml-2" onClick={handleOpen}/>
-                  </div>
-                  <Dialog open={isOpen} onClose={handleClose} maxWidth="md" fullWidth>
-                    <DialogTitle>Severity Potential Reference Guide</DialogTitle>
-                    <DialogContent>
-                      <div className="relative w-full h-[600px]">
-                        <Image
-                            src={severity_image} // Replace with your actual image path
-                            alt="Detailed Information"
-                            layout="fill"
-                            objectFit="contain"
-                            priority
-                        />
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                  <div className="flex items-center">
-                    <label className="font-medium w-60">Rate the frequency of exposure</label>
-                    <select
-                        name="frequency_exposure"
-                        value={formData.frequency_exposure}
-                        onChange={handleInputChangeSelectNumber}
-                        required
-                        className="w-36 font-light border-solid border-2 rounded-lg"
-                    >
-                      <option value="">Select an option</option>
-                      <option value={15}>15</option>
-                      <option value={8}>8</option>
-                      <option value={2}>2</option>
-                      <option value={0.03}>0.03</option>
-                    </select>
-                  </div>
-
-                  <div className="flex items-center">
-                    <label className="font-medium w-60">Rate the probability of occurrence</label>
-                    <select
-                        name="occurrence"
-                        value={formData.occurrence}
-                        onChange={handleInputChangeSelectNumber}
-                        required
-                        className="w-36 font-light border-solid border-2 rounded-lg"
-                    >
-                      <option value="">Select an option</option>
-                      <option value={5}>5</option>
-                      <option value={4}>4</option>
-                      <option value={2.5}>2.5</option>
-                      <option value={1.5}>1.5</option>
-                      <option value={1}>1</option>
-                      <option value={0.5}>0.5</option>
-                      <option value={0.1}>0.1</option>
-                    </select>
-                  </div>
-
-                  <div className="flex items-center">
-                    <label className="font-medium w-60">How many people are at risk?</label>
-                    <select
-                        name="people_at_risk"
-                        value={formData.people_at_risk}
-                        onChange={handleInputChangeSelectNumber}
-                        required
-                        className="w-36 font-light border-solid border-2 rounded-lg"
-                    >
-                      <option value="">Select an option</option>
-                      <option value={12}>12</option>
-                      <option value={8}>8</option>
-                      <option value={4}>4</option>
-                      <option value={2}>2</option>
-                      <option value={1}>1</option>
-                    </select>
-                  </div>
+                <div className="flex items-center">
+                  <label className="font-medium w-60">
+                    Is it task-based or equipment design-based?
+                  </label>
+                  <select
+                    name="task_or_equipment"
+                    value={formData.task_or_equipment}
+                    onChange={handleInputChangeSelect}
+                    required
+                    className="w-36 font-light border-solid border-2 rounded-lg"
+                  >
+                    <option value="">Select an option</option>
+                    <option value="Task Based">Task Based</option>
+                    <option value="Equipment Design">Equipment Design</option>
+                    <option value="Chemical Agent Exposure">Chemical Agent Exposure</option>
+                  </select>
                 </div>
 
+                <div className="flex items-center">
+                  <label className="font-medium w-60">Rate the severity potential</label>
+                  <select
+                    name="severity"
+                    value={formData.severity}
+                    onChange={handleInputChangeSelectNumber}
+                    required
+                    className="w-36 font-light border-solid border-2 rounded-lg"
+                  >
+                    <option value="">Select an option</option>
+                    <option value={15}>15</option>
+                    <option value={10}>10</option>
+                    <option value={6}>6</option>
+                    <option value={4}>4</option>
+                    <option value={2}>2</option>
+                    <option value={1}>1</option>
+                  </select>
+                  <InfoIcon className="text-gray-500 cursor-pointer ml-2" onClick={handleOpen}/>
+                </div>
+                <Dialog open={isOpen} onClose={handleClose} maxWidth="md" fullWidth>
+                  <DialogTitle>Severity Potential Reference Guide</DialogTitle>
+                  <DialogContent>
+                    <div className="relative w-full h-[600px]">
+                      <Image
+                        src={severity_image} // Replace with your actual image path
+                        alt="Detailed Information"
+                        layout="fill"
+                        objectFit="contain"
+                        priority
+                      />
+                    </div>
+                  </DialogContent>
+                </Dialog>
+                <div className="flex items-center">
+                  <label className="font-medium w-60">Rate the frequency of exposure</label>
+                  <select
+                    name="frequency_exposure"
+                    value={formData.frequency_exposure}
+                    onChange={handleInputChangeSelectNumber}
+                    required
+                    className="w-36 font-light border-solid border-2 rounded-lg"
+                  >
+                    <option value="">Select an option</option>
+                    <option value={15}>15</option>
+                    <option value={8}>8</option>
+                    <option value={2}>2</option>
+                    <option value={0.03}>0.03</option>
+                  </select>
+                </div>
 
+                <div className="flex items-center">
+                  <label className="font-medium w-60">Rate the probability of occurrence</label>
+                  <select
+                    name="occurrence"
+                    value={formData.occurrence}
+                    onChange={handleInputChangeSelectNumber}
+                    required
+                    className="w-36 font-light border-solid border-2 rounded-lg"
+                  >
+                    <option value="">Select an option</option>
+                    <option value={5}>5</option>
+                    <option value={4}>4</option>
+                    <option value={2.5}>2.5</option>
+                    <option value={1.5}>1.5</option>
+                    <option value={1}>1</option>
+                    <option value={0.5}>0.5</option>
+                    <option value={0.1}>0.1</option>
+                  </select>
+                </div>
 
-                <hr className="mt-5 mb-5"></hr>
-              </div>)}
+                <div className="flex items-center">
+                  <label className="font-medium w-60">How many people are at risk?</label>
+                  <select
+                    name="people_at_risk"
+                    value={formData.people_at_risk}
+                    onChange={handleInputChangeSelectNumber}
+                    required
+                    className="w-36 font-light border-solid border-2 rounded-lg"
+                  >
+                    <option value="">Select an option</option>
+                    <option value={12}>12</option>
+                    <option value={8}>8</option>
+                    <option value={4}>4</option>
+                    <option value={2}>2</option>
+                    <option value={1}>1</option>
+                  </select>
+                </div>
             </div>
-            {/* NewPart ends */}
+
+
+          
+          <hr className="mt-5 mb-5"></hr>
+            </div>)}
+          </div>
+          {/* NewPart ends */}
 
             {/* Description starts */}
             <div className="mt-5">
