@@ -34,7 +34,7 @@ const NavBar = () => {
                     </div>
                     <nav>
                         {user ? (
-                            <>npm
+                            <>
                                 <Button className="bg-transparent text-white hover:bg-[#1A4B8F]">
                                     <Link href="/data_table">Data Table</Link>
                                 </Button>

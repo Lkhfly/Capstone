@@ -1,5 +1,7 @@
 "use client";
+
 import axios from 'axios';
+
 
 import React, { FormEvent, useState } from 'react';
 import {db} from "../firebase/config";
@@ -237,6 +239,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
   }
 };
 
+
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpen = () => {
@@ -248,6 +251,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
   };
 
   return (
+
     <div>
       <NavBar />
       <div className="container mx-auto py-5">
@@ -270,10 +274,12 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
           </div>
           <hr className="mt-5"></hr>
           <div className="grid grid-cols-2 mt-5 gap-3">
+
             <div>
               <label className="font-medium">
                 Station Number:
                 <input
+
                   type="text"
                   required
                   name="station"
@@ -576,6 +582,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   />
                 </label>
               </div>
+
               <hr className="mt-5 mb-5"></hr>
             </div>)}
 
