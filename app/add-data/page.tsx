@@ -73,21 +73,21 @@ const MyForm = () => {
     }));
   };
 
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setFormData((prevData) => {
-      let newCategories = [...prevData.category];
-      if (checked) {
-        newCategories.push(name);
-      } else {
-        newCategories = newCategories.filter((item) => item !== name);
-      }
-      return {
-        ...prevData,
-        category: newCategories,
-      };
-    });
-  };
+  // const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, checked } = e.target;
+  //   setFormData((prevData) => {
+  //     let newCategories = [...prevData.category];
+  //     if (checked) {
+  //       newCategories.push(name);
+  //     } else {
+  //       newCategories = newCategories.filter((item) => item !== name);
+  //     }
+  //     return {
+  //       ...prevData,
+  //       category: newCategories,
+  //     };
+  //   });
+  // };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -244,7 +244,7 @@ const MyForm = () => {
                             <Checkbox
                                 name={cat.toLowerCase()}
                                 checked={formData.category.includes(cat)}
-                                onChange={handleCategoryChange}
+                                onChange={handleInputChangeSelect}
                             />
                           }
                           label={cat}
