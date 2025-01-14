@@ -248,43 +248,134 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
 };
 
 
-const handleReconcile = async () => {
-  const data = new FormData();
+// const handleReconcile = async () => {
+//   const data = new FormData();
 
-if (throughput1 || quality1) {
-  data.append("station", formData.station.toString());
-  data.append("downtime", formData.downtime.toString());
-  data.append("stops", formData.stops.toString())
-}
+// if (throughput1 || quality1) {
+//   data.append("station", formData.station.toString());
+//   data.append("downtime", formData.downtime.toString());
+//   data.append("stops", formData.stops.toString())
+// }
   
+//   try {
+//     const response = await fetch("http://localhost:5000/process_data_reconcile", {
+//       method: "POST",
+//       body: data,
+//     });
+
+//     if (!response.ok) {
+//       throw new Error("Failed to submit data");
+//     }
+
+//     const result = await response.json();
+//     console.log("Response from backend:", result);
+//   } catch (error) {
+//     console.error("Error submitting data:", error);
+//   }
+// };
+
+
+
+// const handleReconcile = async () => {
+//   const inputData = new FormData()
+
+//   if (throughput1 || quality1) {
+//     inputData.append("station", formData.station.toString());
+//     inputData.append("downtime", formData.downtime.toString());
+//     inputData.append("stops", formData.stops.toString())
+    
+//   }
+
+//   try {
+//     const response = await fetch("http://localhost:5000/process_data_excel", {
+//       method: "GET", // Fetching data from the server, not sending anything
+//     });
+
+//     if (!response.ok) {
+//       throw new Error("Failed to fetch data");
+//     }
+
+//     const responseData = await response.json(); // The data returned from the server
+//     console.log('Success:', responseData); // Log the data or use it as needed
+
+//   } catch (error) {
+//     console.error('Error during fetch:', error); // Handle any errors
+//   }
+// };
+
+const handleReconcile = async () => {
+  const inputData = new FormData();
+
+  // Only append values if either throughput1 or quality1 is true
+  if (throughput1 || quality1) {
+    inputData.append("station", formData.station.toString());
+    inputData.append("downtime", formData.downtime.toString());
+    inputData.append("stops", formData.stops.toString());
+  }
+
+  // Check if specific keys exist in FormData using `has()` method
+  if (!inputData.has("station") || !inputData.has("downtime") || !inputData.has("stops")) {
+    console.log("No values appended. Aborting execution.");
+    return;
+  }
+
   try {
-    const response = await fetch("http://localhost:5000/process_data_reconcile", {
-      method: "POST",
-      body: data,
+    // Fetch data from the server if inputData has values
+    const response = await fetch("http://localhost:5000/process_data_excel", {
+      method: "GET", // Fetching data from the server
     });
 
     if (!response.ok) {
-      throw new Error("Failed to submit data");
+      throw new Error("Failed to fetch data");
     }
 
-    const result = await response.json();
-    console.log("Response from backend:", result);
+    const responseData = await response.json(); // The data returned from the server
+    console.log('Success:', responseData); // Log the data or use it as needed
+
+    // Manually extract data from FormData without using `entries()`
+    const inputDataObject: { [key: string]: string } = {};
+    
+    // Using `FormData`'s `.forEach()` method indirectly (works with target ES5)
+    inputData.forEach((value, key) => {
+      inputDataObject[key.toLowerCase()] = value instanceof File ? value.name : value.toString();
+    });
+
+    // Convert responseData to an object with lowercase keys and array handling
+    const responseDataObject: { [key: string]: string | number } = {};
+    for (let key in responseData) {
+      if (responseData.hasOwnProperty(key)) {
+        const lowerKey = key.toLowerCase();
+        responseDataObject[lowerKey] = Array.isArray(responseData[key]) ? responseData[key][0] : responseData[key];
+      }
+    }
+
+    // Print both objects to the console for inspection
+    console.log("inputDataObject:", inputDataObject);
+    console.log("responseDataObject:", responseDataObject);
+
+    // Compare key-value pairs
+    let match = true;
+    for (let key in inputDataObject) {
+      // Convert both values to strings to ensure consistent comparison
+      const inputVal = inputDataObject[key].toString();
+      const responseVal = responseDataObject[key].toString();
+      
+      if (inputVal !== responseVal) {
+        match = false;
+        console.log(`Mismatch for key "${key}": ${inputVal} !== ${responseVal}`);
+      }
+    }
+
+    if (match) {
+      console.log("All values match.");
+    } else {
+      console.log("Values do not match.");
+    }
+
   } catch (error) {
-    console.error("Error submitting data:", error);
+    console.error('Error during fetch:', error); // Handle any errors
   }
 };
-
-
-
-
-
-
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
 
   const handleClose = () => {
     setIsOpen(false);

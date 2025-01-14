@@ -1,32 +1,36 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
-import pandas as pd
 from io import BytesIO
+import pandas as pd
 import openpyxl
+from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000"])
+CORS(app, origins=["http://localhost:3000"])  # Enable CORS for your frontend
+
+# Global variable to store processed data
+processed_data = None
 
 @app.route('/process_data_excel', methods=['POST'])
-def process_data_excel():
+def process_data_excel_post():
+    global processed_data  # Use global variable to store processed data
+    
     file = request.files.get('file')
     if not file:
         return jsonify({"error": "No file uploaded"}), 400  # Return error if no file is uploaded
 
-    # Extracting the boolean value if a user picked quality or if throughput 
+    # Extracting the boolean value if a user picked quality or throughput 
     quality = request.form.get('quality')
     throughput = request.form.get('throughput')
 
     if quality:
         print(f"Received file for quality: {file.filename}")
-
         df = pd.read_excel(BytesIO(file.read()), sheet_name='main')  # Read the Excel file into a DataFrame
         group_df = df.groupby(['Level 1', 'Level 2', 'Level 3', 'Level 4', 'Fault']).size().reset_index(name='Counts')
         
         print(group_df)
-
-        # Convert DataFrame to JSON and return
-        return jsonify(group_df.to_dict(orient='records'))  # Return as JSON
+        
+        processed_data = group_df.to_dict(orient='records')  # Store processed data in global variable
+        return jsonify({"message": "File processed successfully for quality"}), 200
 
     elif throughput:
         print(f"Received file for throughput: {file.filename}")
@@ -46,45 +50,59 @@ def process_data_excel():
         
         # printing data just to see how it looks on backend
         print(data) 
-
-        # Return the data as JSON (convert the dictionary to JSON)
-        return jsonify(data)
+        
+        processed_data = data  # Store processed data in global variable
+        return jsonify({"message": "File processed successfully for throughput"}), 200
 
     else:
         return jsonify({"error": "No 'quality' or 'throughput' parameter provided"}), 400
 
+# GET method to retrieve processed data
+@app.route('/process_data_excel', methods=['GET'])
+def process_data_excel_get():
+    global processed_data  # Access global variable to retrieve processed data
+    
+    if processed_data is None:
+        return jsonify({"error": "No data processed yet"}), 400  # If no data has been processed
+    
+    return jsonify(processed_data), 200  # Return processed data as JSON
 
-@app.route('/process_data_reconcile', methods=['POST'])
-def process_data_reconcile():
-    # Extract form data sent in the request (station, downtime, stops)
-    station = request.form.get('station')
-    downtime = request.form.get('downtime')
-    stops = request.form.get('stops')
+if __name__ == '__main__':
+    app.run(debug=True)
 
-    if not station or not downtime or not stops:
-        return jsonify({"error": "Missing required parameters"}), 400
 
-    print(f"Received data - Station: {station}, Downtime: {downtime}, Stops: {stops}")
+# @app.route('/process_data_reconcile', methods=['POST'])
+# def process_data_reconcile():
+#     # Extract form data sent in the request (station, downtime, stops)
+#     station = request.form.get('station')
+#     downtime = request.form.get('downtime')
+#     stops = request.form.get('stops')
 
-    # Call the process_data_excel function and get the result (DataFrame)
-    excel_result = process_data_excel()  # This now returns a JSON response
+#     if not station or not downtime or not stops:
+#         return jsonify({"error": "Missing required parameters"}), 400
 
-    # Check if the response is a valid JSON dictionary
-    if isinstance(excel_result.json, dict):
-        # Convert the form data to a DataFrame as well
-        form_data = pd.DataFrame({
-            'Station': [station],
-            'Downtime': [downtime],
-            'Stops': [stops]
-        })
+#     # Shows that when a user inputs for station, downtime, and stops it goes to the backend
+#     print(f"Received data - Station: {station}, Downtime: {downtime}, Stops: {stops}")
 
-        # Compare the DataFrames
-        if excel_result.json == form_data.to_dict(orient="records"):
-            return "Values Do Match"
-        else:
-            return "Values Do Not Match"
-    else:
-        return jsonify({"error": "Failed to process Excel data correctly"}), 500
+#     # Call the process_data_excel function and get the result (DataFrame)
+#     excel_result = process_data_excel()  # This should returns a JSON response
+
+#     # Check if the response is a valid JSON dictionary
+#     if isinstance(excel_result.json, dict):
+#         # Convert the form data to a DataFrame as well
+#         form_data = pd.DataFrame({
+#             'Station': [station],
+#             'Downtime': [downtime],
+#             'Stops': [stops]
+#         })
+
+#         # Compare the DataFrames
+#         if excel_result.json == form_data.to_dict(orient="records"):
+#             return "Values Do Match"
+#         else:
+#             return "Values Do Not Match"
+#     else:
+#         return jsonify({"error": "Failed to process Excel data correctly"}), 500
 
 
 if __name__ == "__main__":
