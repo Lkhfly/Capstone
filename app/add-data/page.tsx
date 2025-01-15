@@ -24,6 +24,7 @@ const MyForm = () => {
     group: 0,
     shift_number: 0,
     team: 0,
+    recurring: '',
     category: '',
     description: '',
     important: '',
@@ -41,13 +42,15 @@ const MyForm = () => {
     downtime : 0, 
     stops : 0, 
     downtime_expected : 0,
-    stops_expected : 0, 
+    stops_expected : 0,
+
     // Quality 
-    level1 : 0, 
-    level2 : 0, 
-    level3 : 0, 
-    level4 : 0, 
+    level1 : "",
+    level2 : "",
+    level3 : "",
+    level4 : "",
     fault : 0,
+    count : 0,
     // Safety
     frequency: '',
     task_or_equipment: '',
@@ -114,6 +117,7 @@ const MyForm = () => {
         group: 0,
         shift_number: 0,
         team: 0,
+        recurring: '',
         category: '',
         description: '',
         important: '',
@@ -133,11 +137,12 @@ const MyForm = () => {
         downtime_expected : 0,
         stops_expected : 0, 
         // Quality 
-        level1 : 0, 
-        level2 : 0, 
-        level3 : 0, 
-        level4 : 0, 
+        level1 : "",
+        level2 : "",
+        level3 : "",
+        level4 : "",
         fault : 0,
+        count : 0,
         // Safety
         frequency: '',
         task_or_equipment: '',
@@ -146,6 +151,7 @@ const MyForm = () => {
         occurrence : 0, 
         people_at_risk : 0
       });
+      console.log("Form Data Submitted:", formData); // Print all form data to the console
     } catch (e) {
       setError("Error is " + e);
     }
@@ -181,7 +187,8 @@ const MyForm = () => {
   const [quality1, setQuality1] = useState(false);
   const [throughput1, setThroughput1] = useState(false);
   const { safety, quality, throughput, pipCost } = state;
-
+  const [isOpen, setIsOpen] = useState(false);
+  const [isClosed, setIsClosed] = useState(true);
 // const handleFile = (e) => {
 //   console.log(e.target.files[0])
 // };
@@ -380,6 +387,10 @@ const handleReconcile = async () => {
   const handleClose = () => {
     setIsOpen(false);
   };
+
+  function handleOpen() {
+    setIsClosed(false);
+  }
 
   return (
     <div>
@@ -799,61 +810,72 @@ const handleReconcile = async () => {
                   <div className="flex items-center">
                     <label className="font-medium w-24">Level 1:</label>
                     <input
-                      type="number"
-                      required
-                      name="level1"
-                      value={formData.level1}
-                      onChange={handleInputChangeNumber}
-                      className="w-38 font-light border-solid border-2 rounded-lg"
+                        type="text"
+                        required
+                        name="level1"
+                        value={formData.level1}
+                        onChange={handleInputChangeString}
+                        className="w-38 font-light border-solid border-2 rounded-lg"
                     />
                   </div>
                   <div className="flex items-center">
                     <label className="font-medium w-24">Level 2:</label>
                     <input
-                      type="number"
-                      required
-                      name="level2"
-                      value={formData.level2}
-                      onChange={handleInputChangeNumber}
-                      className="w-38 font-light border-solid border-2 rounded-lg"
+                        type="text"
+                        required
+                        name="level2"
+                        value={formData.level2}
+                        onChange={handleInputChangeString}
+                        className="w-38 font-light border-solid border-2 rounded-lg"
                     />
                   </div>
                   <div className="flex items-center">
                     <label className="font-medium w-24">Level 3:</label>
                     <input
-                      type="number"
-                      required
-                      name="level3"
-                      value={formData.level3}
-                      onChange={handleInputChangeNumber}
-                      className="w-38 font-light border-solid border-2 rounded-lg"
+                        type="text"
+                        required
+                        name="level3"
+                        value={formData.level3}
+                        onChange={handleInputChangeString}
+                        className="w-38 font-light border-solid border-2 rounded-lg"
                     />
                   </div>
                   <div className="flex items-center">
                     <label className="font-medium w-24">Level 4:</label>
                     <input
-                      type="number"
-                      required
-                      name="level4"
-                      value={formData.level4}
-                      onChange={handleInputChangeNumber}
-                      className="w-38 font-light border-solid border-2 rounded-lg"
+                        type="text"
+                        required
+                        name="level4"
+                        value={formData.level4}
+                        onChange={handleInputChangeString}
+                        className="w-38 font-light border-solid border-2 rounded-lg"
                     />
                   </div>
                   <div className="flex items-center">
                     <label className="font-medium w-24">Fault:</label>
                     <input
-                      type="number"
-                      required
-                      name="fault"
-                      value={formData.fault}
-                      onChange={handleInputChangeNumber}
-                      className="w-38 font-light border-solid border-2 rounded-lg"
+                        type="text"
+                        required
+                        name="fault"
+                        value={formData.fault}
+                        onChange={handleInputChangeString}
+                        className="w-38 font-light border-solid border-2 rounded-lg"
+                    />
+                  </div>
+                  <div className="flex items-center">
+                    <label className="font-medium w-24">Count:</label>
+                    <input
+                        type="number"
+                        required
+                        name="count"
+                        value={formData.count}
+                        onChange={handleInputChangeNumber}
+                        className="w-38 font-light border-solid border-2 rounded-lg"
                     />
                   </div>
                 </div>
 
-                <hr className="mt-5 mb-5" />
+                <hr className="mt-5 mb-5"/>
               </div>
             </div>)}
 
@@ -1174,7 +1196,7 @@ const handleReconcile = async () => {
           </div>
           
             
-            <button type="submit" className="mt-10 bg-blue-950 text-white font-bold py-2 px-4 rounded-full">
+            <button type="submit" className="mt-10 bg-blue-950 text-white font-bold py-2 px-4 rounded-full" >
               Submit PFC Request
             </button>
             {/* Notification */}
