@@ -246,11 +246,14 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
       });
 
       console.log("File uploaded successfully.");
+      alert("File uploaded successfully.")
     } catch (error) {
       console.error("Error uploading file:", error);
+      alert("Error uploading file")
     }
   } else {
     console.warn("No file selected.");
+    alert("No file selected.")
   }
 };
 
@@ -323,6 +326,7 @@ const handleReconcile = async () => {
   // Check if specific keys exist in FormData using `has()` method
   if (!inputData.has("station") || !inputData.has("downtime") || !inputData.has("stops")) {
     console.log("No values appended. Aborting execution.");
+    alert("Station, Downtime or Stops not selected")
     return;
   }
 
@@ -370,6 +374,7 @@ const handleReconcile = async () => {
       if (inputVal !== responseVal) {
         match = false;
         console.log(`Mismatch for key "${key}": ${inputVal} !== ${responseVal}`);
+        alert(`Mismatch for key "${key}": ${inputVal} !== ${responseVal}, values do not match`)
       }
     }
 
