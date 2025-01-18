@@ -5,7 +5,7 @@ import openpyxl
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000"])  # Enable CORS for your frontend
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Global variable to store processed data
 processed_data = None
@@ -25,7 +25,12 @@ def process_data_excel_post():
     if quality:
         print(f"Received file for quality: {file.filename}")
         df = pd.read_excel(BytesIO(file.read()), sheet_name='main')  # Read the Excel file into a DataFrame
-        group_df = df.groupby(['Level 1', 'Level 2', 'Level 3', 'Level 4', 'Fault', "Count"]).size().reset_index(name='Counts')
+        group_df = df.groupby(['Level 1', 'Level 2', 'Level 3', 'Level 4', 'Fault']).size().reset_index(name='Count')
+        group_df['Count'] = group_df['Count'].apply(lambda x: str(x) if pd.notnull(x) else '')
+        
+        # Convert column names to lowercase for consistency
+        group_df.columns = [group_df.lower().replace(' ', '') for group_df in group_df.columns]  # Convert all column names to lowercase
+        
         
         print(group_df)
         
@@ -43,6 +48,8 @@ def process_data_excel_post():
         value_ay4 = sheet['AY4'].value  # Total number of stops
         
         data = {
+            
+            
             'Station': [value_ay1],
             'Downtime': [value_ay3],
             'Stops': [value_ay4]
