@@ -37,6 +37,7 @@ export type Task = {
     important : string, 
     uid : string, 
     priority_score : number
+    rank : number
 }
 
 export const columns: ColumnDef<Task>[] = [
@@ -52,6 +53,20 @@ export const columns: ColumnDef<Task>[] = [
           className="ml-2"
         >
           Priority
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "rank",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant = "ghost"
+          // onClick={() => column.toggleSorting(column.getIsSorted() === "desc")}
+          className="ml-2"
+        >
+          Rank
         </Button>
       )
     },

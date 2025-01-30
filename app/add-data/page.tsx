@@ -207,7 +207,7 @@ console.log(formData.category)
     safety: false,
     quality: false,
     throughput: false,
-    pipCost: false,
+    pipcost: false,
   });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -565,9 +565,9 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={formData.category.includes('pipCost')}
+                    checked={formData.category.includes('pipcost')}
                     onChange={handleChange}
-                    name="pipCost"
+                    name="pipcost"
                   />
                 }
                 label="Cost"
@@ -587,7 +587,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
           <div>
 
             {/* Cost Page */}
-            {formData.category.includes('pipCost') && (<div className = "Cost Page">
+            {formData.category.includes('pipcost') && (<div className = "Cost Page">
               <hr className="mt-5 mb-5"></hr>
               <h1 className="font-medium mt-2 mb-2">Enter an estimated cost reduction</h1>
               <div>
@@ -908,6 +908,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                 <Dialog open={isOpen} onClose={handleClose} maxWidth="md" fullWidth>
                   <DialogTitle>Severity Potential Reference Guide</DialogTitle>
                   <DialogContent>
+                  {(formData.task_or_equipment == "Task Based" || formData.task_or_equipment =="Equipment Design") && (
                     <div className="relative w-full h-[600px]">
                       <Image
                         src={severity_image} // Replace with your actual image path
@@ -917,6 +918,19 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                         priority
                       />
                     </div>
+                  )}
+                  {(formData.task_or_equipment == "Chemical Agent Exposure" ) && (
+                    <div className="relative w-full h-[600px]">
+                      <Image
+                        src={frequency_image} // Replace with your actual image path
+                        alt="Detailed Information"
+                        layout="fill"
+                        objectFit="contain"
+                        priority
+                      />
+                    </div>
+                  )}
+
                   </DialogContent>
                 </Dialog>
 
