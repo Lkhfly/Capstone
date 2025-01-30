@@ -44,6 +44,7 @@ export function DataTable<TData, TValue>({
   )
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
+
   const table = useReactTable({
     data,
     columns,
@@ -144,13 +145,56 @@ export function DataTable<TData, TValue>({
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"} 
               >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="text-center" >
-                    <h3 className = "line-clamp-4">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </h3>
-                  </TableCell>
-                ))}
+                {row.getVisibleCells().map((cell) => 
+                  {
+                    // Custom rendering for "type" and "status" columns
+          if (cell.column.id === "category") {
+            const categories = cell.getValue();
+            if (!Array.isArray(categories)) return null;
+            const categoryColors: Record<string, string> = {
+              safety: "bg-red-500",
+              quality: "bg-green-500",
+              throughput: "bg-yellow-500",
+              cost: "bg-orange-500",
+            };
+
+            return (
+              <TableCell key={cell.id} className="text-center">
+                <div className="flex flex-col space-y-1">
+                  {categories.map((category, index) => (
+                    <div key={index} className="flex items-center">
+                      <span className={`w-2 h-2 ${categoryColors[category] || "bg-gray-500"} rounded-full mr-2`}></span>
+                      <span>{category.charAt(0).toUpperCase() + category.slice(1)}</span>
+                    </div>
+                  ))}
+                </div>
+              </TableCell>
+            );
+          }
+                    if (cell.column.id === "status") {
+                      const status = cell.getValue() as string;
+                      let bgColor = "";
+                      if (status === "In Progress") {
+                        bgColor = "bg-green-100 text-green-800";
+                      } else if (status === "Awaiting Review") {
+                        bgColor = "bg-yellow-100 text-yellow-800";
+                      } else if (status === "Reviewed") {
+                        bgColor = "bg-red-100 text-red-800";
+                      }
+                      return (
+                        <TableCell key={cell.id} className="text-center">
+                          <div className={`${bgColor} px-2 py-1 rounded-full`}>
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </div>
+                        </TableCell>
+                      );
+                    }
+                    return (
+                      <TableCell key={cell.id} className="text-center">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    );
+                  })}
               </TableRow>
             ))
           ) : (

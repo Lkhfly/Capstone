@@ -32,29 +32,26 @@ export type Task = {
     group : number,
     shift_number : number,
     team : number,
-    recurring : string,
-    frequency : string,
-    category : string,
-    description : string,
-    important : string,
-    budget : number,
+    category : string[],
+    description : string, 
+    important : string, 
     uid : string, 
-    status : string
+    priority_score : number
 }
 
 export const columns: ColumnDef<Task>[] = [
 
   // Task ID
   {
-    accessorKey: "uid",
+    accessorKey: "priority_score",
     header: ({ column }) => {
       return (
         <Button
           variant = "ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          // onClick={() => column.toggleSorting(column.getIsSorted() === "desc")}
           className="ml-2"
         >
-          Task ID
+          Priority
         </Button>
       )
     },
