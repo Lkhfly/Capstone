@@ -15,9 +15,44 @@ import severity_image from "../../components/ui/severity.png"
 import probability_image from "../../components/ui/probability.png"
 import people_image from "../../components/ui/people.png"
 import frequency_image from "../../components/ui/frequency.png"
-
+interface FormData {
+  title: string;
+  station: string;
+  date_sub: string;
+  date_comp: string;
+  emp_name: string;
+  gm_id: string;
+  job: string;
+  department: string;
+  group: number;
+  shift_number: number;
+  team: number;
+  category: string[]; // Explicitly define as string[]
+  description: string;
+  important: string;
+  uid: string;
+  status: string;
+  cost: number;
+  headcount: number;
+  downtime: number;
+  stops: number;
+  downtime_expected: number;
+  stops_expected: number;
+  level1: number;
+  level2: number;
+  level3: number;
+  level4: number;
+  fault: number;
+  frequency: string;
+  task_or_equipment: string;
+  severity: number;
+  frequency_exposure: number;
+  occurrence: number;
+  people_at_risk: number;
+  priority_score: number;
+}
 const MyForm = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     title: "",
     station: "",
     date_sub: "",
