@@ -77,13 +77,15 @@ const MyForm = () => {
     downtime : 0, 
     stops : 0, 
     downtime_expected : 0,
-    stops_expected : 0, 
+    stops_expected : 0,
+
     // Quality 
-    level1 : 0, 
-    level2 : 0, 
-    level3 : 0, 
-    level4 : 0, 
+    level1 : "",
+    level2 : "",
+    level3 : "",
+    level4 : "",
     fault : 0,
+    count : 0,
     // Safety
     frequency: '',
     task_or_equipment: '',
@@ -93,6 +95,7 @@ const MyForm = () => {
     people_at_risk : 0,
     // Priority score
     priority_score : 0
+    
   });
   const [error, setError] = useState("");
 
@@ -148,13 +151,44 @@ console.log(formData.category)
     // fault : 0,
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    let updatedRankingQuality: number | undefined;
+    let updatedRankingThroughput: number | undefined;
+
+
+  if (quality1 && throughput1) {
+    updatedRankingQuality = calculateQualityRanking(formData.count);
+    updatedRankingThroughput = 0
+    console.log("Calculated Quality Ranking:", updatedRankingQuality);
+  } 
+
+  else {
+    updatedRankingQuality = calculateQualityRanking(formData.count);
+    updatedRankingThroughput = calculateThroughputRanking(formData.downtime, formData.stops);
+  }
+
+  // Log the rankings to verify
+  console.log("Calculated Rankings:", updatedRankingQuality, updatedRankingThroughput);
+
+  // Merge rankings directly into formData before submission
+  const updatedFormData = {
+    ...formData,
+    ranking_quality: updatedRankingQuality,
+    ranking_throughput: updatedRankingThroughput,
+  };
+
+  // Log the form data to ensure rankings are included
+  console.log("Form Data to Submit:", updatedFormData);
+
+
     try {
+
     let priority_score_new = 0
     setFormData((prevData) => ({
       ...prevData,
       priority_score : priority_score_new
     }));  
       const docRef = await addDoc(collection(db, 'pfc'), formData);
+
       setError('Document written with ID: ' + docRef.id);
       setFormData({
         title: "",
@@ -183,21 +217,24 @@ console.log(formData.category)
         downtime_expected : 0,
         stops_expected : 0, 
         // Quality 
-        level1 : 0, 
-        level2 : 0, 
-        level3 : 0, 
-        level4 : 0, 
+        level1 : "",
+        level2 : "",
+        level3 : "",
+        level4 : "",
         fault : 0,
+        count : 0,
         // Safety
         frequency: '',
         task_or_equipment: '',
         severity : 0, 
         frequency_exposure : 0, 
         occurrence : 0, 
+
         people_at_risk : 0,
         // Priority score
         priority_score : 0
       });
+      console.log("Form Data Submitted:", updatedFormData); // Print all form data to the console
     } catch (e) {
       setError("Error is " + e);
     }
@@ -209,6 +246,7 @@ console.log(formData.category)
     throughput: false,
     pipCost: false,
   });
+
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event.target;
@@ -229,6 +267,15 @@ console.log(formData.category)
       };
     });
   };
+
+  const [pipCost1, setPipCost1] = useState(false);
+  const [safety1, setSafety1] = useState(false);
+  const [quality1, setQuality1] = useState(false);
+  const [throughput1, setThroughput1] = useState(false);
+  const { safety, quality, throughput, pipCost } = state;
+  const [isOpen, setIsOpen] = useState(false);
+  const [isClosed, setIsClosed] = useState(true);
+
 
 
 // const handleFile = (e) => {
@@ -264,38 +311,379 @@ console.log(formData.category)
 
 const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
   const files = e.target.files; // Get the files from the input
-  if (files && files[0]) { // Check if files exists and has at least one file
+  if (files && files[0]) { // Check if files exist and has at least one file
     const file = files[0];
     const formData = new FormData();
     formData.append('file', file);
 
+    // Check if 'quality' or 'throughput' is selected and append the respective field to formData
+    if (quality1 || (quality1 && throughput1)) {
+      formData.append('quality', quality1.toString());
+    } else if (throughput1) {
+      formData.append('throughput', throughput1.toString());
+    } else {
+      console.warn("Neither quality nor throughput selected.");
+      return; // Exit early if neither is selected
+    }
+
     try {
       // Send the file to the back-end without handling any specific response data
-      await axios.post('http://localhost:5000/process_data', formData, {
+      await axios.post('http://localhost:5000/process_data_excel', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
       console.log("File uploaded successfully.");
+      alert("File uploaded successfully.")
     } catch (error) {
       console.error("Error uploading file:", error);
+      alert("Error uploading file")
     }
   } else {
     console.warn("No file selected.");
+    alert("No file selected.")
   }
 };
 
 
+
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
+
+// const handleReconcile = async () => {
+//   const data = new FormData();
+
+// if (throughput1 || quality1) {
+//   data.append("station", formData.station.toString());
+//   data.append("downtime", formData.downtime.toString());
+//   data.append("stops", formData.stops.toString())
+// }
+  
+//   try {
+//     const response = await fetch("http://localhost:5000/process_data_reconcile", {
+//       method: "POST",
+//       body: data,
+//     });
+
+//     if (!response.ok) {
+//       throw new Error("Failed to submit data");
+//     }
+
+//     const result = await response.json();
+//     console.log("Response from backend:", result);
+//   } catch (error) {
+//     console.error("Error submitting data:", error);
+//   }
+// };
+
+
+
+// const handleReconcile = async () => {
+//   const inputData = new FormData()
+
+//   if (throughput1 || quality1) {
+//     inputData.append("station", formData.station.toString());
+//     inputData.append("downtime", formData.downtime.toString());
+//     inputData.append("stops", formData.stops.toString())
+    
+//   }
+
+//   try {
+//     const response = await fetch("http://localhost:5000/process_data_excel", {
+//       method: "GET", // Fetching data from the server, not sending anything
+//     });
+
+//     if (!response.ok) {
+//       throw new Error("Failed to fetch data");
+//     }
+
+//     const responseData = await response.json(); // The data returned from the server
+//     console.log('Success:', responseData); // Log the data or use it as needed
+
+//   } catch (error) {
+//     console.error('Error during fetch:', error); // Handle any errors
+//   }
+// };
+
+// const handleReconcile = async () => {
+//   const inputData = new FormData();
+
+//   // Only append values if either throughput1 or quality1 is true
+//   if (throughput1 || quality1) {
+//     inputData.append("station", formData.station.toString());
+//     inputData.append("downtime", formData.downtime.toString());
+//     inputData.append("stops", formData.stops.toString());
+//   }
+
+//   // Check if specific keys exist in FormData using `has()` method
+//   if (!inputData.has("station") || !inputData.has("downtime") || !inputData.has("stops")) {
+//     console.log("No values appended. Aborting execution.");
+//     alert("Station, Downtime or Stops not selected")
+//     return;
+//   }
+
+//   try {
+//     // Fetch data from the server if inputData has values
+//     const response = await fetch("http://localhost:5000/process_data_excel", {
+//       method: "GET", // Fetching data from the server
+//     });
+
+//     if (!response.ok) {
+//       throw new Error("Failed to fetch data");
+//     }
+
+//     const responseData = await response.json(); // The data returned from the server
+//     console.log('Success:', responseData); // Log the data or use it as needed
+
+//     // Manually extract data from FormData without using `entries()`
+//     const inputDataObject: { [key: string]: string } = {};
+    
+//     // Using `FormData`'s `.forEach()` method indirectly (works with target ES5)
+//     inputData.forEach((value, key) => {
+//       inputDataObject[key.toLowerCase()] = value instanceof File ? value.name : value.toString();
+//     });
+
+//     // Convert responseData to an object with lowercase keys and array handling
+//     const responseDataObject: { [key: string]: string | number } = {};
+//     for (let key in responseData) {
+//       if (responseData.hasOwnProperty(key)) {
+//         const lowerKey = key.toLowerCase();
+//         responseDataObject[lowerKey] = Array.isArray(responseData[key]) ? responseData[key][0] : responseData[key];
+//       }
+//     }
+
+//     // Print both objects to the console for inspection
+//     console.log("inputDataObject:", inputDataObject);
+//     console.log("responseDataObject:", responseDataObject);
+
+//     // Compare key-value pairs
+//     let match = true;
+//     for (let key in inputDataObject) {
+//       // Convert both values to strings to ensure consistent comparison
+//       const inputVal = inputDataObject[key].toString();
+//       const responseVal = responseDataObject[key].toString();
+      
+//       if (inputVal !== responseVal) {
+//         match = false;
+//         console.log(`Mismatch for key "${key}": ${inputVal} !== ${responseVal}`);
+//         alert(`Mismatch for key "${key}": ${inputVal} !== ${responseVal}, values do not match`)
+//       }
+//     }
+
+//     if (match) {
+//       console.log("All values match.");
+//     } else {
+//       console.log("Values do not match.");
+//     }
+
+//   } catch (error) {
+//     console.error('Error during fetch:', error); // Handle any errors
+//   }
+// };
+const calculateQualityRanking = (count: number) => {
+  count = count ?? 0;
+  if (count >= 50) return 1;
+  if (count >= 30) return 2;
+  if (count >= 20) return 3;
+  if (count >= 10) return 4;
+  if (count >= 1) return 5;
+  return 0; 
+};
+
+const calculateThroughputRanking = (downtime: number, stops: number) => {
+  downtime = downtime ?? 0; // Ensure downtime is never null
+  stops = stops ?? 0; // Ensure stops is never null
+
+
+  if (downtime < 264 && stops > 80  && stops < 600) return 4;
+  if (downtime < 264 && stops > 600) return 2;
+  if (downtime > 264 && stops > 600) return 1;
+  if (downtime > 264 && downtime < 600 && stops < 80) return 5;
+  if (downtime > 600 && stops < 80) return 3;
+  return 0;
+};
+
+
+// const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//   const { name, value } = e.target;
+//   const newValue = value ? parseFloat(value) : 0; // Ensure that the values are numbers, default to 0 if empty or null
+
+//   setFormData((prevData) => {
+//     const updatedData = { ...prevData, [name]: newValue };
+
+//     // Recalculate the ranking scores
+//     if (name === 'count') {
+//       updatedData.ranking_quality = calculateQualityRanking(newValue);
+//     }
+//     if (name === 'downtime' || name === 'stops') {
+//       updatedData.ranking_throughput = calculateThroughputRanking(updatedData.downtime, updatedData.stops);
+//     }
+
+//     return updatedData;
+//   });
+// };
+
+
+
+
+
+
+
+
+
+const handleReconcile = async () => {
+  const inputData = new FormData();
+
+  // Check if quality1 is selected and append quality-specific data
+  if (quality1 || (quality1 && throughput1)) {
+    inputData.append("level1", formData.level1.toString());
+    inputData.append("level2", formData.level2.toString());
+    inputData.append("level3", formData.level3.toString());
+    inputData.append("level4", formData.level4.toString());
+    inputData.append("fault", formData.fault.toString());
+    inputData.append("count", formData.count.toString());
+  }
+
+  // Check if throughput1 is selected and append throughput-specific data
+  if (throughput1) {
+    inputData.append("station", formData.station.toString());
+    inputData.append("downtime", formData.downtime.toString());
+    inputData.append("stops", formData.stops.toString());
+  }
+
+  // Validate that required fields are present if quality1 is selected
+  if (quality1 || (quality1 && throughput1)) {
+    if (
+      !inputData.has("level1") ||
+      !inputData.has("level2") ||
+      !inputData.has("level3") ||
+      !inputData.has("level4") ||
+      !inputData.has("fault") ||
+      !inputData.has("count")
+    ) {
+      console.log("Required quality fields not selected. Aborting execution.");
+      alert("All quality fields are required.");
+      return;
+    }
+  }
+
+  // Validate that required fields are present if throughput1 is selected
+  if (throughput1) {
+    if (
+      !inputData.has("station") ||
+      !inputData.has("downtime") ||
+      !inputData.has("stops")
+    ) {
+      console.log("Required throughput fields not selected. Aborting execution.");
+      alert("Station, Downtime, or Stops not selected");
+      return;
+    }
+  }
+
+  try {
+    // Fetch data from the server if inputData has values
+    const response = await fetch("http://localhost:5000/process_data_excel", {
+      method: "GET", // Fetching data from the server
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
+    }
+
+    const responseData = await response.json(); // The data returned from the server
+    console.log('Success in fetching data:', responseData); // Log the data or use it as needed
+
+    // Manually extract data from FormData without using `entries()`
+    const inputDataObject: { [key: string]: string } = {};
+    
+    // Using `FormData`'s `.forEach()` method indirectly (works with target ES5)
+    inputData.forEach((value, key) => {
+      inputDataObject[key.toLowerCase()] = value instanceof File ? value.name : value.toString();
+    });
+
+    // Print inputDataObject for inspection
+    console.log("inputDataObject:", inputDataObject);
+
+    // Check if there is a matching row for quality fields
+    if (quality1 || (quality1 && throughput1)) {
+      let qualityMatchFound = false;
+
+      // Iterate through each row in responseData to check for a match
+      for (let row of responseData) {
+        let rowMatches = true;
+
+        // Compare all quality-related fields
+        const qualityKeys = ["level1", "level2", "level3", "level4", "fault", "count"];
+        for (let key of qualityKeys) {
+          const inputVal = inputDataObject[key]?.toString().toLowerCase();
+          const rowVal = row[key.toLowerCase()]?.toString().toLowerCase(); // Ensure key is in lowercase for comparison
+
+          if (inputVal !== rowVal) {
+            rowMatches = false;
+            break; // No need to check further if any field doesn't match
+          }
+        }
+
+        if (rowMatches) {
+          qualityMatchFound = true;
+          console.log("Quality match found for row:", row);
+          break; // Stop once a match is found
+        }
+      }
+
+      if (qualityMatchFound) {
+        console.log("All quality values match a row in the backend data.");
+        alert("Quality values match a row in the backend data.");
+      } else {
+        console.log("No matching quality row found in the backend data.");
+        alert("No matching row found for the quality data.");
+      }
+    }
+
+    // Compare throughput related fields
+    if (throughput1) {
+      const responseDataObject: { [key: string]: string | number } = {};
+          for (let key in responseData) {
+            if (responseData.hasOwnProperty(key)) {
+              const lowerKey = key.toLowerCase();
+              responseDataObject[lowerKey] = Array.isArray(responseData[key]) ? responseData[key][0] : responseData[key];
+            }
+          }
+      
+          console.log("responseDataObject:", responseDataObject);
+      
+          // Compare key-value pairs
+          let match = true;
+          for (let key in inputDataObject) {
+            // Convert both values to strings to ensure consistent comparison
+            const inputVal = inputDataObject[key].toString();
+            const responseVal = responseDataObject[key].toString();
+            
+            if (inputVal !== responseVal) {
+              match = false;
+              console.log(`Mismatch for key "${key}": ${inputVal} !== ${responseVal}`);
+              alert(`Mismatch for key "${key}": ${inputVal} !== ${responseVal}, values do not match`)
+            }
+          }
+      
+          if (match) {
+            console.log("All values match.");
+          } else {
+            console.log("Values do not match.");
+          }
+      
+      }
+
+  } catch (error) {
+    console.error('Error during fetch:', error); // Handle any errors
+  }
+};
 
   const handleClose = () => {
     setIsOpen(false);
   };
+
 
   const [isOpen1, setIsOpen1] = useState(false);
 
@@ -325,6 +713,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
   const handleClose3 = () => {
     setIsOpen3(false);
   };
+
 
   return (
 
@@ -778,6 +1167,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   <div className="flex items-center">
                     <label className="font-medium w-24">Level 1:</label>
                     <input
+
                       type="number"
                       min = {0}
                       required
@@ -785,11 +1175,13 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                       value={formData.level1}
                       onChange={handleInputChangeNumber}
                       className="w-38 font-light border-solid border-2 rounded-lg"
+
                     />
                   </div>
                   <div className="flex items-center">
                     <label className="font-medium w-24">Level 2:</label>
                     <input
+
                       type="number"
                       required
                       min = {0}
@@ -797,11 +1189,13 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                       value={formData.level2}
                       onChange={handleInputChangeNumber}
                       className="w-38 font-light border-solid border-2 rounded-lg"
+
                     />
                   </div>
                   <div className="flex items-center">
                     <label className="font-medium w-24">Level 3:</label>
                     <input
+
                       type="number"
                       required
                       min = {0}
@@ -809,11 +1203,14 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                       value={formData.level3}
                       onChange={handleInputChangeNumber}
                       className="w-38 font-light border-solid border-2 rounded-lg"
+
                     />
                   </div>
                   <div className="flex items-center">
                     <label className="font-medium w-24">Level 4:</label>
                     <input
+
+                      
                       type="number"
                       required
                       min = {0}
@@ -821,23 +1218,36 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                       value={formData.level4}
                       onChange={handleInputChangeNumber}
                       className="w-38 font-light border-solid border-2 rounded-lg"
+
                     />
                   </div>
                   <div className="flex items-center">
                     <label className="font-medium w-24">Fault:</label>
                     <input
-                      type="number"
-                      required
-                      min = {0}
-                      name="fault"
-                      value={formData.fault}
-                      onChange={handleInputChangeNumber}
-                      className="w-38 font-light border-solid border-2 rounded-lg"
+
+                        type="text"
+                        required
+                        name="fault"
+                        value={formData.fault}
+                        onChange={handleInputChangeString}
+                        className="w-38 font-light border-solid border-2 rounded-lg"
+                    />
+                  </div>
+                  <div className="flex items-center">
+                    <label className="font-medium w-24">Count:</label>
+                    <input
+                        type="number"
+                        required
+                        name="count"
+                        value={formData.count}
+                        onChange={handleInputChangeNumber}
+                        className="w-38 font-light border-solid border-2 rounded-lg"
+
                     />
                   </div>
                 </div>
 
-                <hr className="mt-5 mb-5" />
+                <hr className="mt-5 mb-5"/>
               </div>
             </div>)}
 
@@ -1059,11 +1469,28 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
               ></textarea>
             </div>
             {/* Description ends */}
-            <div>
-              <h1>Upload Excel File</h1>
-              <input type = "file" onChange = {(e) => handleFile(e)} />
-            </div>
-            <button type="submit" className="mt-10 bg-blue-950 text-white font-bold py-2 px-4 rounded-full">
+
+           
+            
+          <div>
+            {quality1 || throughput1 ? (
+              <>
+            <h1>Upload Excel File</h1>
+            <input type="file" onChange={(e) => handleFile(e)} />
+              </>) : null}
+          </div>
+           
+          <div>
+            {quality1 || throughput1 ? (
+              <>
+            <button type = "button" className="mt-8 bg-blue-950 text-white font-bold py-2 px-4 rounded-full" onClick = {handleReconcile}>
+              Reconcile
+            </button>
+              </>) : null}
+          </div>
+          
+            
+            <button type="submit" className="mt-10 bg-blue-950 text-white font-bold py-2 px-4 rounded-full" >
               Submit PFC Request
             </button>
 
