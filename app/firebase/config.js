@@ -37,9 +37,6 @@ export async function getData() {
   querySnapshot.forEach((doc) => {
     return_stuff.push(doc.data())
   });
-   if(typeof window !== 'undefined'){
-     localStorage.setItem('data', return_stuff);
-   }
 
   return return_stuff
 }
