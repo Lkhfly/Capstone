@@ -40,3 +40,4 @@ export async function getData() {
 
   return return_stuff
 }
+export const dynamic = "force-dynamic";

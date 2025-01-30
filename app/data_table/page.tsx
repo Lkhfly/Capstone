@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { columns } from "./columns"
 import { DataTable } from "./data-table"
 import { getData } from "../firebase/config";
