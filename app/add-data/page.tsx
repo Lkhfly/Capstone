@@ -102,8 +102,31 @@ const MyForm = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    let updatedRankingQuality: number | undefined;
+    let updatedRankingThroughput: number | undefined;
+  if (quality1 && throughput1) {
+    updatedRankingQuality = calculateQualityRanking(formData.count);
+    updatedRankingThroughput = 0
+    console.log("Calculated Quality Ranking:", updatedRankingQuality);
+  } 
+  else {
+    updatedRankingQuality = calculateQualityRanking(formData.count);
+    updatedRankingThroughput = calculateThroughputRanking(formData.downtime, formData.stops);
+  }
+  // Log the rankings to verify
+  console.log("Calculated Rankings:", updatedRankingQuality, updatedRankingThroughput);
+  // Merge rankings directly into formData before submission
+  const updatedFormData = {
+    ...formData,
+    ranking_quality: updatedRankingQuality,
+    ranking_throughput: updatedRankingThroughput,
+  };
+  // Log the form data to ensure rankings are included
+  console.log("Form Data to Submit:", updatedFormData);
+
     try {
-      const docRef = await addDoc(collection(db, 'pfc'), formData);
+      const docRef = await addDoc(collection(db, 'pfc'), updatedFormData);
       setError('Document written with ID: ' + docRef.id);
       setFormData({
         title: '',
@@ -151,7 +174,7 @@ const MyForm = () => {
         occurrence : 0, 
         people_at_risk : 0
       });
-      console.log("Form Data Submitted:", formData); // Print all form data to the console
+      console.log("Form Data Submitted:", updatedFormData); // Print all form data to the console
     } catch (e) {
       setError("Error is " + e);
     }
@@ -228,7 +251,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     formData.append('file', file);
 
     // Check if 'quality' or 'throughput' is selected and append the respective field to formData
-    if (quality1) {
+    if (quality1 || (quality1 && throughput1)) {
       formData.append('quality', quality1.toString());
     } else if (throughput1) {
       formData.append('throughput', throughput1.toString());
@@ -389,13 +412,33 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
 //   }
 // };
 
+const calculateQualityRanking = (count: number) => {
+  count = count ?? 0;
+  if (count >= 50) return 1;
+  if (count >= 30) return 2;
+  if (count >= 20) return 3;
+  if (count >= 10) return 4;
+  if (count >= 1) return 5;
+  return 0; 
+};
+const calculateThroughputRanking = (downtime: number, stops: number) => {
+  downtime = downtime ?? 0; // Ensure downtime is never null
+  stops = stops ?? 0; // Ensure stops is never null
+  if (downtime < 264 && stops > 80  && stops < 600) return 4;
+  if (downtime < 264 && stops > 600) return 2;
+  if (downtime > 264 && stops > 600) return 1;
+  if (downtime > 264 && downtime < 600 && stops < 80) return 5;
+  if (downtime > 600 && stops < 80) return 3;
+  return 0;
+};
+
 
 
 const handleReconcile = async () => {
   const inputData = new FormData();
 
   // Check if quality1 is selected and append quality-specific data
-  if (quality1) {
+  if (quality1 || (quality1 && throughput1)) {
     inputData.append("level1", formData.level1.toString());
     inputData.append("level2", formData.level2.toString());
     inputData.append("level3", formData.level3.toString());
@@ -412,7 +455,7 @@ const handleReconcile = async () => {
   }
 
   // Validate that required fields are present if quality1 is selected
-  if (quality1) {
+  if (quality1 || (quality1 && throughput1)) {
     if (
       !inputData.has("level1") ||
       !inputData.has("level2") ||
@@ -465,7 +508,7 @@ const handleReconcile = async () => {
     console.log("inputDataObject:", inputDataObject);
 
     // Check if there is a matching row for quality fields
-    if (quality1) {
+    if (quality1 || (quality1 && throughput1)) {
       let qualityMatchFound = false;
 
       // Iterate through each row in responseData to check for a match

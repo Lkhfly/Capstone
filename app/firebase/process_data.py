@@ -48,8 +48,6 @@ def process_data_excel_post():
         value_ay4 = sheet['AY4'].value  # Total number of stops
         
         data = {
-            
-            
             'Station': [value_ay1],
             'Downtime': [value_ay3],
             'Stops': [value_ay4]
