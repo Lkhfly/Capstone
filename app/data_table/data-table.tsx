@@ -85,15 +85,15 @@ const [data, setData] = React.useState(initialData);
     // Update the table's data state
     setData(rankedData);
   };
-  // Define columns (add a rank column)
-  const columnsWithRank: ColumnDef<TData, TValue>[] = [
-    {
-      accessorKey: "rank",
-      header: "Rank",
-      cell: ({ row }) => <span>{row.original.rank}</span>,
-    },
-    ...columns, // Include all other columns
-  ];
+  // // Define columns (add a rank column)
+  // const columnsWithRank: ColumnDef<TData, TValue>[] = [
+  //   {
+  //     accessorKey: "rank",
+  //     header: "Rank",
+  //     cell: ({ row }) => <span>{row.original.rank}</span>,
+  //   },
+  //   ...columns, // Include all other columns
+  // ];
   const table = useReactTable({
     data,
     columns,
