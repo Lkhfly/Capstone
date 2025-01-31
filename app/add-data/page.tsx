@@ -12,9 +12,12 @@ import InfoIcon from '@mui/icons-material/Info';
 import { Dialog, DialogContent, DialogTitle } from '@mui/material';
 import Image from 'next/image';
 import severity_image from "../../components/ui/severity.png"
+import severity1_image from "../../components/ui/severity1.png"
 import probability_image from "../../components/ui/probability.png"
+import probability1_image from "../../components/ui/probability1.png"
 import people_image from "../../components/ui/people.png"
 import frequency_image from "../../components/ui/frequency.png"
+import frequency1_image from "../../components/ui/frequency1.png"
 interface FormData {
   title: string;
   station: string;
@@ -135,26 +138,30 @@ console.log(formData.category)
       [name]: parseFloat(value),
     }));
   };
-    // // Throughput
-    // downtime : 0, 
-    // stops : 0, 
-    // downtime_expected : 0,
-    // stops_expected : 0, 
-    // // Quality 
-    // level1 : 0, 
-    // level2 : 0, 
-    // level3 : 0, 
-    // level4 : 0, 
-    // fault : 0,
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
     let priority_score_new = 0
-    setFormData((prevData) => ({
-      ...prevData,
-      priority_score : priority_score_new
-    }));  
-      const docRef = await addDoc(collection(db, 'pfc'), formData);
+    //Safety
+    if (formData.category.includes("safety"))
+    {
+      priority_score_new = formData.severity * formData.frequency_exposure * formData.occurrence * formData.people_at_risk
+    }
+    else if (formData.category.includes("pipcost")){
+    priority_score_new = formData.cost + formData.headcount
+    }
+    else if (formData.category.includes("quality")){
+    priority_score_new = formData.level1 + formData.level2 + formData.level3 + formData.level4 + formData.fault      
+    }
+    else if (formData.category.includes("throughput")){
+    priority_score_new = formData.downtime + formData.stops      
+    }
+    const updatedFormData = {
+      ...formData,
+      priority_score: priority_score_new,
+    };
+      const docRef = await addDoc(collection(db, 'pfc'), updatedFormData);
       setError('Document written with ID: ' + docRef.id);
       setFormData({
         title: "",
@@ -207,7 +214,7 @@ console.log(formData.category)
     safety: false,
     quality: false,
     throughput: false,
-    pipCost: false,
+    pipcost: false,
   });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -451,6 +458,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   type="number"
                   required
                   min={0}
+                  max={3}
                   name="shift_number"
                   value={formData.shift_number}
                   onChange={handleInputChangeNumber}
@@ -565,9 +573,9 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={formData.category.includes('pipCost')}
+                    checked={formData.category.includes('pipcost')}
                     onChange={handleChange}
-                    name="pipCost"
+                    name="pipcost"
                   />
                 }
                 label="Cost"
@@ -587,7 +595,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
           <div>
 
             {/* Cost Page */}
-            {formData.category.includes('pipCost') && (<div className = "Cost Page">
+            {formData.category.includes('pipcost') && (<div className = "Cost Page">
               <hr className="mt-5 mb-5"></hr>
               <h1 className="font-medium mt-2 mb-2">Enter an estimated cost reduction</h1>
               <div>
@@ -908,6 +916,18 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                 <Dialog open={isOpen} onClose={handleClose} maxWidth="md" fullWidth>
                   <DialogTitle>Severity Potential Reference Guide</DialogTitle>
                   <DialogContent>
+                  {(formData.task_or_equipment == "Task Based" || formData.task_or_equipment =="Equipment Design") && (
+                    <div className="relative w-full h-[600px]">
+                      <Image
+                        src={severity1_image} // Replace with your actual image path
+                        alt="Detailed Information"
+                        layout="fill"
+                        objectFit="contain"
+                        priority
+                      />
+                    </div>
+                  )}
+                  {(formData.task_or_equipment == "Chemical Agent Exposure" ) && (
                     <div className="relative w-full h-[600px]">
                       <Image
                         src={severity_image} // Replace with your actual image path
@@ -917,37 +937,81 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                         priority
                       />
                     </div>
+                  )}
+
                   </DialogContent>
                 </Dialog>
 
                 <div className="flex items-center">
                   <label className="font-medium w-60">Rate the frequency of exposure</label>
-                  <select
+                  {(formData.task_or_equipment == "") && (
+                   <select
                     name="frequency_exposure"
                     value={formData.frequency_exposure}
                     onChange={handleInputChangeSelectNumber}
                     required
                     className="w-36 font-light border-solid border-2 rounded-lg"
                   >
-                    <option value="">Select an option</option>
-                    <option value={15}>15</option>
-                    <option value={8}>8</option>
-                    <option value={2}>2</option>
-                    <option value={0.03}>0.03</option>
+                      <option value="">Select an option</option>
+                    </select>
+                    )}
+                  {(formData.task_or_equipment == "Task Based") && (
+                   <select
+                    name="frequency_exposure"
+                    value={formData.frequency_exposure}
+                    onChange={handleInputChangeSelectNumber}
+                    required
+                    className="w-36 font-light border-solid border-2 rounded-lg"
+                  >
+                      <option value="">Select an option</option>
+                      <option value={5}>5</option>
+                      <option value={4}>4</option>
+                      <option value={2.5}>2.5</option>           
                   </select>
+                  )}
+                  {(formData.task_or_equipment == "Equipment Design" || (formData.task_or_equipment == "Chemical Agent Exposure")) && (
+                   <select
+                    name="frequency_exposure"
+                    value={formData.frequency_exposure}
+                    onChange={handleInputChangeSelectNumber}
+                    required
+                    className="w-36 font-light border-solid border-2 rounded-lg"
+                  >
+                      <option value="">Select an option</option>
+                      <option value={5}>5</option>
+                      <option value={4}>4</option>
+                      <option value={2.5}>2.5</option>           
+                      <option value={1.5}>1.5</option>
+                      <option value={1}>1</option>
+                      <option value={0.5}>0.5</option>           
+                      <option value={0.1}>0.1</option>           
+                  </select>
+                  )}
+
                   <InfoIcon className="text-gray-500 cursor-pointer ml-2" onClick={handleOpen1}/>
                 </div>
                 <Dialog open={isOpen1} onClose={handleClose1} maxWidth="md" fullWidth>
                   <DialogTitle>Frequency of Exposure Reference Guide</DialogTitle>
                   <DialogContent>
                     <div className="relative w-full h-[600px]">
+                  {(formData.task_or_equipment == "Task Based") && (
                       <Image
                         src={frequency_image} // Replace with your actual image path
                         alt="Detailed Information"
                         layout="fill"
                         objectFit="contain"
                         priority
+                      />                    
+                  )}
+                  {(formData.task_or_equipment == "Chemical Agent Exposure"  || formData.task_or_equipment =="Equipment Design") && (
+                      <Image
+                        src={frequency1_image} // Replace with your actual image path
+                        alt="Detailed Information"
+                        layout="fill"
+                        objectFit="contain"
+                        priority
                       />
+                  )}   
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -962,27 +1026,35 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                     className="w-36 font-light border-solid border-2 rounded-lg"
                   >
                     <option value="">Select an option</option>
-                    <option value={5}>5</option>
-                    <option value={4}>4</option>
-                    <option value={2.5}>2.5</option>
-                    <option value={1.5}>1.5</option>
-                    <option value={1}>1</option>
-                    <option value={0.5}>0.5</option>
-                    <option value={0.1}>0.1</option>
+                      <option value={15}>15</option>
+                      <option value={8}>8</option>
+                      <option value={2}>2</option>
+                      <option value={0.03}>0.03</option>
                   </select>
                   <InfoIcon className="text-gray-500 cursor-pointer ml-2" onClick={handleOpen2}/>
                 </div>
                 <Dialog open={isOpen2} onClose={handleClose2} maxWidth="md" fullWidth>
-                  <DialogTitle>Frequency of Exposure Reference Guide</DialogTitle>
+                  <DialogTitle>Probability Occurrence Reference Guide</DialogTitle>               
                   <DialogContent>
                     <div className="relative w-full h-[600px]">
+                  {(formData.task_or_equipment == "Task Based" || formData.task_or_equipment =="Equipment Design") && (
                       <Image
                         src={probability_image} // Replace with your actual image path
                         alt="Detailed Information"
                         layout="fill"
                         objectFit="contain"
                         priority
+                      />                    
+                  )}
+                  {(formData.task_or_equipment == "Chemical Agent Exposure" ) && (
+                      <Image
+                        src={probability1_image} // Replace with your actual image path
+                        alt="Detailed Information"
+                        layout="fill"
+                        objectFit="contain"
+                        priority
                       />
+                  )}   
                     </div>
                   </DialogContent>
                 </Dialog>
