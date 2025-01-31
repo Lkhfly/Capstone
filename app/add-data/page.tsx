@@ -12,9 +12,12 @@ import InfoIcon from '@mui/icons-material/Info';
 import { Dialog, DialogContent, DialogTitle } from '@mui/material';
 import Image from 'next/image';
 import severity_image from "../../components/ui/severity.png"
+import severity1_image from "../../components/ui/severity1.png"
 import probability_image from "../../components/ui/probability.png"
+import probability1_image from "../../components/ui/probability1.png"
 import people_image from "../../components/ui/people.png"
 import frequency_image from "../../components/ui/frequency.png"
+import frequency1_image from "../../components/ui/frequency1.png"
 interface FormData {
   title: string;
   station: string;
@@ -911,7 +914,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   {(formData.task_or_equipment == "Task Based" || formData.task_or_equipment =="Equipment Design") && (
                     <div className="relative w-full h-[600px]">
                       <Image
-                        src={severity_image} // Replace with your actual image path
+                        src={severity1_image} // Replace with your actual image path
                         alt="Detailed Information"
                         layout="fill"
                         objectFit="contain"
@@ -922,7 +925,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   {(formData.task_or_equipment == "Chemical Agent Exposure" ) && (
                     <div className="relative w-full h-[600px]">
                       <Image
-                        src={frequency_image} // Replace with your actual image path
+                        src={severity_image} // Replace with your actual image path
                         alt="Detailed Information"
                         layout="fill"
                         objectFit="contain"
@@ -936,32 +939,74 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
                 <div className="flex items-center">
                   <label className="font-medium w-60">Rate the frequency of exposure</label>
-                  <select
+                  {(formData.task_or_equipment == "") && (
+                   <select
                     name="frequency_exposure"
                     value={formData.frequency_exposure}
                     onChange={handleInputChangeSelectNumber}
                     required
                     className="w-36 font-light border-solid border-2 rounded-lg"
                   >
-                    <option value="">Select an option</option>
-                    <option value={15}>15</option>
-                    <option value={8}>8</option>
-                    <option value={2}>2</option>
-                    <option value={0.03}>0.03</option>
+                      <option value="">Select an option</option>
+                    </select>
+                    )}
+                  {(formData.task_or_equipment == "Task Based") && (
+                   <select
+                    name="frequency_exposure"
+                    value={formData.frequency_exposure}
+                    onChange={handleInputChangeSelectNumber}
+                    required
+                    className="w-36 font-light border-solid border-2 rounded-lg"
+                  >
+                      <option value="">Select an option</option>
+                      <option value={5}>5</option>
+                      <option value={4}>4</option>
+                      <option value={2.5}>2.5</option>           
                   </select>
+                  )}
+                  {(formData.task_or_equipment == "Equipment Design" || (formData.task_or_equipment == "Chemical Agent Exposure")) && (
+                   <select
+                    name="frequency_exposure"
+                    value={formData.frequency_exposure}
+                    onChange={handleInputChangeSelectNumber}
+                    required
+                    className="w-36 font-light border-solid border-2 rounded-lg"
+                  >
+                      <option value="">Select an option</option>
+                      <option value={5}>5</option>
+                      <option value={4}>4</option>
+                      <option value={2.5}>2.5</option>           
+                      <option value={1.5}>1.5</option>
+                      <option value={1}>1</option>
+                      <option value={0.5}>0.5</option>           
+                      <option value={0.1}>0.1</option>           
+                  </select>
+                  )}
+
                   <InfoIcon className="text-gray-500 cursor-pointer ml-2" onClick={handleOpen1}/>
                 </div>
                 <Dialog open={isOpen1} onClose={handleClose1} maxWidth="md" fullWidth>
                   <DialogTitle>Frequency of Exposure Reference Guide</DialogTitle>
                   <DialogContent>
                     <div className="relative w-full h-[600px]">
+                  {(formData.task_or_equipment == "Task Based") && (
                       <Image
                         src={frequency_image} // Replace with your actual image path
                         alt="Detailed Information"
                         layout="fill"
                         objectFit="contain"
                         priority
+                      />                    
+                  )}
+                  {(formData.task_or_equipment == "Chemical Agent Exposure"  || formData.task_or_equipment =="Equipment Design") && (
+                      <Image
+                        src={frequency1_image} // Replace with your actual image path
+                        alt="Detailed Information"
+                        layout="fill"
+                        objectFit="contain"
+                        priority
                       />
+                  )}   
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -976,27 +1021,35 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                     className="w-36 font-light border-solid border-2 rounded-lg"
                   >
                     <option value="">Select an option</option>
-                    <option value={5}>5</option>
-                    <option value={4}>4</option>
-                    <option value={2.5}>2.5</option>
-                    <option value={1.5}>1.5</option>
-                    <option value={1}>1</option>
-                    <option value={0.5}>0.5</option>
-                    <option value={0.1}>0.1</option>
+                      <option value={15}>15</option>
+                      <option value={8}>8</option>
+                      <option value={2}>2</option>
+                      <option value={0.03}>0.03</option>
                   </select>
                   <InfoIcon className="text-gray-500 cursor-pointer ml-2" onClick={handleOpen2}/>
                 </div>
                 <Dialog open={isOpen2} onClose={handleClose2} maxWidth="md" fullWidth>
-                  <DialogTitle>Frequency of Exposure Reference Guide</DialogTitle>
+                  <DialogTitle>Probability Occurrence Reference Guide</DialogTitle>               
                   <DialogContent>
                     <div className="relative w-full h-[600px]">
+                  {(formData.task_or_equipment == "Task Based" || formData.task_or_equipment =="Equipment Design") && (
                       <Image
                         src={probability_image} // Replace with your actual image path
                         alt="Detailed Information"
                         layout="fill"
                         objectFit="contain"
                         priority
+                      />                    
+                  )}
+                  {(formData.task_or_equipment == "Chemical Agent Exposure" ) && (
+                      <Image
+                        src={probability1_image} // Replace with your actual image path
+                        alt="Detailed Information"
+                        layout="fill"
+                        objectFit="contain"
+                        priority
                       />
+                  )}   
                     </div>
                   </DialogContent>
                 </Dialog>
