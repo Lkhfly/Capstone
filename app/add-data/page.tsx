@@ -138,26 +138,30 @@ console.log(formData.category)
       [name]: parseFloat(value),
     }));
   };
-    // // Throughput
-    // downtime : 0, 
-    // stops : 0, 
-    // downtime_expected : 0,
-    // stops_expected : 0, 
-    // // Quality 
-    // level1 : 0, 
-    // level2 : 0, 
-    // level3 : 0, 
-    // level4 : 0, 
-    // fault : 0,
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
     let priority_score_new = 0
-    setFormData((prevData) => ({
-      ...prevData,
-      priority_score : priority_score_new
-    }));  
-      const docRef = await addDoc(collection(db, 'pfc'), formData);
+    //Safety
+    if (formData.category.includes("safety"))
+    {
+      priority_score_new = formData.severity * formData.frequency_exposure * formData.occurrence * formData.people_at_risk
+    }
+    else if (formData.category.includes("pipcost")){
+    priority_score_new = formData.cost + formData.headcount
+    }
+    else if (formData.category.includes("quality")){
+    priority_score_new = formData.level1 + formData.level2 + formData.level3 + formData.level4 + formData.fault      
+    }
+    else if (formData.category.includes("throughput")){
+    priority_score_new = formData.downtime + formData.stops      
+    }
+    const updatedFormData = {
+      ...formData,
+      priority_score: priority_score_new,
+    };
+      const docRef = await addDoc(collection(db, 'pfc'), updatedFormData);
       setError('Document written with ID: ' + docRef.id);
       setFormData({
         title: "",
@@ -454,6 +458,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   type="number"
                   required
                   min={0}
+                  max={3}
                   name="shift_number"
                   value={formData.shift_number}
                   onChange={handleInputChangeNumber}

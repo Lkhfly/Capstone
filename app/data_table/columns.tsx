@@ -52,7 +52,7 @@ export const columns: ColumnDef<Task>[] = [
           // onClick={() => column.toggleSorting(column.getIsSorted() === "desc")}
           className="ml-2"
         >
-          Priority
+          Priority score
         </Button>
       )
     },
