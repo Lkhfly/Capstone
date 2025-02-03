@@ -421,6 +421,8 @@ const calculateQualityRanking = (count: number) => {
   if (count >= 1) return 5;
   return 0; 
 };
+
+// Logic is broken if downtime > 600 and stops > 80, for example 610 downtime and 100 stops 
 const calculateThroughputRanking = (downtime: number, stops: number) => {
   downtime = downtime ?? 0; // Ensure downtime is never null
   stops = stops ?? 0; // Ensure stops is never null
