@@ -1,8 +1,10 @@
 "use client";
+
 import axios from 'axios';
 
+
 import React, { FormEvent, useState } from 'react';
-import db from "../firebase/config";
+import {db} from "../firebase/config";
 import { collection, addDoc } from 'firebase/firestore';
 import NavBar from '@/components/ui/navbar';
 import { FormControl, FormGroup, FormControlLabel, Checkbox, FormLabel } from '@mui/material';
@@ -10,30 +12,64 @@ import InfoIcon from '@mui/icons-material/Info';
 import { Dialog, DialogContent, DialogTitle } from '@mui/material';
 import Image from 'next/image';
 import severity_image from "../../components/ui/severity.png"
-
+import probability_image from "../../components/ui/probability.png"
+import people_image from "../../components/ui/people.png"
+import frequency_image from "../../components/ui/frequency.png"
+interface FormData {
+  title: string;
+  station: string;
+  date_sub: string;
+  date_comp: string;
+  emp_name: string;
+  gm_id: string;
+  job: string;
+  department: string;
+  group: number;
+  shift_number: number;
+  team: number;
+  category: string[]; // Explicitly define as string[]
+  description: string;
+  important: string;
+  uid: string;
+  status: string;
+  cost: number;
+  headcount: number;
+  downtime: number;
+  stops: number;
+  downtime_expected: number;
+  stops_expected: number;
+  level1: string;
+  level2: string;
+  level3: string;
+  level4: string;
+  fault: number;
+  count: number;
+  frequency: string;
+  task_or_equipment: string;
+  severity: number;
+  frequency_exposure: number;
+  occurrence: number;
+  people_at_risk: number;
+  priority_score: number;
+}
 const MyForm = () => {
-  const [formData, setFormData] = useState({
-    title: '',
-    station: '',
-    date_sub: '',
-    date_comp: '',
-    emp_name: '',
-    gm_id: '',
-    job: '',
-    department: '',
+  const [formData, setFormData] = useState<FormData>({
+    title: "",
+    station: "",
+    date_sub: "",
+    date_comp: "",
+    emp_name: "",
+    gm_id: "",
+    job: "",
+    department: "",
     group: 0,
     shift_number: 0,
     team: 0,
-    recurring: '',
-    category: '',
+    category: [],
     description: '',
     important: '',
     uid: Date.now().toString(36),
     // to be removed
-    priority: Math.floor(Math.random() * 10),
-    impact: Math.floor(Math.random() * 10),
-    effort: Math.floor(Math.random() * 10),
-    budget: 0,
     status: 'In Progress',
     // Cost
     cost : 0,
@@ -57,7 +93,9 @@ const MyForm = () => {
     severity : 0, 
     frequency_exposure : 0, 
     occurrence : 0, 
-    people_at_risk : 0
+    people_at_risk : 0,
+    // Priority score
+    priority_score : 0
   });
   const [error, setError] = useState("");
 
@@ -83,6 +121,7 @@ const MyForm = () => {
       ...prevData,
       [name]: value,
     }));
+console.log(formData.category)
   };
 
   const handleInputChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -96,10 +135,20 @@ const MyForm = () => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: parseInt(value),
+      [name]: parseFloat(value),
     }));
   };
-
+    // // Throughput
+    // downtime : 0, 
+    // stops : 0, 
+    // downtime_expected : 0,
+    // stops_expected : 0, 
+    // // Quality 
+    // level1 : 0, 
+    // level2 : 0, 
+    // level3 : 0, 
+    // level4 : 0, 
+    // fault : 0,
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -126,30 +175,30 @@ const MyForm = () => {
   console.log("Form Data to Submit:", updatedFormData);
 
     try {
-      const docRef = await addDoc(collection(db, 'pfc'), updatedFormData);
+    let priority_score_new = 0
+    setFormData((prevData) => ({
+      ...prevData,
+      priority_score : priority_score_new
+    }));  
+      const docRef = await addDoc(collection(db, 'pfc'), formData);
       setError('Document written with ID: ' + docRef.id);
       setFormData({
-        title: '',
-        station: '',
-        date_sub: '',
-        date_comp: '',
-        emp_name: '',
-        gm_id: '',
-        job: '',
-        department: '',
+        title: "",
+        station: "",
+        date_sub: "",
+        date_comp: "",
+        emp_name: "",
+        gm_id: "",
+        job: "",
+        department: "",
         group: 0,
         shift_number: 0,
         team: 0,
-        recurring: '',
-        category: '',
+        category: [],
         description: '',
         important: '',
         uid: Date.now().toString(36),
         // to be removed
-        priority: Math.floor(Math.random() * 10),
-        impact: Math.floor(Math.random() * 10),
-        effort: Math.floor(Math.random() * 10),
-        budget: 0,
         status: 'In Progress',
         // Cost
         cost : 0,
@@ -172,7 +221,9 @@ const MyForm = () => {
         severity : 0, 
         frequency_exposure : 0, 
         occurrence : 0, 
-        people_at_risk : 0
+        people_at_risk : 0,
+        // Priority score
+        priority_score : 0
       });
       console.log("Form Data Submitted:", updatedFormData); // Print all form data to the console
     } catch (e) {
@@ -188,30 +239,32 @@ const MyForm = () => {
   });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setState({
-      ...state,
-      [event.target.name]: event.target.checked,
+    const { name, checked } = event.target;
+
+    setFormData((prevFormData) => {
+      let updatedCategories: string[];
+      if (checked) {
+        // Add the category to the array if checked
+        updatedCategories = [...prevFormData.category, name];
+      } else {
+        // Remove the category from the array if unchecked
+        updatedCategories = prevFormData.category.filter((cat) => cat !== name);
+      }
+
+      return {
+        ...prevFormData,
+        category: updatedCategories,
+      };
     });
-    if (event.target.name === "pipCost"){
-      setPipCost1(event.target.checked)
-    }
-    if (event.target.name === "safety"){
-      setSafety1(event.target.checked)
-    }
-    if (event.target.name === "quality"){
-      setQuality1(event.target.checked)
-    }
-    if (event.target.name === "throughput"){
-      setThroughput1(event.target.checked)
-    }
   };
+
   const [pipCost1, setPipCost1] = useState(false);
   const [safety1, setSafety1] = useState(false);
   const [quality1, setQuality1] = useState(false);
   const [throughput1, setThroughput1] = useState(false);
   const { safety, quality, throughput, pipCost } = state;
-  const [isOpen, setIsOpen] = useState(false);
   const [isClosed, setIsClosed] = useState(true);
+
 // const handleFile = (e) => {
 //   console.log(e.target.files[0])
 // };
@@ -279,6 +332,10 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     alert("No file selected.")
   }
 };
+
+
+
+  const [isOpen, setIsOpen] = useState(false);
 
 
 // const handleReconcile = async () => {
@@ -588,11 +645,38 @@ const handleReconcile = async () => {
     setIsOpen(false);
   };
 
-  function handleOpen() {
-    setIsClosed(false);
-  }
+
+  const [isOpen1, setIsOpen1] = useState(false);
+
+  const handleOpen1 = () => {
+    setIsOpen1(true);
+  };
+
+  const handleClose1 = () => {
+    setIsOpen1(false);
+  };
+
+  const [isOpen2, setIsOpen2] = useState(false);
+
+  const handleOpen2 = () => {
+    setIsOpen2(true);
+  };
+
+  const handleClose2 = () => {
+    setIsOpen2(false);
+  };
+  const [isOpen3, setIsOpen3] = useState(false);
+
+  const handleOpen3 = () => {
+    setIsOpen3(true);
+  };
+
+  const handleClose3 = () => {
+    setIsOpen3(false);
+  };
 
   return (
+
     <div>
       <NavBar />
       <div className="container mx-auto py-5">
@@ -615,10 +699,12 @@ const handleReconcile = async () => {
           </div>
           <hr className="mt-5"></hr>
           <div className="grid grid-cols-2 mt-5 gap-3">
+
             <div>
               <label className="font-medium">
                 Station Number:
                 <input
+
                   type="text"
                   required
                   name="station"
@@ -752,7 +838,7 @@ const handleReconcile = async () => {
           {/* First group of input end */}
           <hr className="mt-5"></hr>
           {/* Select start */}
-          <div className="mt-5">
+          {/* <div className="mt-5">
             <label className="font-medium">
               Is this a recurring issue?
               <select
@@ -787,7 +873,7 @@ const handleReconcile = async () => {
                 <option value="Not Applicable">Not Applicable</option>
               </select>
             </label>
-          </div>
+          </div> */}
           <div className="mt-4">
             <label className="font-medium">
               What is this PFC related to? Select all that apply.
@@ -795,22 +881,46 @@ const handleReconcile = async () => {
                 <FormControl component="fieldset">
                   <FormLabel component="legend">Select Categories</FormLabel>
                   <FormGroup>
-                    <FormControlLabel
-                      control={<Checkbox value={formData.category} checked={safety} onChange={handleChange} name="safety" />}
-                      label="Safety"
-                    />
-                    <FormControlLabel
-                      control={<Checkbox checked={quality} value={formData.category} onChange={handleChange} name="quality" />}
-                      label="Quality"
-                    />
-                    <FormControlLabel
-                      control={<Checkbox checked={throughput} value={formData.category} onChange={handleChange} name="throughput" />}
-                      label="Throughput"
-                    />
-                    <FormControlLabel
-                        control={<Checkbox checked={pipCost}  value = {formData.category} onChange={handleChange} name="pipCost" />}
-                        label="Cost"
-                    />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData.category.includes('safety')}
+                    onChange={handleChange}
+                    name="safety"
+                  />
+                }
+                label="Safety"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData.category.includes('quality')}
+                    onChange={handleChange}
+                    name="quality"
+                  />
+                }
+                label="Quality"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData.category.includes('throughput')}
+                    onChange={handleChange}
+                    name="throughput"
+                  />
+                }
+                label="Throughput"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData.category.includes('pipCost')}
+                    onChange={handleChange}
+                    name="pipCost"
+                  />
+                }
+                label="Cost"
+              />
                     <FormControlLabel
                         control={<Checkbox name="NA" />}
                         label="N/A"
@@ -826,7 +936,7 @@ const handleReconcile = async () => {
           <div>
 
             {/* Cost Page */}
-            {pipCost1 && (<div className = "Cost Page">
+            {formData.category.includes('pipCost') && (<div className = "Cost Page">
               <hr className="mt-5 mb-5"></hr>
               <h1 className="font-medium mt-2 mb-2">Enter an estimated cost reduction</h1>
               <div>
@@ -834,6 +944,7 @@ const handleReconcile = async () => {
                   Cost:
                   <input
                       type="number"
+                      min = {0}
                       required
                       name="cost"
                       value={formData.cost}
@@ -850,6 +961,7 @@ const handleReconcile = async () => {
                   <input
                       type="number"
                       required
+                      min = {0}
                       name="headcount"
                       value={formData.headcount}
                       onChange={handleInputChangeNumber}
@@ -861,13 +973,14 @@ const handleReconcile = async () => {
             </div>)}
 
             {/* Throughput */}
-            {throughput1 && (<div>
+            {formData.category.includes('throughput') && (<div>
               <h1 className="font-medium mt-2 mb-2">Enter the amount of downtime in seconds from the Excel file</h1>
               <div>
                 <label className="font-medium">
                   Number:
                   <input
                       type="number"
+                      min = {0}
                       required
                       name="downtime"
                       value={formData.downtime}
@@ -884,6 +997,7 @@ const handleReconcile = async () => {
                   <input
                       type="number"
                       required
+                      min = {0}
                       name="stops"
                       value={formData.stops}
                       onChange={handleInputChangeNumber}
@@ -899,6 +1013,7 @@ const handleReconcile = async () => {
                   <input
                       type="number"
                       required
+                      min = {0}
                       name="downtime_expected"
                       value={formData.downtime_expected}
                       onChange={handleInputChangeNumber}
@@ -914,6 +1029,7 @@ const handleReconcile = async () => {
                   <input
                       type="number"
                       required
+                      min = {0}
                       name="stops_expected"
                       value={formData.stops_expected}
                       onChange={handleInputChangeNumber}
@@ -921,11 +1037,12 @@ const handleReconcile = async () => {
                   />
                 </label>
               </div>
+
               <hr className="mt-5 mb-5"></hr>
             </div>)}
 
             {/* Quality */}
-            {quality1 && (<div>
+            {formData.category.includes('quality') && (<div>
               <div>
               {/* <h1 className="font-medium mt-5 mb-2">According to the defect entry, refer to the excel file for the following entries</h1> */}
 
@@ -1021,6 +1138,7 @@ const handleReconcile = async () => {
                   <div className="flex items-center">
                     <label className="font-medium w-24">Level 2:</label>
                     <input
+
                         type="text"
                         required
                         name="level2"
@@ -1038,6 +1156,7 @@ const handleReconcile = async () => {
                         value={formData.level3}
                         onChange={handleInputChangeString}
                         className="w-38 font-light border-solid border-2 rounded-lg"
+
                     />
                   </div>
                   <div className="flex items-center">
@@ -1071,6 +1190,7 @@ const handleReconcile = async () => {
                         value={formData.count}
                         onChange={handleInputChangeNumber}
                         className="w-38 font-light border-solid border-2 rounded-lg"
+
                     />
                   </div>
                 </div>
@@ -1079,132 +1199,8 @@ const handleReconcile = async () => {
               </div>
             </div>)}
 
-            {/* Safety */}
-            {/* <div>
-            <div className="mt-4">
-              <label className="font-medium">
-                 How frequently would you say this issue occur?
-                <select
-                    name="frequency"
-                    value={formData.frequency}
-                    onChange={handleInputChangeSelect}
-                    required
-                    className="ml-3 font-light border-solid border-2 rounded-lg"
-                >
-                  <option value="">Select an option</option>
-                  <option value="Once a month">Once a month</option>
-                  <option value="Once a week">Once a week</option>
-                  <option value="Several times a week">Several times a week</option>
-                  <option value="Once a shift">Once a shift</option>
-                  <option value="Several times a shift">Several times a shift</option>
-                  <option value="Not Applicable">Not Applicable</option>
-                </select>
-              </label>
-            </div>
 
-            <div className="mt-5">
-              <label className="font-medium">
-                Is it task-based or equipment design based ?
-                <select
-                    name="task_or_equipment"
-                    value={formData.task_or_equipment}
-                    onChange={handleInputChangeSelect}
-                    required
-                    className="ml-3 font-light border-solid border-2 rounded-lg"
-                >
-                  <option value="">Select an option</option>
-                  <option value="Task Based">Task Based</option>
-                  <option value="Equipment Design">Equipment Design</option>
-                  <option value="Chemical Agent Exposure">Chemical Agent Exposure</option>
-                </select>
-              </label>
-            </div>
-
-            <div className="mt-5">
-              <label className="font-medium">
-                Rate the severity potential
-                <select
-                    name="severity"
-                    value={formData.severity}
-                    onChange={handleInputChangeSelectNumber}
-                    required
-                    className="ml-3 font-light border-solid border-2 rounded-lg"
-                >
-                  <option value="">Select an option</option>
-                  <option value={15}>15</option>
-                  <option value={10}>10</option>
-                  <option value={6}>6</option>
-                  <option value={4}>4</option>
-                  <option value={2}>2</option>
-                  <option value={1}>1</option>
-                </select>
-              </label>
-            </div>
-
-            <div className="mt-5">
-              <label className="font-medium">
-                Rate the frequency of exposure
-                <select
-                    name="frequency_exposure"
-                    value={formData.frequency_exposure}
-                    onChange={handleInputChangeSelectNumber}
-                    required
-                    className="ml-3 font-light border-solid border-2 rounded-lg"
-                >
-                  <option value="">Select an option</option>
-                  <option value={15}>15</option>
-                  <option value={8}>8</option>
-                  <option value={2}>2</option>
-                  <option value={0.03}>0.03</option>
-                </select>
-              </label>
-            </div>
-
-            <div className="mt-5">
-              <label className="font-medium">
-                Rate the probability of occurrence
-                <select
-                    name="occurrence"
-                    value={formData.occurrence}
-                    onChange={handleInputChangeSelectNumber}
-                    required
-                    className="ml-3 font-light border-solid border-2 rounded-lg"
-                >
-                  <option value="">Select an option</option>
-                  <option value={5}>5</option>
-                  <option value={4}>4</option>
-                  <option value={2.5}>2.5</option>
-                  <option value={1.5}>1.5</option>
-                  <option value={1}>1</option>
-                  <option value={0.5}>0.5</option>
-                  <option value={0.1}>0.1</option>
-                </select>
-              </label>
-            </div>
-
-            <div className="mt-5">
-              <label className="font-medium">
-                How many people are at risk?
-                <select
-                    name="people_at_risk"
-                    value={formData.people_at_risk}
-                    onChange={handleInputChangeSelectNumber}
-                    required
-                    className="ml-3 font-light border-solid border-2 rounded-lg"
-                >
-                  <option value="">Select an option</option>
-                  <option value={12}>12</option>
-                  <option value={8}>8</option>
-                  <option value={4}>4</option>
-                  <option value={2}>2</option>
-                  <option value={1}>1</option>
-                </select>
-              </label>
-            </div>
-
-
-            </div> */}
-            {safety1 && (<div>
+            {formData.category.includes('safety') && (<div>
               <div className="flex flex-col gap-5 mt-4">
                 <div className="flex items-center">
                   <label className="font-medium w-60">
@@ -1266,6 +1262,7 @@ const handleReconcile = async () => {
                   </select>
                   <InfoIcon className="text-gray-500 cursor-pointer ml-2" onClick={handleOpen}/>
                 </div>
+
                 <Dialog open={isOpen} onClose={handleClose} maxWidth="md" fullWidth>
                   <DialogTitle>Severity Potential Reference Guide</DialogTitle>
                   <DialogContent>
@@ -1280,6 +1277,7 @@ const handleReconcile = async () => {
                     </div>
                   </DialogContent>
                 </Dialog>
+
                 <div className="flex items-center">
                   <label className="font-medium w-60">Rate the frequency of exposure</label>
                   <select
@@ -1295,7 +1293,22 @@ const handleReconcile = async () => {
                     <option value={2}>2</option>
                     <option value={0.03}>0.03</option>
                   </select>
+                  <InfoIcon className="text-gray-500 cursor-pointer ml-2" onClick={handleOpen1}/>
                 </div>
+                <Dialog open={isOpen1} onClose={handleClose1} maxWidth="md" fullWidth>
+                  <DialogTitle>Frequency of Exposure Reference Guide</DialogTitle>
+                  <DialogContent>
+                    <div className="relative w-full h-[600px]">
+                      <Image
+                        src={frequency_image} // Replace with your actual image path
+                        alt="Detailed Information"
+                        layout="fill"
+                        objectFit="contain"
+                        priority
+                      />
+                    </div>
+                  </DialogContent>
+                </Dialog>
 
                 <div className="flex items-center">
                   <label className="font-medium w-60">Rate the probability of occurrence</label>
@@ -1315,7 +1328,22 @@ const handleReconcile = async () => {
                     <option value={0.5}>0.5</option>
                     <option value={0.1}>0.1</option>
                   </select>
+                  <InfoIcon className="text-gray-500 cursor-pointer ml-2" onClick={handleOpen2}/>
                 </div>
+                <Dialog open={isOpen2} onClose={handleClose2} maxWidth="md" fullWidth>
+                  <DialogTitle>Frequency of Exposure Reference Guide</DialogTitle>
+                  <DialogContent>
+                    <div className="relative w-full h-[600px]">
+                      <Image
+                        src={probability_image} // Replace with your actual image path
+                        alt="Detailed Information"
+                        layout="fill"
+                        objectFit="contain"
+                        priority
+                      />
+                    </div>
+                  </DialogContent>
+                </Dialog>
 
                 <div className="flex items-center">
                   <label className="font-medium w-60">How many people are at risk?</label>
@@ -1333,9 +1361,23 @@ const handleReconcile = async () => {
                     <option value={2}>2</option>
                     <option value={1}>1</option>
                   </select>
+                  <InfoIcon className="text-gray-500 cursor-pointer ml-2" onClick={handleOpen3}/>
                 </div>
             </div>
-
+                <Dialog open={isOpen3} onClose={handleClose3} maxWidth="md" fullWidth>
+                  <DialogTitle>Frequency of Exposure Reference Guide</DialogTitle>
+                  <DialogContent>
+                    <div className="relative w-full h-[600px]">
+                      <Image
+                        src={people_image} // Replace with your actual image path
+                        alt="Detailed Information"
+                        layout="fill"
+                        objectFit="contain"
+                        priority
+                      />
+                    </div>
+                  </DialogContent>
+                </Dialog>
 
           
           <hr className="mt-5 mb-5"></hr>
@@ -1346,19 +1388,20 @@ const handleReconcile = async () => {
             {/* Description starts */}
             <div className="mt-5">
               <label htmlFor="description" className="block font-medium">
-                Describe the problem you are submitting a PFC for:
+                Describe the problem:
               </label>
               <textarea
                   id="description"
                   name="description"
                   rows={4}
-                  cols={50}
                   value={formData.description}
                   onChange={handleInputChangeDescription}
                   required
                   className="border-solid border-2 rounded-lg"
               ></textarea>
             </div>
+
+            {/* Why it's important */}
             <div>
               <label htmlFor="important" className="block font-medium">
                 Explain in 1-2 sentences why this PFC is important:
@@ -1367,7 +1410,6 @@ const handleReconcile = async () => {
                   id="important"
                   name="important"
                   rows={2}
-                  cols={50}
                   value={formData.important}
                   onChange={handleInputChangeDescription}
                   required
@@ -1399,6 +1441,7 @@ const handleReconcile = async () => {
             <button type="submit" className="mt-10 bg-blue-950 text-white font-bold py-2 px-4 rounded-full" >
               Submit PFC Request
             </button>
+
             {/* Notification */}
             <div>
               <label>{error}</label>
