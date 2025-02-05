@@ -14,7 +14,7 @@ import {
   useReactTable,
   getFilteredRowModel,
 } from "@tanstack/react-table"
-
+import { Task } from "./columns.jsx"
 import {
   Table,
   TableBody,
@@ -36,7 +36,7 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({
   columns,
-  data,
+  data: initialData,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -44,7 +44,56 @@ export function DataTable<TData, TValue>({
   )
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
+const [data, setData] = React.useState(initialData);
+  // Priority Mapping
+  const categoryPriority: Record<string, number> = {
+    safety: 4,
+    pipcost: 3,
+    quality: 2,
+    throughput: 1,
+  };
 
+    // Function to Rank PFCs
+  const rankPFCs = () => {
+    const sortedData = [...data].sort((a: any, b: any) => {
+      // Ensure category is an array, or default to an empty array
+      const aCategories = Array.isArray(a.category) ? a.category : [];
+      const bCategories = Array.isArray(b.category) ? b.category : [];
+      // Get the highest priority category for both items
+      const highestPriorityA = Math.max(
+        ...(aCategories.map((cat: string) => categoryPriority[cat.toLowerCase()] || 0) || [0])
+      );
+      const highestPriorityB = Math.max(
+        ...(bCategories.map((cat: string) => categoryPriority[cat.toLowerCase()] || 0) || [0])
+      );
+
+      // First sort by the highest category priority (e.g., "safety" > "cost")
+      if (highestPriorityA !== highestPriorityB) {
+        return highestPriorityB - highestPriorityA; // Highest priority first
+      }
+
+      // If categories are the same, sort by priority score
+      return (b.priority_score || 0) - (a.priority_score || 0);
+    });
+
+    // Add ranking numbers to the sorted data
+    const rankedData = sortedData.map((item, index) => ({
+      ...item,
+      rank: index + 1, // Add rank starting from 1
+    }));
+
+    // Update the table's data state
+    setData(rankedData);
+  };
+  // // Define columns (add a rank column)
+  // const columnsWithRank: ColumnDef<TData, TValue>[] = [
+  //   {
+  //     accessorKey: "rank",
+  //     header: "Rank",
+  //     cell: ({ row }) => <span>{row.original.rank}</span>,
+  //   },
+  //   ...columns, // Include all other columns
+  // ];
   const table = useReactTable({
     data,
     columns,
@@ -64,6 +113,9 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
+      <Button variant="outline" size="sm" onClick={rankPFCs}>
+  Rank PFCs
+</Button>
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter by status..."
@@ -147,6 +199,7 @@ export function DataTable<TData, TValue>({
               >
                 {row.getVisibleCells().map((cell) => 
                   {
+
                     // Custom rendering for "type" and "status" columns
           if (cell.column.id === "category") {
             const categories = cell.getValue();
