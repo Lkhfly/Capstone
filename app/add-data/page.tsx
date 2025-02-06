@@ -147,7 +147,7 @@ console.log(formData.category)
 
     let updatedRankingQuality: number | undefined;
     let updatedRankingThroughput: number | undefined;
-  if (quality1 && throughput1) {
+  if (formData.category.includes('quality') && formData.category.includes('throughput')) {
     updatedRankingQuality = calculateQualityRanking(formData.count);
     updatedRankingThroughput = 0
     console.log("Calculated Quality Ranking:", updatedRankingQuality);
@@ -178,7 +178,7 @@ console.log(formData.category)
     priority_score_new = formData.cost + formData.headcount
     }
     else if (formData.category.includes("quality")){
-    priority_score_new = formData.level1 + formData.level2 + formData.level3 + formData.level4 + formData.fault      
+    priority_score_new = parseInt(formData.level1) + parseInt(formData.level2) + parseInt(formData.level3) + parseInt(formData.level4) + formData.fault      
     }
     else if (formData.category.includes("throughput")){
     priority_score_new = formData.downtime + formData.stops      
@@ -269,7 +269,7 @@ console.log(formData.category)
   const [safety1, setSafety1] = useState(false);
   const [quality1, setQuality1] = useState(false);
   const [throughput1, setThroughput1] = useState(false);
-  const { safety, quality, throughput, pipCost } = state;
+  const { safety, quality, throughput, pipcost } = state;
   const [isClosed, setIsClosed] = useState(true);
 
 // const handleFile = (e) => {
@@ -307,14 +307,14 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
   const files = e.target.files; // Get the files from the input
   if (files && files[0]) { // Check if files exist and has at least one file
     const file = files[0];
-    const formData = new FormData();
-    formData.append('file', file);
+    const formData1 = new FormData();
+    formData1.append('file', file);
 
     // Check if 'quality' or 'throughput' is selected and append the respective field to formData
-    if (quality1 || (quality1 && throughput1)) {
-      formData.append('quality', quality1.toString());
-    } else if (throughput1) {
-      formData.append('throughput', throughput1.toString());
+    if (formData.category.includes('quality')) {
+      formData1.append('quality', quality1.toString());
+    } else if (formData.category.includes('throughput')) {
+      formData1.append('throughput', throughput1.toString());
     } else {
       console.warn("Neither quality nor throughput selected.");
       return; // Exit early if neither is selected
@@ -322,7 +322,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
     try {
       // Send the file to the back-end without handling any specific response data
-      await axios.post('http://localhost:5000/process_data_excel', formData, {
+      await axios.post('http://localhost:5000/process_data_excel', formData1, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -342,7 +342,6 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
 
 
-  const [isOpen, setIsOpen] = useState(false);
 
 
 // const handleReconcile = async () => {
@@ -504,7 +503,7 @@ const handleReconcile = async () => {
   const inputData = new FormData();
 
   // Check if quality1 is selected and append quality-specific data
-  if (quality1 || (quality1 && throughput1)) {
+  if (formData.category.includes('quality')) {
     inputData.append("level1", formData.level1.toString());
     inputData.append("level2", formData.level2.toString());
     inputData.append("level3", formData.level3.toString());
@@ -514,14 +513,14 @@ const handleReconcile = async () => {
   }
 
   // Check if throughput1 is selected and append throughput-specific data
-  if (throughput1) {
+  if (formData.category.includes('throughput')) {
     inputData.append("station", formData.station.toString());
     inputData.append("downtime", formData.downtime.toString());
     inputData.append("stops", formData.stops.toString());
   }
 
   // Validate that required fields are present if quality1 is selected
-  if (quality1 || (quality1 && throughput1)) {
+  if (formData.category.includes('quality')) {
     if (
       !inputData.has("level1") ||
       !inputData.has("level2") ||
@@ -537,7 +536,7 @@ const handleReconcile = async () => {
   }
 
   // Validate that required fields are present if throughput1 is selected
-  if (throughput1) {
+  if (formData.category.includes('throughput')) {
     if (
       !inputData.has("station") ||
       !inputData.has("downtime") ||
@@ -574,7 +573,7 @@ const handleReconcile = async () => {
     console.log("inputDataObject:", inputDataObject);
 
     // Check if there is a matching row for quality fields
-    if (quality1 || (quality1 && throughput1)) {
+    if (formData.category.includes('quality')) {
       let qualityMatchFound = false;
 
       // Iterate through each row in responseData to check for a match
@@ -610,7 +609,7 @@ const handleReconcile = async () => {
     }
 
     // Compare throughput related fields
-    if (throughput1) {
+    if (formData.category.includes('throughput')) {
       const responseDataObject: { [key: string]: string | number } = {};
           for (let key in responseData) {
             if (responseData.hasOwnProperty(key)) {
@@ -647,7 +646,11 @@ const handleReconcile = async () => {
     console.error('Error during fetch:', error); // Handle any errors
   }
 };
+  const [isOpen, setIsOpen] = useState(false);
 
+  const handleOpen = () => {
+    setIsOpen(true);
+  };
   const handleClose = () => {
     setIsOpen(false);
   };
@@ -1493,7 +1496,7 @@ const handleReconcile = async () => {
            
             
           <div>
-            {quality1 || throughput1 ? (
+            {(formData.category.includes('quality') || formData.category.includes('throughput')) ? (
               <>
             <h1>Upload Excel File</h1>
             <input type="file" onChange={(e) => handleFile(e)} />
@@ -1501,7 +1504,7 @@ const handleReconcile = async () => {
           </div>
            
           <div>
-            {quality1 || throughput1 ? (
+            {(formData.category.includes('quality') || formData.category.includes('throughput')) ? (
               <>
             <button type = "button" className="mt-8 bg-blue-950 text-white font-bold py-2 px-4 rounded-full" onClick = {handleReconcile}>
               Reconcile
