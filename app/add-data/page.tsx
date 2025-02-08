@@ -1,7 +1,7 @@
 "use client";
 
 import axios from 'axios';
-
+import {data} from '../firebase/large'
 
 import React, { FormEvent, useState } from 'react';
 import {db} from "../firebase/config";
@@ -44,7 +44,7 @@ interface FormData {
   level1: string;
   level2: string;
   level3: string;
-  level4: string;
+  // level4: string;
   fault: number;
   count: number;
   frequency: string;
@@ -55,7 +55,30 @@ interface FormData {
   people_at_risk: number;
   priority_score: number;
 }
+
 const MyForm = () => {
+  const [level1Options, setLevel1Options] = useState<string[]>(Object.keys(data));
+  const [level2Options, setLevel2Options] = useState<string[]>([]);
+  const [level3Options, setLevel3Options] = useState<string[]>([]);
+
+  const [selectedLevel1, setSelectedLevel1] = useState<string>("");
+  const [selectedLevel2, setSelectedLevel2] = useState<string>("");
+  const [selectedLevel3, setSelectedLevel3] = useState<string>("");
+const handleLevel1Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const level1 = e.target.value;
+  setSelectedLevel1(level1);
+  setLevel2Options(Object.keys(data[level1] || {}));
+  setSelectedLevel2("");
+  setLevel3Options([]);
+  setSelectedLevel3("");
+};
+
+const handleLevel2Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const level2 = e.target.value;
+  setSelectedLevel2(level2);
+  setLevel3Options(data[selectedLevel1][level2] || []);
+  setSelectedLevel3("");
+};
   const [formData, setFormData] = useState<FormData>({
     title: "",
     station: "",
@@ -87,7 +110,7 @@ const MyForm = () => {
     level1 : "",
     level2 : "",
     level3 : "",
-    level4 : "",
+    // level4 : "",
     fault : 0,
     count : 0,
     // Safety
@@ -178,7 +201,7 @@ console.log(formData.category)
     priority_score_new = formData.cost + formData.headcount
     }
     else if (formData.category.includes("quality")){
-    priority_score_new = parseInt(formData.level1) + parseInt(formData.level2) + parseInt(formData.level3) + parseInt(formData.level4) + formData.fault      
+    priority_score_new = parseInt(formData.level1) + parseInt(formData.level2) + parseInt(formData.level3) + formData.fault      
     }
     else if (formData.category.includes("throughput")){
     priority_score_new = formData.downtime + formData.stops      
@@ -219,7 +242,7 @@ console.log(formData.category)
         level1 : "",
         level2 : "",
         level3 : "",
-        level4 : "",
+        // level4 : "",
         fault : 0,
         count : 0,
         // Safety
@@ -507,7 +530,7 @@ const handleReconcile = async () => {
     inputData.append("level1", formData.level1.toString());
     inputData.append("level2", formData.level2.toString());
     inputData.append("level3", formData.level3.toString());
-    inputData.append("level4", formData.level4.toString());
+    // inputData.append("level4", formData.level4.toString());
     inputData.append("fault", formData.fault.toString());
     inputData.append("count", formData.count.toString());
   }
@@ -525,7 +548,6 @@ const handleReconcile = async () => {
       !inputData.has("level1") ||
       !inputData.has("level2") ||
       !inputData.has("level3") ||
-      !inputData.has("level4") ||
       !inputData.has("fault") ||
       !inputData.has("count")
     ) {
@@ -1137,49 +1159,54 @@ const handleReconcile = async () => {
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center">
                     <label className="font-medium w-24">Level 1:</label>
-                    <input
-                        type="text"
+                      <select
                         required
                         name="level1"
-                        value={formData.level1}
-                        onChange={handleInputChangeString}
+                        value={selectedLevel1}
+                        onChange={handleLevel1Change}
                         className="w-38 font-light border-solid border-2 rounded-lg"
-                    />
+                      >
+                        <option value="">Select Level 1</option>
+                        {level1Options.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
                   </div>
                   <div className="flex items-center">
                     <label className="font-medium w-24">Level 2:</label>
-                    <input
-
-                        type="text"
+                      <select
                         required
                         name="level2"
-                        value={formData.level2}
-                        onChange={handleInputChangeString}
+                        value={selectedLevel2}
+                        onChange={handleLevel2Change}
                         className="w-38 font-light border-solid border-2 rounded-lg"
-                    />
+                      >
+                        <option value="">Select Level 2</option>
+                        {level2Options.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
                   </div>
                   <div className="flex items-center">
                     <label className="font-medium w-24">Level 3:</label>
-                    <input
-                        type="text"
-                        required
-                        name="level3"
-                        value={formData.level3}
-                        onChange={handleInputChangeString}
-                        className="w-38 font-light border-solid border-2 rounded-lg"
-
-                    />
-                  </div>
-                  <div className="flex items-center">
-                    <label className="font-medium w-24">Level 4:</label>
-                    <input
-                        type="text"
-                        required
-                        name="level4"
-                        value={formData.level4}
-                        onChange={handleInputChangeString}
-                        className="w-38 font-light border-solid border-2 rounded-lg"
-                    />
+                    <select
+                      required
+                      name="level3"
+                      value={selectedLevel3}
+                      onChange={(e) => setSelectedLevel3(e.target.value)}
+                      className="w-38 font-light border-solid border-2 rounded-lg"
+                    >
+                      <option value="">Select Level 3</option>
+                      {level3Options.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div className="flex items-center">
                     <label className="font-medium w-24">Fault:</label>
