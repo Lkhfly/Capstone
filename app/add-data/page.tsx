@@ -57,28 +57,7 @@ interface FormData {
 }
 
 const MyForm = () => {
-  const [level1Options, setLevel1Options] = useState<string[]>(Object.keys(data));
-  const [level2Options, setLevel2Options] = useState<string[]>([]);
-  const [level3Options, setLevel3Options] = useState<string[]>([]);
 
-  const [selectedLevel1, setSelectedLevel1] = useState<string>("");
-  const [selectedLevel2, setSelectedLevel2] = useState<string>("");
-  const [selectedLevel3, setSelectedLevel3] = useState<string>("");
-const handleLevel1Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  const level1 = e.target.value;
-  setSelectedLevel1(level1);
-  setLevel2Options(Object.keys(data[level1] || {}));
-  setSelectedLevel2("");
-  setLevel3Options([]);
-  setSelectedLevel3("");
-};
-
-const handleLevel2Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  const level2 = e.target.value;
-  setSelectedLevel2(level2);
-  setLevel3Options(data[selectedLevel1][level2] || []);
-  setSelectedLevel3("");
-};
   const [formData, setFormData] = useState<FormData>({
     title: "",
     station: "",
@@ -132,7 +111,44 @@ const handleLevel2Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
       [name]: value,
     }));
   };
+  const [level1Options, setLevel1Options] = useState<string[]>(Object.keys(data));
+  const [level2Options, setLevel2Options] = useState<string[]>([]);
+  const [level3Options, setLevel3Options] = useState<string[]>([]);
 
+  const [selectedLevel1, setSelectedLevel1] = useState<string>("");
+  const [selectedLevel2, setSelectedLevel2] = useState<string>("");
+  const [selectedLevel3, setSelectedLevel3] = useState<string>("");
+const handleLevel1Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const stuff = e.target.value;
+  setSelectedLevel1(stuff);
+    setFormData((prevData) => ({
+      ...prevData,
+      level1: stuff,
+    }));
+  setLevel2Options(Object.keys(data[stuff] || {}));
+  setSelectedLevel2("");
+  setLevel3Options([]);
+  setSelectedLevel3("");
+};
+
+const handleLevel2Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const stuff = e.target.value;
+  setSelectedLevel2(stuff);
+    setFormData((prevData) => ({
+      ...prevData,
+      level2: stuff,
+    }));
+  setLevel3Options(data[selectedLevel1][stuff] || []);
+  setSelectedLevel3("");
+};
+const handleLevel3Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const stuff = e.target.value;
+  setSelectedLevel3(stuff);
+    setFormData((prevData) => ({
+      ...prevData,
+      level3: stuff,
+    }));
+};
   const handleInputChangeNumber = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -201,7 +217,7 @@ console.log(formData.category)
     priority_score_new = formData.cost + formData.headcount
     }
     else if (formData.category.includes("quality")){
-    priority_score_new = parseInt(formData.level1) + parseInt(formData.level2) + parseInt(formData.level3) + formData.fault      
+    priority_score_new = formData.fault      
     }
     else if (formData.category.includes("throughput")){
     priority_score_new = formData.downtime + formData.stops      
@@ -1206,7 +1222,7 @@ const handleReconcile = async () => {
                       required
                       name="level3"
                       value={selectedLevel3}
-                      onChange={(e) => setSelectedLevel3(e.target.value)}
+                      onChange={handleLevel3Change}
                       className="w-38 font-light border-solid border-2 rounded-lg"
                     >
                       <option value="">Select Level 3</option>
