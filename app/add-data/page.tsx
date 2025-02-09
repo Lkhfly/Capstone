@@ -233,6 +233,7 @@ console.log(formData.category)
         priority_score : 0
       });
       console.log("Form Data Submitted:", updatedFormData); // Print all form data to the console
+      setIsReconciled(false);
     } catch (e) {
       setError("Error is " + e);
     }
@@ -498,8 +499,12 @@ const calculateThroughputRanking = (downtime: number, stops: number) => {
 };
 
 
+// state that will keep track if what the user inputted matched with what they uploaded
+const [isReconciled, setIsReconciled] = useState(false);
+
 
 const handleReconcile = async () => {
+  setIsReconciled(false);
   const inputData = new FormData();
 
   // Check if quality1 is selected and append quality-specific data
@@ -602,9 +607,11 @@ const handleReconcile = async () => {
       if (qualityMatchFound) {
         console.log("All quality values match a row in the backend data.");
         alert("Quality values match a row in the backend data.");
+        setIsReconciled(true)
       } else {
         console.log("No matching quality row found in the backend data.");
         alert("No matching row found for the quality data.");
+        setIsReconciled(false)
       }
     }
 
@@ -636,8 +643,10 @@ const handleReconcile = async () => {
       
           if (match) {
             console.log("All values match.");
+            setIsReconciled(true)
           } else {
             console.log("Values do not match.");
+            setIsReconciled(false)
           }
       
       }
@@ -1513,7 +1522,9 @@ const handleReconcile = async () => {
           </div>
           
             
-            <button type="submit" className="mt-10 bg-blue-950 text-white font-bold py-2 px-4 rounded-full" >
+            <button type="submit" className="mt-10 bg-blue-950 text-white font-bold py-2 px-4 rounded-full" 
+            disabled={ (formData.category.includes("quality") || formData.category.includes("throughput")) && !isReconciled}
+            >
               Submit PFC Request
             </button>
 
