@@ -679,7 +679,7 @@ const handleReconcile = async () => {
             </div>
             <div>
               <label className="font-medium">
-                Date PFC Completed:
+                Date PFC Required:
                 <input
                   type="date"
                   required
@@ -1391,7 +1391,7 @@ const handleReconcile = async () => {
                   value={formData.description}
                   onChange={handleInputChangeDescription}
                   required
-                  className="border-solid border-2 rounded-lg"
+                  className="border-solid border-2 rounded-lg w-full md:w-3/4 lg:w-2/3"
               ></textarea>
             </div>
 
@@ -1407,7 +1407,7 @@ const handleReconcile = async () => {
                   value={formData.important}
                   onChange={handleInputChangeDescription}
                   required
-                  className="border-solid border-2 rounded-lg"
+                  className="border-solid border-2 rounded-lg w-full md:w-3/4 lg:w-2/3"
               ></textarea>
             </div>
             {/* Description ends */}

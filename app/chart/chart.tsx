@@ -205,7 +205,7 @@ const COLORS =
         <XAxis dataKey="name" angle={-45} textAnchor="end" interval={0} height={100} />
         <YAxis />
         <Tooltip />
-        <Legend formatter={(value) => (value === 'submitted' ? 'Submitted PFCs' : 'Completed PFCs')} />
+        <Legend formatter={(value) => (value === 'submitted' ? 'Submitted PFCs' : 'Required PFCs')} />
         <CartesianGrid strokeDasharray="3 3" />
         <Bar dataKey="submitted" fill="#8884d8" background={{ fill: '#eee' }} />
         <Bar dataKey="completed" fill="#82ca9d" />
