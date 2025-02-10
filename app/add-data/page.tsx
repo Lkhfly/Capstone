@@ -45,7 +45,7 @@ interface FormData {
   level2: string;
   level3: string;
   // level4: string;
-  fault: number;
+  // fault: number;
   count: number;
   frequency: string;
   task_or_equipment: string;
@@ -90,7 +90,7 @@ const MyForm = () => {
     level2 : "",
     level3 : "",
     // level4 : "",
-    fault : 0,
+    // fault : 0,
     count : 0,
     // Safety
     frequency: '',
@@ -216,17 +216,18 @@ console.log(formData.category)
     else if (formData.category.includes("pipcost")){
     priority_score_new = formData.cost + formData.headcount
     }
-    else if (formData.category.includes("quality")){
-    priority_score_new = formData.fault      
-    }
+    // else if (formData.category.includes("quality")){
+    // priority_score_new = formData.fault      
+    // }
     else if (formData.category.includes("throughput")){
     priority_score_new = formData.downtime + formData.stops      
     }
-    const updatedFormData = {
-      ...formData,
+    const updatedFormData1 = {
+      ...updatedFormData,
       priority_score: priority_score_new,
+
     };
-      const docRef = await addDoc(collection(db, 'pfc'), updatedFormData);
+      const docRef = await addDoc(collection(db, 'pfc'), updatedFormData1);
       setError('Document written with ID: ' + docRef.id);
       setFormData({
         title: "",
@@ -259,7 +260,7 @@ console.log(formData.category)
         level2 : "",
         level3 : "",
         // level4 : "",
-        fault : 0,
+        // fault : 0,
         count : 0,
         // Safety
         frequency: '',
@@ -271,7 +272,7 @@ console.log(formData.category)
         // Priority score
         priority_score : 0
       });
-      console.log("Form Data Submitted:", updatedFormData); // Print all form data to the console
+      console.log("Form Data Submitted:", updatedFormData1); // Print all form data to the console
       setIsReconciled(false);
     } catch (e) {
       setError("Error is " + e);
@@ -345,8 +346,8 @@ console.log(formData.category)
 
 const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
   const files = e.target.files; // Get the files from the input
-  if (files && files[0]) { // Check if files exist and has at least one file
-    const file = files[0];
+  if (files && files.length > 0) { // Check if files exist and has at least one file
+    const file = files[files.length - 1]
     const formData1 = new FormData();
     formData1.append('file', file);
 
@@ -381,139 +382,6 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
 };
 
 
-
-
-
-// const handleReconcile = async () => {
-//   const data = new FormData();
-
-// if (throughput1 || quality1) {
-//   data.append("station", formData.station.toString());
-//   data.append("downtime", formData.downtime.toString());
-//   data.append("stops", formData.stops.toString())
-// }
-  
-//   try {
-//     const response = await fetch("http://localhost:5000/process_data_reconcile", {
-//       method: "POST",
-//       body: data,
-//     });
-
-//     if (!response.ok) {
-//       throw new Error("Failed to submit data");
-//     }
-
-//     const result = await response.json();
-//     console.log("Response from backend:", result);
-//   } catch (error) {
-//     console.error("Error submitting data:", error);
-//   }
-// };
-
-
-
-// const handleReconcile = async () => {
-//   const inputData = new FormData()
-
-//   if (throughput1 || quality1) {
-//     inputData.append("station", formData.station.toString());
-//     inputData.append("downtime", formData.downtime.toString());
-//     inputData.append("stops", formData.stops.toString())
-    
-//   }
-
-//   try {
-//     const response = await fetch("http://localhost:5000/process_data_excel", {
-//       method: "GET", // Fetching data from the server, not sending anything
-//     });
-
-//     if (!response.ok) {
-//       throw new Error("Failed to fetch data");
-//     }
-
-//     const responseData = await response.json(); // The data returned from the server
-//     console.log('Success:', responseData); // Log the data or use it as needed
-
-//   } catch (error) {
-//     console.error('Error during fetch:', error); // Handle any errors
-//   }
-// };
-
-// const handleReconcile = async () => {
-//   const inputData = new FormData();
-
-//   // Only append values if either throughput1 or quality1 is true
-//   if (throughput1 || quality1) {
-//     inputData.append("station", formData.station.toString());
-//     inputData.append("downtime", formData.downtime.toString());
-//     inputData.append("stops", formData.stops.toString());
-//   }
-
-//   // Check if specific keys exist in FormData using `has()` method
-//   if (!inputData.has("station") || !inputData.has("downtime") || !inputData.has("stops")) {
-//     console.log("No values appended. Aborting execution.");
-//     alert("Station, Downtime or Stops not selected")
-//     return;
-//   }
-
-//   try {
-//     // Fetch data from the server if inputData has values
-//     const response = await fetch("http://localhost:5000/process_data_excel", {
-//       method: "GET", // Fetching data from the server
-//     });
-
-//     if (!response.ok) {
-//       throw new Error("Failed to fetch data");
-//     }
-
-//     const responseData = await response.json(); // The data returned from the server
-//     console.log('Success:', responseData); // Log the data or use it as needed
-
-//     // Manually extract data from FormData without using `entries()`
-//     const inputDataObject: { [key: string]: string } = {};
-    
-//     // Using `FormData`'s `.forEach()` method indirectly (works with target ES5)
-//     inputData.forEach((value, key) => {
-//       inputDataObject[key.toLowerCase()] = value instanceof File ? value.name : value.toString();
-//     });
-
-//     // Convert responseData to an object with lowercase keys and array handling
-//     const responseDataObject: { [key: string]: string | number } = {};
-//     for (let key in responseData) {
-//       if (responseData.hasOwnProperty(key)) {
-//         const lowerKey = key.toLowerCase();
-//         responseDataObject[lowerKey] = Array.isArray(responseData[key]) ? responseData[key][0] : responseData[key];
-//       }
-//     }
-
-//     // Print both objects to the console for inspection
-//     console.log("inputDataObject:", inputDataObject);
-//     console.log("responseDataObject:", responseDataObject);
-
-//     // Compare key-value pairs
-//     let match = true;
-//     for (let key in inputDataObject) {
-//       // Convert both values to strings to ensure consistent comparison
-//       const inputVal = inputDataObject[key].toString();
-//       const responseVal = responseDataObject[key].toString();
-      
-//       if (inputVal !== responseVal) {
-//         match = false;
-//         console.log(`Mismatch for key "${key}": ${inputVal} !== ${responseVal}`);
-//         alert(`Mismatch for key "${key}": ${inputVal} !== ${responseVal}, values do not match`)
-//       }
-//     }
-
-//     if (match) {
-//       console.log("All values match.");
-//     } else {
-//       console.log("Values do not match.");
-//     }
-
-//   } catch (error) {
-//     console.error('Error during fetch:', error); // Handle any errors
-//   }
-// };
 
 const calculateQualityRanking = (count: number) => {
   count = count ?? 0;
@@ -552,7 +420,7 @@ const handleReconcile = async () => {
     inputData.append("level2", formData.level2.toString());
     inputData.append("level3", formData.level3.toString());
     // inputData.append("level4", formData.level4.toString());
-    inputData.append("fault", formData.fault.toString());
+    // inputData.append("fault", formData.fault.toString());
     inputData.append("count", formData.count.toString());
   }
 
@@ -569,7 +437,7 @@ const handleReconcile = async () => {
       !inputData.has("level1") ||
       !inputData.has("level2") ||
       !inputData.has("level3") ||
-      !inputData.has("fault") ||
+      // !inputData.has("fault") ||
       !inputData.has("count")
     ) {
       console.log("Required quality fields not selected. Aborting execution.");
@@ -624,7 +492,7 @@ const handleReconcile = async () => {
         let rowMatches = true;
 
         // Compare all quality-related fields
-        const qualityKeys = ["level1", "level2", "level3", "level4", "fault", "count"];
+        const qualityKeys = ["level1", "level2", "level3", "count"];
         for (let key of qualityKeys) {
           const inputVal = inputDataObject[key]?.toString().toLowerCase();
           const rowVal = row[key.toLowerCase()]?.toString().toLowerCase(); // Ensure key is in lowercase for comparison
@@ -1233,7 +1101,7 @@ const handleReconcile = async () => {
                       ))}
                     </select>
                   </div>
-                  <div className="flex items-center">
+                  {/* <div className="flex items-center">
                     <label className="font-medium w-24">Fault:</label>
                     <input
                         type="text"
@@ -1243,7 +1111,7 @@ const handleReconcile = async () => {
                         onChange={handleInputChangeString}
                         className="w-38 font-light border-solid border-2 rounded-lg"
                     />
-                  </div>
+                  </div> */}
                   <div className="flex items-center">
                     <label className="font-medium w-24">Count:</label>
                     <input

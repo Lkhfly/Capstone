@@ -25,7 +25,7 @@ def process_data_excel_post():
     if quality:
         print(f"Received file for quality: {file.filename}")
         df = pd.read_excel(BytesIO(file.read()), sheet_name='main')  # Read the Excel file into a DataFrame
-        group_df = df.groupby(['Level 1', 'Level 2', 'Level 3', 'Level 4', 'Fault']).size().reset_index(name='Count')
+        group_df = df.groupby(['Level 1', 'Level 2', 'Level 3']).size().reset_index(name='Count')
         group_df['Count'] = group_df['Count'].apply(lambda x: str(x) if pd.notnull(x) else '')
         
         # Convert column names to lowercase for consistency
