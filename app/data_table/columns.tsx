@@ -21,6 +21,7 @@ import {
 
 // Shape of data
 export type Task = {
+    status: string,
     title : string, 
     station : string,
     date_sub : string,
