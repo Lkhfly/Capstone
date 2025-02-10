@@ -1,7 +1,7 @@
 "use client";
 
 import axios from 'axios';
-
+import {data} from '../firebase/large'
 
 import React, { FormEvent, useState } from 'react';
 import {db} from "../firebase/config";
@@ -44,8 +44,8 @@ interface FormData {
   level1: string;
   level2: string;
   level3: string;
-  level4: string;
-  fault: number;
+  // level4: string;
+  // fault: number;
   count: number;
   frequency: string;
   task_or_equipment: string;
@@ -55,7 +55,9 @@ interface FormData {
   people_at_risk: number;
   priority_score: number;
 }
+
 const MyForm = () => {
+
   const [formData, setFormData] = useState<FormData>({
     title: "",
     station: "",
@@ -87,8 +89,8 @@ const MyForm = () => {
     level1 : "",
     level2 : "",
     level3 : "",
-    level4 : "",
-    fault : 0,
+    // level4 : "",
+    // fault : 0,
     count : 0,
     // Safety
     frequency: '',
@@ -109,7 +111,44 @@ const MyForm = () => {
       [name]: value,
     }));
   };
+  const [level1Options, setLevel1Options] = useState<string[]>(Object.keys(data));
+  const [level2Options, setLevel2Options] = useState<string[]>([]);
+  const [level3Options, setLevel3Options] = useState<string[]>([]);
 
+  const [selectedLevel1, setSelectedLevel1] = useState<string>("");
+  const [selectedLevel2, setSelectedLevel2] = useState<string>("");
+  const [selectedLevel3, setSelectedLevel3] = useState<string>("");
+const handleLevel1Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const stuff = e.target.value;
+  setSelectedLevel1(stuff);
+    setFormData((prevData) => ({
+      ...prevData,
+      level1: stuff,
+    }));
+  setLevel2Options(Object.keys(data[stuff] || {}));
+  setSelectedLevel2("");
+  setLevel3Options([]);
+  setSelectedLevel3("");
+};
+
+const handleLevel2Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const stuff = e.target.value;
+  setSelectedLevel2(stuff);
+    setFormData((prevData) => ({
+      ...prevData,
+      level2: stuff,
+    }));
+  setLevel3Options(data[selectedLevel1][stuff] || []);
+  setSelectedLevel3("");
+};
+const handleLevel3Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const stuff = e.target.value;
+  setSelectedLevel3(stuff);
+    setFormData((prevData) => ({
+      ...prevData,
+      level3: stuff,
+    }));
+};
   const handleInputChangeNumber = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -147,7 +186,7 @@ console.log(formData.category)
 
     let updatedRankingQuality: number | undefined;
     let updatedRankingThroughput: number | undefined;
-  if (quality1 && throughput1) {
+  if (formData.category.includes('quality') && formData.category.includes('throughput')) {
     updatedRankingQuality = calculateQualityRanking(formData.count);
     updatedRankingThroughput = 0
     console.log("Calculated Quality Ranking:", updatedRankingQuality);
@@ -178,16 +217,16 @@ console.log(formData.category)
     priority_score_new = formData.cost + formData.headcount
     }
     else if (formData.category.includes("quality")){
-    priority_score_new = formData.level1 + formData.level2 + formData.level3 + formData.level4 + formData.fault      
+    priority_score_new = updatedRankingQuality    
     }
     else if (formData.category.includes("throughput")){
-    priority_score_new = formData.downtime + formData.stops      
+    priority_score_new = updatedRankingThroughput     
     }
-    const updatedFormData = {
-      ...formData,
+    const updatedFormData1 = {
+      ...updatedFormData,
       priority_score: priority_score_new,
     };
-      const docRef = await addDoc(collection(db, 'pfc'), updatedFormData);
+      const docRef = await addDoc(collection(db, 'pfc'), updatedFormData1);
       setError('Document written with ID: ' + docRef.id);
       setFormData({
         title: "",
@@ -219,8 +258,8 @@ console.log(formData.category)
         level1 : "",
         level2 : "",
         level3 : "",
-        level4 : "",
-        fault : 0,
+        // level4 : "",
+        // fault : 0,
         count : 0,
         // Safety
         frequency: '',
@@ -232,7 +271,8 @@ console.log(formData.category)
         // Priority score
         priority_score : 0
       });
-      console.log("Form Data Submitted:", updatedFormData); // Print all form data to the console
+      console.log("Form Data Submitted:", updatedFormData1); // Print all form data to the console
+      setIsReconciled(false);
     } catch (e) {
       setError("Error is " + e);
     }
@@ -269,7 +309,7 @@ console.log(formData.category)
   const [safety1, setSafety1] = useState(false);
   const [quality1, setQuality1] = useState(false);
   const [throughput1, setThroughput1] = useState(false);
-  const { safety, quality, throughput, pipCost } = state;
+  const { safety, quality, throughput, pipcost } = state;
   const [isClosed, setIsClosed] = useState(true);
 
 // const handleFile = (e) => {
@@ -305,16 +345,16 @@ console.log(formData.category)
 
 const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
   const files = e.target.files; // Get the files from the input
-  if (files && files[0]) { // Check if files exist and has at least one file
-    const file = files[0];
-    const formData = new FormData();
-    formData.append('file', file);
+  if (files && files.length > 0) { // Check if files exist and has at least one file
+    const file = files[files.length - 1]
+    const formData1 = new FormData();
+    formData1.append('file', file);
 
     // Check if 'quality' or 'throughput' is selected and append the respective field to formData
-    if (quality1 || (quality1 && throughput1)) {
-      formData.append('quality', quality1.toString());
-    } else if (throughput1) {
-      formData.append('throughput', throughput1.toString());
+    if (formData.category.includes('quality')) {
+      formData1.append('quality', quality1.toString());
+    } else if (formData.category.includes('throughput')) {
+      formData1.append('throughput', throughput1.toString());
     } else {
       console.warn("Neither quality nor throughput selected.");
       return; // Exit early if neither is selected
@@ -322,7 +362,7 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
     try {
       // Send the file to the back-end without handling any specific response data
-      await axios.post('http://localhost:5000/process_data_excel', formData, {
+      await axios.post('http://localhost:5000/process_data_excel', formData1, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -341,140 +381,6 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
 };
 
 
-
-  const [isOpen, setIsOpen] = useState(false);
-
-
-// const handleReconcile = async () => {
-//   const data = new FormData();
-
-// if (throughput1 || quality1) {
-//   data.append("station", formData.station.toString());
-//   data.append("downtime", formData.downtime.toString());
-//   data.append("stops", formData.stops.toString())
-// }
-  
-//   try {
-//     const response = await fetch("http://localhost:5000/process_data_reconcile", {
-//       method: "POST",
-//       body: data,
-//     });
-
-//     if (!response.ok) {
-//       throw new Error("Failed to submit data");
-//     }
-
-//     const result = await response.json();
-//     console.log("Response from backend:", result);
-//   } catch (error) {
-//     console.error("Error submitting data:", error);
-//   }
-// };
-
-
-
-// const handleReconcile = async () => {
-//   const inputData = new FormData()
-
-//   if (throughput1 || quality1) {
-//     inputData.append("station", formData.station.toString());
-//     inputData.append("downtime", formData.downtime.toString());
-//     inputData.append("stops", formData.stops.toString())
-    
-//   }
-
-//   try {
-//     const response = await fetch("http://localhost:5000/process_data_excel", {
-//       method: "GET", // Fetching data from the server, not sending anything
-//     });
-
-//     if (!response.ok) {
-//       throw new Error("Failed to fetch data");
-//     }
-
-//     const responseData = await response.json(); // The data returned from the server
-//     console.log('Success:', responseData); // Log the data or use it as needed
-
-//   } catch (error) {
-//     console.error('Error during fetch:', error); // Handle any errors
-//   }
-// };
-
-// const handleReconcile = async () => {
-//   const inputData = new FormData();
-
-//   // Only append values if either throughput1 or quality1 is true
-//   if (throughput1 || quality1) {
-//     inputData.append("station", formData.station.toString());
-//     inputData.append("downtime", formData.downtime.toString());
-//     inputData.append("stops", formData.stops.toString());
-//   }
-
-//   // Check if specific keys exist in FormData using `has()` method
-//   if (!inputData.has("station") || !inputData.has("downtime") || !inputData.has("stops")) {
-//     console.log("No values appended. Aborting execution.");
-//     alert("Station, Downtime or Stops not selected")
-//     return;
-//   }
-
-//   try {
-//     // Fetch data from the server if inputData has values
-//     const response = await fetch("http://localhost:5000/process_data_excel", {
-//       method: "GET", // Fetching data from the server
-//     });
-
-//     if (!response.ok) {
-//       throw new Error("Failed to fetch data");
-//     }
-
-//     const responseData = await response.json(); // The data returned from the server
-//     console.log('Success:', responseData); // Log the data or use it as needed
-
-//     // Manually extract data from FormData without using `entries()`
-//     const inputDataObject: { [key: string]: string } = {};
-    
-//     // Using `FormData`'s `.forEach()` method indirectly (works with target ES5)
-//     inputData.forEach((value, key) => {
-//       inputDataObject[key.toLowerCase()] = value instanceof File ? value.name : value.toString();
-//     });
-
-//     // Convert responseData to an object with lowercase keys and array handling
-//     const responseDataObject: { [key: string]: string | number } = {};
-//     for (let key in responseData) {
-//       if (responseData.hasOwnProperty(key)) {
-//         const lowerKey = key.toLowerCase();
-//         responseDataObject[lowerKey] = Array.isArray(responseData[key]) ? responseData[key][0] : responseData[key];
-//       }
-//     }
-
-//     // Print both objects to the console for inspection
-//     console.log("inputDataObject:", inputDataObject);
-//     console.log("responseDataObject:", responseDataObject);
-
-//     // Compare key-value pairs
-//     let match = true;
-//     for (let key in inputDataObject) {
-//       // Convert both values to strings to ensure consistent comparison
-//       const inputVal = inputDataObject[key].toString();
-//       const responseVal = responseDataObject[key].toString();
-      
-//       if (inputVal !== responseVal) {
-//         match = false;
-//         console.log(`Mismatch for key "${key}": ${inputVal} !== ${responseVal}`);
-//         alert(`Mismatch for key "${key}": ${inputVal} !== ${responseVal}, values do not match`)
-//       }
-//     }
-
-//     if (match) {
-//       console.log("All values match.");
-//     } else {
-//       console.log("Values do not match.");
-//     }
-
-//   } catch (error) {
-//     console.error('Error during fetch:', error); // Handle any errors
-//   }
-// };
 
 const calculateQualityRanking = (count: number) => {
   count = count ?? 0;
@@ -499,35 +405,38 @@ const calculateThroughputRanking = (downtime: number, stops: number) => {
 };
 
 
+// state that will keep track if what the user inputted matched with what they uploaded
+const [isReconciled, setIsReconciled] = useState(false);
+
 
 const handleReconcile = async () => {
+  setIsReconciled(false);
   const inputData = new FormData();
 
   // Check if quality1 is selected and append quality-specific data
-  if (quality1 || (quality1 && throughput1)) {
+  if (formData.category.includes('quality')) {
     inputData.append("level1", formData.level1.toString());
     inputData.append("level2", formData.level2.toString());
     inputData.append("level3", formData.level3.toString());
-    inputData.append("level4", formData.level4.toString());
-    inputData.append("fault", formData.fault.toString());
+    // inputData.append("level4", formData.level4.toString());
+    // inputData.append("fault", formData.fault.toString());
     inputData.append("count", formData.count.toString());
   }
 
   // Check if throughput1 is selected and append throughput-specific data
-  if (throughput1) {
+  if (formData.category.includes('throughput')) {
     inputData.append("station", formData.station.toString());
     inputData.append("downtime", formData.downtime.toString());
     inputData.append("stops", formData.stops.toString());
   }
 
   // Validate that required fields are present if quality1 is selected
-  if (quality1 || (quality1 && throughput1)) {
+  if (formData.category.includes('quality')) {
     if (
       !inputData.has("level1") ||
       !inputData.has("level2") ||
       !inputData.has("level3") ||
-      !inputData.has("level4") ||
-      !inputData.has("fault") ||
+      // !inputData.has("fault") ||
       !inputData.has("count")
     ) {
       console.log("Required quality fields not selected. Aborting execution.");
@@ -537,7 +446,7 @@ const handleReconcile = async () => {
   }
 
   // Validate that required fields are present if throughput1 is selected
-  if (throughput1) {
+  if (formData.category.includes('throughput')) {
     if (
       !inputData.has("station") ||
       !inputData.has("downtime") ||
@@ -574,7 +483,7 @@ const handleReconcile = async () => {
     console.log("inputDataObject:", inputDataObject);
 
     // Check if there is a matching row for quality fields
-    if (quality1 || (quality1 && throughput1)) {
+    if (formData.category.includes('quality')) {
       let qualityMatchFound = false;
 
       // Iterate through each row in responseData to check for a match
@@ -582,7 +491,7 @@ const handleReconcile = async () => {
         let rowMatches = true;
 
         // Compare all quality-related fields
-        const qualityKeys = ["level1", "level2", "level3", "level4", "fault", "count"];
+        const qualityKeys = ["level1", "level2", "level3", "count"];
         for (let key of qualityKeys) {
           const inputVal = inputDataObject[key]?.toString().toLowerCase();
           const rowVal = row[key.toLowerCase()]?.toString().toLowerCase(); // Ensure key is in lowercase for comparison
@@ -603,14 +512,16 @@ const handleReconcile = async () => {
       if (qualityMatchFound) {
         console.log("All quality values match a row in the backend data.");
         alert("Quality values match a row in the backend data.");
+        setIsReconciled(true)
       } else {
         console.log("No matching quality row found in the backend data.");
         alert("No matching row found for the quality data.");
+        setIsReconciled(false)
       }
     }
 
     // Compare throughput related fields
-    if (throughput1) {
+    if (formData.category.includes('throughput')) {
       const responseDataObject: { [key: string]: string | number } = {};
           for (let key in responseData) {
             if (responseData.hasOwnProperty(key)) {
@@ -637,8 +548,10 @@ const handleReconcile = async () => {
       
           if (match) {
             console.log("All values match.");
+            setIsReconciled(true)
           } else {
             console.log("Values do not match.");
+            setIsReconciled(false)
           }
       
       }
@@ -647,7 +560,11 @@ const handleReconcile = async () => {
     console.error('Error during fetch:', error); // Handle any errors
   }
 };
+  const [isOpen, setIsOpen] = useState(false);
 
+  const handleOpen = () => {
+    setIsOpen(true);
+  };
   const handleClose = () => {
     setIsOpen(false);
   };
@@ -1134,51 +1051,56 @@ const handleReconcile = async () => {
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center">
                     <label className="font-medium w-24">Level 1:</label>
-                    <input
-                        type="text"
+                      <select
                         required
                         name="level1"
-                        value={formData.level1}
-                        onChange={handleInputChangeString}
+                        value={selectedLevel1}
+                        onChange={handleLevel1Change}
                         className="w-38 font-light border-solid border-2 rounded-lg"
-                    />
+                      >
+                        <option value="">Select Level 1</option>
+                        {level1Options.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
                   </div>
                   <div className="flex items-center">
                     <label className="font-medium w-24">Level 2:</label>
-                    <input
-
-                        type="text"
+                      <select
                         required
                         name="level2"
-                        value={formData.level2}
-                        onChange={handleInputChangeString}
+                        value={selectedLevel2}
+                        onChange={handleLevel2Change}
                         className="w-38 font-light border-solid border-2 rounded-lg"
-                    />
+                      >
+                        <option value="">Select Level 2</option>
+                        {level2Options.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
                   </div>
                   <div className="flex items-center">
                     <label className="font-medium w-24">Level 3:</label>
-                    <input
-                        type="text"
-                        required
-                        name="level3"
-                        value={formData.level3}
-                        onChange={handleInputChangeString}
-                        className="w-38 font-light border-solid border-2 rounded-lg"
-
-                    />
+                    <select
+                      required
+                      name="level3"
+                      value={selectedLevel3}
+                      onChange={handleLevel3Change}
+                      className="w-38 font-light border-solid border-2 rounded-lg"
+                    >
+                      <option value="">Select Level 3</option>
+                      {level3Options.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
                   </div>
-                  <div className="flex items-center">
-                    <label className="font-medium w-24">Level 4:</label>
-                    <input
-                        type="text"
-                        required
-                        name="level4"
-                        value={formData.level4}
-                        onChange={handleInputChangeString}
-                        className="w-38 font-light border-solid border-2 rounded-lg"
-                    />
-                  </div>
-                  <div className="flex items-center">
+                  {/* <div className="flex items-center">
                     <label className="font-medium w-24">Fault:</label>
                     <input
                         type="text"
@@ -1188,7 +1110,7 @@ const handleReconcile = async () => {
                         onChange={handleInputChangeString}
                         className="w-38 font-light border-solid border-2 rounded-lg"
                     />
-                  </div>
+                  </div> */}
                   <div className="flex items-center">
                     <label className="font-medium w-24">Count:</label>
                     <input
@@ -1493,7 +1415,7 @@ const handleReconcile = async () => {
            
             
           <div>
-            {quality1 || throughput1 ? (
+            {(formData.category.includes('quality') || formData.category.includes('throughput')) ? (
               <>
             <h1>Upload Excel File</h1>
             <input type="file" onChange={(e) => handleFile(e)} />
@@ -1501,7 +1423,7 @@ const handleReconcile = async () => {
           </div>
            
           <div>
-            {quality1 || throughput1 ? (
+            {(formData.category.includes('quality') || formData.category.includes('throughput')) ? (
               <>
             <button type = "button" className="mt-8 bg-blue-950 text-white font-bold py-2 px-4 rounded-full" onClick = {handleReconcile}>
               Reconcile
@@ -1510,7 +1432,9 @@ const handleReconcile = async () => {
           </div>
           
             
-            <button type="submit" className="mt-10 bg-blue-950 text-white font-bold py-2 px-4 rounded-full" >
+            <button type="submit" className="mt-10 bg-blue-950 text-white font-bold py-2 px-4 rounded-full" 
+            disabled={ (formData.category.includes("quality") || formData.category.includes("throughput")) && !isReconciled}
+            >
               Submit PFC Request
             </button>
 
