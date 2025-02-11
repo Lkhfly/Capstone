@@ -1,5 +1,7 @@
 "use client"
-
+//new imports
+import {db} from "../firebase/config";
+import { collection, query, where, getDocs, deleteDoc } from "firebase/firestore";
 //imports 
 import { ColumnDef } from "@tanstack/react-table"
  import { ArrowUpDown, MoreHorizontal } from "lucide-react"
@@ -21,6 +23,7 @@ import {
 
 // Shape of data
 export type Task = {
+    status: string,
     title : string, 
     station : string,
     date_sub : string,
@@ -222,9 +225,36 @@ export const columns: ColumnDef<Task>[] = [
   // },
   {
     id: "actions",
-    cell: ({ row }) => {
+    cell: ({ row, table}) => {
       const task = row.original
- 
+      // Function to delete task from Firestore
+      // Function to delete task based on stored `uid`
+      const handleDelete = async () => {
+        if (!task.uid) {
+          console.error("No UID found for task!");
+          return;
+        }
+
+        const confirmDelete = window.confirm(`Delete "${task.title}"?`);
+        if (!confirmDelete) return;
+
+        try {
+          // Query Firestore to find the document with the matching UID
+          const taskQuery = query(collection(db, "pfc"), where("uid", "==", task.uid));
+          const querySnapshot = await getDocs(taskQuery);
+
+          if (querySnapshot.empty) {
+            console.error("No matching document found for UID:", task.uid);
+            return;
+          }
+
+          // Delete the first matching document (assuming UID is unique)
+          const docToDelete = querySnapshot.docs[0].ref;
+          await deleteDoc(docToDelete);
+        } catch (error) {
+          console.error("Error deleting task:", error);
+        }
+      };
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -241,7 +271,7 @@ export const columns: ColumnDef<Task>[] = [
               Copy PFC ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View PFC details</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDelete}>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

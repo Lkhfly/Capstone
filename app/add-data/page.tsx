@@ -216,16 +216,15 @@ console.log(formData.category)
     else if (formData.category.includes("pipcost")){
     priority_score_new = formData.cost + formData.headcount
     }
-    // else if (formData.category.includes("quality")){
-    // priority_score_new = formData.fault      
-    // }
+    else if (formData.category.includes("quality")){
+    priority_score_new = updatedRankingQuality    
+    }
     else if (formData.category.includes("throughput")){
-    priority_score_new = formData.downtime + formData.stops      
+    priority_score_new = updatedRankingThroughput     
     }
     const updatedFormData1 = {
       ...updatedFormData,
       priority_score: priority_score_new,
-
     };
       const docRef = await addDoc(collection(db, 'pfc'), updatedFormData1);
       setError('Document written with ID: ' + docRef.id);
@@ -680,7 +679,7 @@ const handleReconcile = async () => {
             </div>
             <div>
               <label className="font-medium">
-                Date PFC Completed:
+                Date PFC Required:
                 <input
                   type="date"
                   required
@@ -1392,7 +1391,7 @@ const handleReconcile = async () => {
                   value={formData.description}
                   onChange={handleInputChangeDescription}
                   required
-                  className="border-solid border-2 rounded-lg"
+                  className="border-solid border-2 rounded-lg w-full md:w-3/4 lg:w-2/3"
               ></textarea>
             </div>
 
@@ -1408,7 +1407,7 @@ const handleReconcile = async () => {
                   value={formData.important}
                   onChange={handleInputChangeDescription}
                   required
-                  className="border-solid border-2 rounded-lg"
+                  className="border-solid border-2 rounded-lg w-full md:w-3/4 lg:w-2/3"
               ></textarea>
             </div>
             {/* Description ends */}
