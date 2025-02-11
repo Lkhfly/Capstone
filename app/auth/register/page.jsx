@@ -45,8 +45,8 @@ const Register = () => {
     }
 
     return (
-        <main className="w-full h-screen flex self-center place-content-center place-items-center">
-            <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl">
+        <main className="mt-10 h-screen w-full flex items-center justify-center bg-blue-600">
+            <div className="w-[400px] p-8 bg-white shadow-xl rounded-2xl">
                 <div className="text-center mb-6">
                     <div className="mt-2">
                         <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">
@@ -76,7 +76,7 @@ const Register = () => {
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg transition duration-300"
+                            className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:indigo-600 shadow-sm rounded-lg transition duration-300"
                         />
                     </div>
 
@@ -89,7 +89,7 @@ const Register = () => {
                             required
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg transition duration-300"
+                            className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:indigo-600 shadow-sm rounded-lg transition duration-300"
                         />
                     </div>
 
@@ -100,10 +100,10 @@ const Register = () => {
                     <button
                         type="submit"
                         disabled={isRegistering}
-                        className={`w-full px-4 py-2 text-white font-medium rounded-lg ${
+                        className={`w-full py-2 text-black font-medium rounded-lg transition duration-300 ${
                             isRegistering
-                                ? 'bg-gray-300 cursor-not-allowed'
-                                : 'bg-indigo-600 hover:bg-indigo-700 hover:shadow-xl transition duration-300'
+                                ? "bg-gray-300 text-gray-800 cursor-not-allowed"
+                                : "bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg"
                         }`}
                     >
                         {isRegistering ? 'Signing Up...' : 'Sign Up'}
