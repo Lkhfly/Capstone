@@ -45,21 +45,21 @@ export type Task = {
 
 export const columns: ColumnDef<Task>[] = [
 
-  // Task ID
-  {
-    accessorKey: "priority_score",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant = "ghost"
-          // onClick={() => column.toggleSorting(column.getIsSorted() === "desc")}
-          className="ml-2"
-        >
-          Priority score
-        </Button>
-      )
-    },
-  },
+  // // Task ID
+  // {
+  //   accessorKey: "priority_score",
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button
+  //         variant = "ghost"
+  //         // onClick={() => column.toggleSorting(column.getIsSorted() === "desc")}
+  //         className="ml-2"
+  //       >
+  //         Priority score
+  //       </Button>
+  //     )
+  //   },
+  // },
   {
     accessorKey: "rank",
     header: ({ column }) => {
@@ -67,7 +67,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant = "ghost"
           // onClick={() => column.toggleSorting(column.getIsSorted() === "desc")}
-          className="ml-2"
+          className="flex justify-center w-full"
         >
           Rank
         </Button>
@@ -81,7 +81,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="ml-1 pl-6"
+          className="flex justify-center w-full"
         >
           Title
         </Button>
@@ -95,7 +95,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className = "ml-4"  
+          className = "flex justify-center w-full"  
         >
           Date Submitted
         </Button>
@@ -109,7 +109,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-5"
+                    className="flex justify-center w-full"
         >
         Type
         </Button>
@@ -125,7 +125,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="ml-1"
+          className="flex justify-center w-full"
         >
         Status
         </Button>
@@ -139,7 +139,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-2"
+                    className="flex justify-center w-full"
         >
         Group
         </Button>
@@ -153,7 +153,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-1"
+                    className="flex justify-center w-full"                    
         >
         Team
         </Button>
@@ -167,7 +167,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-2"
+                    className="flex justify-center w-full"
         >
         Department
         </Button>
@@ -181,7 +181,7 @@ export const columns: ColumnDef<Task>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="ml-1"
+                    className="flex justify-center w-full"
         >
         Station
         </Button>

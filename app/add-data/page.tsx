@@ -711,7 +711,7 @@ const handleReconcile = async () => {
                   required
                   min={0}
                   name="group"
-                  value={formData.group}
+                  value={formData.group || ""}
                   onChange={handleInputChangeNumber}
                   className="ml-3 font-light border-solid border-2 rounded-lg"
                 />
@@ -723,10 +723,10 @@ const handleReconcile = async () => {
                 <input
                   type="number"
                   required
-                  min={0}
+                  min={1}
                   max={3}
                   name="shift_number"
-                  value={formData.shift_number}
+                  value={formData.shift_number || ""}
                   onChange={handleInputChangeNumber}
                   className="ml-3 font-light border-solid border-2 rounded-lg"
                 />
@@ -753,7 +753,7 @@ const handleReconcile = async () => {
                   required
                   min={0}
                   name="team"
-                  value={formData.team}
+                  value={formData.team || ""}
                   onChange={handleInputChangeNumber}
                   className="ml-3 font-light border-solid border-2 rounded-lg"
                 />
@@ -846,10 +846,10 @@ const handleReconcile = async () => {
                 }
                 label="Cost"
               />
-                    <FormControlLabel
+                    {/* <FormControlLabel
                         control={<Checkbox name="NA" />}
                         label="N/A"
-                    />
+                    /> */}
                   </FormGroup>
                 </FormControl>
                 </div>
@@ -872,25 +872,26 @@ const handleReconcile = async () => {
                       min = {0}
                       required
                       name="cost"
-                      value={formData.cost}
+                      value={formData.cost || ""}
                       onChange={handleInputChangeNumber}
                       className="ml-3 font-light border-solid border-2 rounded-lg"
                   />
                 </label>
               </div>
 
-              <h1 className="font-medium mt-5 mb-2">Enter an estimated headcount reduction</h1>
+              <h1 className="font-medium mt-5 mb-2">Enter an estimated headcount reduction per shift</h1>
               <div>
                 <label className="font-medium">
-                  Cost:
+                  Headcount:
                   <input
                       type="number"
                       required
                       min = {0}
                       name="headcount"
-                      value={formData.headcount}
+                      value={formData.headcount || ""}
                       onChange={handleInputChangeNumber}
                       className="ml-3 font-light border-solid border-2 rounded-lg"
+                      style={{ appearance: "textfield", MozAppearance: "textfield" }}
                   />
                 </label>
               </div>
@@ -1132,7 +1133,7 @@ const handleReconcile = async () => {
 
             {formData.category.includes('safety') && (<div>
               <div className="flex flex-col gap-5 mt-4">
-                <div className="flex items-center">
+                {/* <div className="flex items-center">
                   <label className="font-medium w-60">
                     How frequently would you say this issue occurs?
                   </label>
@@ -1152,7 +1153,7 @@ const handleReconcile = async () => {
                     <option value="Not Applicable">Not Applicable</option>
                   </select>
 
-                </div>
+                </div> */}
                 {/* Popup Modal */}
 
                 <div className="flex items-center">
