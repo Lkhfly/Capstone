@@ -113,7 +113,7 @@ const [data, setData] = React.useState(initialData);
 
   return (
     <div>
-      <Button variant="link" size="sm" onClick={rankPFCs}>
+      <Button variant="outline" size="sm" onClick={rankPFCs}>
   Rank PFCs
 </Button>
       <div className="flex items-center py-4">
