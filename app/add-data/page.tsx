@@ -512,11 +512,11 @@ const handleReconcile = async () => {
 
       if (qualityMatchFound) {
         console.log("All quality values match a row in the backend data.");
-        alert("Quality values match a row in the backend data.");
+        alert("The values inputted align with the data in the uploaded Excel file.");
         setIsReconciled(true)
       } else {
         console.log("No matching quality row found in the backend data.");
-        alert("No matching row found for the quality data.");
+        alert("The values inputted, do not align with the data in the uploaded Excel file. Please re-enter the values.");
         setIsReconciled(false)
       }
     }
@@ -1433,11 +1433,18 @@ const handleReconcile = async () => {
           </div>
           
             
-            <button type="submit" className="mt-10 bg-blue-950 text-white font-bold py-2 px-4 rounded-full" 
-            disabled={ (formData.category.includes("quality") || formData.category.includes("throughput")) && !isReconciled}
+          <button
+            type="submit"
+            className={`mt-10 font-bold py-2 px-4 rounded-full ${ 
+            (formData.category.includes("quality") || formData.category.includes("throughput")) && !isReconciled 
+            ? "bg-gray-400 cursor-not-allowed" 
+            :"bg-blue-950 text-white"
+            }`}
+            disabled={(formData.category.includes("quality") || formData.category.includes("throughput")) && !isReconciled}
             >
-              Submit PFC Request
-            </button>
+          Submit PFC Request
+          </button>
+
 
             {/* Notification */}
             <div>
