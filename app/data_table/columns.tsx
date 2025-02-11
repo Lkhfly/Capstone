@@ -46,27 +46,27 @@ export type Task = {
 export const columns: ColumnDef<Task>[] = [
 
   // // Task ID
-  // {
-  //   accessorKey: "priority_score",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant = "ghost"
-  //         // onClick={() => column.toggleSorting(column.getIsSorted() === "desc")}
-  //         className="ml-2"
-  //       >
-  //         Priority score
-  //       </Button>
-  //     )
-  //   },
-  // },
+  {
+    accessorKey: "priority_score",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant = "ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex justify-center w-full"
+        >
+          Calculations
+        </Button>
+      )
+    },
+  },
   {
     accessorKey: "rank",
     header: ({ column }) => {
       return (
         <Button
           variant = "ghost"
-          // onClick={() => column.toggleSorting(column.getIsSorted() === "desc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="flex justify-center w-full"
         >
           Rank
@@ -251,6 +251,7 @@ export const columns: ColumnDef<Task>[] = [
           // Delete the first matching document (assuming UID is unique)
           const docToDelete = querySnapshot.docs[0].ref;
           await deleteDoc(docToDelete);
+
         } catch (error) {
           console.error("Error deleting task:", error);
         }
