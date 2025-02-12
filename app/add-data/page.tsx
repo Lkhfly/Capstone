@@ -384,11 +384,11 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
 const calculateQualityRanking = (count: number) => {
   count = count ?? 0;
-  if (count >= 50) return 1;
-  if (count >= 30) return 2;
-  if (count >= 20) return 3;
-  if (count >= 10) return 4;
-  if (count >= 1) return 5;
+  if (count >= 50) return count;
+  if (count >= 30) return count;
+  if (count >= 20) return count;
+  if (count >= 10) return count;
+  if (count >= 1) return count;
   return 0; 
 };
 
