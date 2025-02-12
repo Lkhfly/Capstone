@@ -163,7 +163,6 @@ const handleLevel3Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
       ...prevData,
       [name]: value,
     }));
-console.log(formData.category)
   };
 
   const handleInputChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -872,7 +871,7 @@ const handleReconcile = async () => {
                       min = {0}
                       required
                       name="cost"
-                      value={formData.cost || ""}
+                      value={formData.cost}
                       onChange={handleInputChangeNumber}
                       className="ml-3 font-light border-solid border-2 rounded-lg"
                   />
@@ -888,7 +887,7 @@ const handleReconcile = async () => {
                       required
                       min = {0}
                       name="headcount"
-                      value={formData.headcount || ""}
+                      value={formData.headcount}
                       onChange={handleInputChangeNumber}
                       className="ml-3 font-light border-solid border-2 rounded-lg"
                       style={{ appearance: "textfield", MozAppearance: "textfield" }}
