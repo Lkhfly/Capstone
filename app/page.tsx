@@ -2,7 +2,7 @@
 
 import NavBar from '@/components/ui/navbar';
 import Image from 'next/image';
-import severity_image from "../components/ui/TheWellhall.png"
+import severity_image from "../components/ui/trucks.png"
 
 const Home = () => {
     return (
