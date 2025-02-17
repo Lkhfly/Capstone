@@ -40,7 +40,7 @@ def process_data_excel_post():
     elif throughput:
         print(f"Received file for throughput: {file.filename}")
 
-        workbook = openpyxl.load_workbook(file, data_only=True)
+        workbook = openpyxl.load_workbook(file, data_only=True, read_only=True)
         sheet = workbook.active
 
         value_ay1 = sheet['AY1'].value   # Station number
