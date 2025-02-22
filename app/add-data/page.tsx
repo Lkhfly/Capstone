@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import {data} from '../firebase/large'
-
+import * as XLSX from 'xlsx';
 import React, { FormEvent, useState } from 'react';
 import {db} from "../firebase/config";
 import { collection, addDoc } from 'firebase/firestore';
@@ -342,44 +342,313 @@ const handleLevel3Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
 // };
 
 
+// const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+//   const files = e.target.files; // Get the files from the input
+//   if (files && files.length > 0) { // Check if files exist and has at least one file
+//     const file = files[files.length - 1]
+//     const formData1 = new FormData();
+//     formData1.append('file', file);
+
+//     // Check if 'quality' or 'throughput' is selected and append the respective field to formData
+//     if (formData.category.includes('quality')) {
+//       formData1.append('quality', quality1.toString());
+//     } else if (formData.category.includes('throughput')) {
+//       formData1.append('throughput', throughput1.toString());
+//     } else {
+//       console.warn("Neither quality nor throughput selected.");
+//       return; // Exit early if neither is selected
+//     }
+
+//     try {
+//       // Send the file to the back-end without handling any specific response data
+//       await axios.post('http://localhost:5000/process_data_excel', formData1, {
+//         headers: {
+//           'Content-Type': 'multipart/form-data',
+//         },
+//       });
+
+//       console.log("File uploaded successfully.");
+//       alert("File uploaded successfully.")
+//     } catch (error) {
+//       console.error("Error uploading file:", error);
+//       alert("Error uploading file")
+//     }
+//   } else {
+//     console.warn("No file selected.");
+//     alert("No file selected.")
+//   }
+// };
+// // state that will keep track if what the user inputted matched with what they uploaded
+// const [isReconciled, setIsReconciled] = useState(false);
+// const handleReconcile = async () => {
+//   setIsReconciled(false);
+//   const inputData = new FormData();
+
+//   // Check if quality1 is selected and append quality-specific data
+//   if (formData.category.includes('quality')) {
+//     inputData.append("level1", formData.level1.toString());
+//     inputData.append("level2", formData.level2.toString());
+//     inputData.append("level3", formData.level3.toString());
+//     // inputData.append("level4", formData.level4.toString());
+//     // inputData.append("fault", formData.fault.toString());
+//     inputData.append("count", formData.count.toString());
+//   }
+
+//   // Check if throughput1 is selected and append throughput-specific data
+//   if (formData.category.includes('throughput')) {
+//     inputData.append("station", formData.station.toString());
+//     inputData.append("downtime", formData.downtime.toString());
+//     inputData.append("stops", formData.stops.toString());
+//   }
+
+//   // Validate that required fields are present if quality1 is selected
+//   if (formData.category.includes('quality')) {
+//     if (
+//       !inputData.has("level1") ||
+//       !inputData.has("level2") ||
+//       !inputData.has("level3") ||
+//       // !inputData.has("fault") ||
+//       !inputData.has("count")
+//     ) {
+//       console.log("Required quality fields not selected. Aborting execution.");
+//       alert("All quality fields are required.");
+//       return;
+//     }
+//   }
+
+//   // Validate that required fields are present if throughput1 is selected
+//   if (formData.category.includes('throughput')) {
+//     if (
+//       !inputData.has("station") ||
+//       !inputData.has("downtime") ||
+//       !inputData.has("stops")
+//     ) {
+//       console.log("Required throughput fields not selected. Aborting execution.");
+//       alert("Station, Downtime, or Stops not selected");
+//       return;
+//     }
+//   }
+
+//   try {
+//     // Fetch data from the server if inputData has values
+//     const response = await fetch("http://localhost:5000/process_data_excel", {
+//       method: "GET", // Fetching data from the server
+//     });
+
+//     if (!response.ok) {
+//       throw new Error("Failed to fetch data");
+//     }
+
+//     const responseData = await response.json(); // The data returned from the server
+//     console.log('Success in fetching data:', responseData); // Log the data or use it as needed
+
+//     // Manually extract data from FormData without using `entries()`
+//     const inputDataObject: { [key: string]: string } = {};
+    
+//     // Using `FormData`'s `.forEach()` method indirectly (works with target ES5)
+//     inputData.forEach((value, key) => {
+//       inputDataObject[key.toLowerCase()] = value instanceof File ? value.name : value.toString();
+//     });
+
+//     // Print inputDataObject for inspection
+//     console.log("inputDataObject:", inputDataObject);
+
+//     // Check if there is a matching row for quality fields
+//     if (formData.category.includes('quality')) {
+//       let qualityMatchFound = false;
+
+//       // Iterate through each row in responseData to check for a match
+//       for (let row of responseData) {
+//         let rowMatches = true;
+
+//         // Compare all quality-related fields
+//         const qualityKeys = ["level1", "level2", "level3", "count"];
+//         for (let key of qualityKeys) {
+//           const inputVal = inputDataObject[key]?.toString().toLowerCase();
+//           const rowVal = row[key.toLowerCase()]?.toString().toLowerCase(); // Ensure key is in lowercase for comparison
+
+//           if (inputVal !== rowVal) {
+//             rowMatches = false;
+//             break; // No need to check further if any field doesn't match
+//           }
+//         }
+
+//         if (rowMatches) {
+//           qualityMatchFound = true;
+//           console.log("Quality match found for row:", row);
+//           break; // Stop once a match is found
+//         }
+//       }
+
+//       if (qualityMatchFound) {
+//         console.log("All quality values match a row in the backend data.");
+//         alert("The values inputted align with the data in the uploaded Excel file.");
+//         setIsReconciled(true)
+//       } else {
+//         console.log("No matching quality row found in the backend data.");
+//         alert("The values inputted, do not align with the data in the uploaded Excel file. Please re-enter the values.");
+//         setIsReconciled(false)
+//       }
+//     }
+
+//     // Compare throughput related fields
+//     if (formData.category.includes('throughput')) {
+//       const responseDataObject: { [key: string]: string | number } = {};
+//           for (let key in responseData) {
+//             if (responseData.hasOwnProperty(key)) {
+//               const lowerKey = key.toLowerCase();
+//               responseDataObject[lowerKey] = Array.isArray(responseData[key]) ? responseData[key][0] : responseData[key];
+//             }
+//           }
+      
+//           console.log("responseDataObject:", responseDataObject);
+      
+//           // Compare key-value pairs
+//           let match = true;
+//           for (let key in inputDataObject) {
+//             // Convert both values to strings to ensure consistent comparison
+//             const inputVal = inputDataObject[key].toString();
+//             const responseVal = responseDataObject[key].toString();
+            
+//             if (inputVal !== responseVal) {
+//               match = false;
+//               console.log(`Mismatch for key "${key}": ${inputVal} !== ${responseVal}`);
+//               alert(`Mismatch for key "${key}": ${inputVal} !== ${responseVal}, values do not match`)
+//             }
+//           }
+      
+//           if (match) {
+//             console.log("All values match.");
+//             setIsReconciled(true)
+//           } else {
+//             console.log("Values do not match.");
+//             setIsReconciled(false)
+//           }
+      
+//       }
+
+//   } catch (error) {
+//     console.error('Error during fetch:', error); // Handle any errors
+//   }
+// };
+const [isReconciled, setIsReconciled] = useState(false);
+const [processedData, setProcessedData] = useState<any>(null);
 const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
   const files = e.target.files; // Get the files from the input
   if (files && files.length > 0) { // Check if files exist and has at least one file
-    const file = files[files.length - 1]
-    const formData1 = new FormData();
-    formData1.append('file', file);
+    const file = files[files.length - 1];
+    const reader = new FileReader();
 
-    // Check if 'quality' or 'throughput' is selected and append the respective field to formData
-    if (formData.category.includes('quality')) {
-      formData1.append('quality', quality1.toString());
-    } else if (formData.category.includes('throughput')) {
-      formData1.append('throughput', throughput1.toString());
-    } else {
-      console.warn("Neither quality nor throughput selected.");
-      return; // Exit early if neither is selected
-    }
+    reader.onload = (event) => {
+      const data = event.target?.result;
+      if (data) {
+        const workbook = XLSX.read(data, { type: 'binary' });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
 
-    try {
-      // Send the file to the back-end without handling any specific response data
-      await axios.post('http://localhost:5000/process_data_excel', formData1, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+        if (formData.category.includes('quality')) {
+          // Process for quality
+          const jsonData = XLSX.utils.sheet_to_json(sheet);
+          const df = jsonData.map((row: any) => ({
+            level1: row['Level 1'],
+            level2: row['Level 2'],
+            level3: row['Level 3'],
+            count: 1 // Assuming count is 1 for each row
+          }));
 
-      console.log("File uploaded successfully.");
-      alert("File uploaded successfully.")
-    } catch (error) {
-      console.error("Error uploading file:", error);
-      alert("Error uploading file")
-    }
+          const group_df = df.reduce((acc: any, curr: any) => {
+            const key = `${curr.level1}-${curr.level2}-${curr.level3}`;
+            if (!acc[key]) {
+              acc[key] = { ...curr, count: 0 };
+            }
+            acc[key].count += 1;
+            return acc;
+          }, {});
+
+          const processedData = Object.values(group_df);
+          setProcessedData(processedData); // Update state
+          console.log(processedData);
+          alert("File processed successfully for quality.");
+        } else if (formData.category.includes('throughput')) {
+          // Process for throughput
+          const value_ay1 = sheet['AY1']?.v;   // Station number
+          const value_ay3 = Math.round(sheet['AY3']?.v * 10) / 10;  // Total downtime
+          const value_ay4 = sheet['AY4']?.v;  // Total number of stops
+
+          const processedData = {
+            station: value_ay1,
+            downtime: value_ay3,
+            stops: value_ay4
+          };
+
+          setProcessedData(processedData); // Update state
+          console.log(processedData);
+          alert("File processed successfully for throughput.");
+        } else {
+          console.warn("Neither quality nor throughput selected.");
+          alert("Neither quality nor throughput selected.");
+        }
+      }
+    };
+
+    reader.readAsBinaryString(file);
   } else {
     console.warn("No file selected.");
-    alert("No file selected.")
+    alert("No file selected.");
   }
 };
+const handleReconcile = () => {
+  setIsReconciled(false)
+  if (!processedData) {
+    console.warn("No data processed yet.");
+    alert("No data processed yet.");
+    return;
+  }
 
+  if (formData.category.includes('throughput')) {
+    // Reconciliation for throughput
 
+    if (
+      processedData.station === formData.station &&
+      processedData.downtime === formData.downtime &&
+      processedData.stops === formData.stops
+    ) {
+      alert("Values Do Match");
+      setIsReconciled(true)
+    } else {
+      alert("Values Do Not Match");
+    }
+  } else if (formData.category.includes('quality')) {
+
+    // Find the matching group in the processed data
+    const matchingGroup = processedData.find(
+      (group: any) =>
+        group.level1 === formData.level1 &&
+        group.level2 === formData.level2 &&
+        group.level3 === formData.level3
+    );
+
+    if (matchingGroup) {
+      if (formData.count !== null) {
+        // Compare the count if provided
+        if (matchingGroup.count === formData.count) {
+          alert("Values Do Match");
+          setIsReconciled(true)
+        } else {
+          alert("Values Do Not Match");
+        }
+      } else {
+        alert(`Group found with count: ${matchingGroup.count}`);
+        setIsReconciled(true)
+      }
+    } else {
+      alert("Group not found in processed data.");
+    }
+  } else {
+    console.warn("Invalid category selected.");
+    alert("Invalid category selected.");
+  }
+};
 
 const calculateQualityRanking = (count: number) => {
   count = count ?? 0;
@@ -404,161 +673,6 @@ const calculateThroughputRanking = (downtime: number, stops: number) => {
 };
 
 
-// state that will keep track if what the user inputted matched with what they uploaded
-const [isReconciled, setIsReconciled] = useState(false);
-
-
-const handleReconcile = async () => {
-  setIsReconciled(false);
-  const inputData = new FormData();
-
-  // Check if quality1 is selected and append quality-specific data
-  if (formData.category.includes('quality')) {
-    inputData.append("level1", formData.level1.toString());
-    inputData.append("level2", formData.level2.toString());
-    inputData.append("level3", formData.level3.toString());
-    // inputData.append("level4", formData.level4.toString());
-    // inputData.append("fault", formData.fault.toString());
-    inputData.append("count", formData.count.toString());
-  }
-
-  // Check if throughput1 is selected and append throughput-specific data
-  if (formData.category.includes('throughput')) {
-    inputData.append("station", formData.station.toString());
-    inputData.append("downtime", formData.downtime.toString());
-    inputData.append("stops", formData.stops.toString());
-  }
-
-  // Validate that required fields are present if quality1 is selected
-  if (formData.category.includes('quality')) {
-    if (
-      !inputData.has("level1") ||
-      !inputData.has("level2") ||
-      !inputData.has("level3") ||
-      // !inputData.has("fault") ||
-      !inputData.has("count")
-    ) {
-      console.log("Required quality fields not selected. Aborting execution.");
-      alert("All quality fields are required.");
-      return;
-    }
-  }
-
-  // Validate that required fields are present if throughput1 is selected
-  if (formData.category.includes('throughput')) {
-    if (
-      !inputData.has("station") ||
-      !inputData.has("downtime") ||
-      !inputData.has("stops")
-    ) {
-      console.log("Required throughput fields not selected. Aborting execution.");
-      alert("Station, Downtime, or Stops not selected");
-      return;
-    }
-  }
-
-  try {
-    // Fetch data from the server if inputData has values
-    const response = await fetch("http://localhost:5000/process_data_excel", {
-      method: "GET", // Fetching data from the server
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
-    }
-
-    const responseData = await response.json(); // The data returned from the server
-    console.log('Success in fetching data:', responseData); // Log the data or use it as needed
-
-    // Manually extract data from FormData without using `entries()`
-    const inputDataObject: { [key: string]: string } = {};
-    
-    // Using `FormData`'s `.forEach()` method indirectly (works with target ES5)
-    inputData.forEach((value, key) => {
-      inputDataObject[key.toLowerCase()] = value instanceof File ? value.name : value.toString();
-    });
-
-    // Print inputDataObject for inspection
-    console.log("inputDataObject:", inputDataObject);
-
-    // Check if there is a matching row for quality fields
-    if (formData.category.includes('quality')) {
-      let qualityMatchFound = false;
-
-      // Iterate through each row in responseData to check for a match
-      for (let row of responseData) {
-        let rowMatches = true;
-
-        // Compare all quality-related fields
-        const qualityKeys = ["level1", "level2", "level3", "count"];
-        for (let key of qualityKeys) {
-          const inputVal = inputDataObject[key]?.toString().toLowerCase();
-          const rowVal = row[key.toLowerCase()]?.toString().toLowerCase(); // Ensure key is in lowercase for comparison
-
-          if (inputVal !== rowVal) {
-            rowMatches = false;
-            break; // No need to check further if any field doesn't match
-          }
-        }
-
-        if (rowMatches) {
-          qualityMatchFound = true;
-          console.log("Quality match found for row:", row);
-          break; // Stop once a match is found
-        }
-      }
-
-      if (qualityMatchFound) {
-        console.log("All quality values match a row in the backend data.");
-        alert("The values inputted align with the data in the uploaded Excel file.");
-        setIsReconciled(true)
-      } else {
-        console.log("No matching quality row found in the backend data.");
-        alert("The values inputted, do not align with the data in the uploaded Excel file. Please re-enter the values.");
-        setIsReconciled(false)
-      }
-    }
-
-    // Compare throughput related fields
-    if (formData.category.includes('throughput')) {
-      const responseDataObject: { [key: string]: string | number } = {};
-          for (let key in responseData) {
-            if (responseData.hasOwnProperty(key)) {
-              const lowerKey = key.toLowerCase();
-              responseDataObject[lowerKey] = Array.isArray(responseData[key]) ? responseData[key][0] : responseData[key];
-            }
-          }
-      
-          console.log("responseDataObject:", responseDataObject);
-      
-          // Compare key-value pairs
-          let match = true;
-          for (let key in inputDataObject) {
-            // Convert both values to strings to ensure consistent comparison
-            const inputVal = inputDataObject[key].toString();
-            const responseVal = responseDataObject[key].toString();
-            
-            if (inputVal !== responseVal) {
-              match = false;
-              console.log(`Mismatch for key "${key}": ${inputVal} !== ${responseVal}`);
-              alert(`Mismatch for key "${key}": ${inputVal} !== ${responseVal}, values do not match`)
-            }
-          }
-      
-          if (match) {
-            console.log("All values match.");
-            setIsReconciled(true)
-          } else {
-            console.log("Values do not match.");
-            setIsReconciled(false)
-          }
-      
-      }
-
-  } catch (error) {
-    console.error('Error during fetch:', error); // Handle any errors
-  }
-};
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpen = () => {
