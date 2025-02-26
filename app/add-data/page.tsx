@@ -604,21 +604,8 @@ const handleReconcile = () => {
     alert("No data processed yet.");
     return;
   }
-
-  if (formData.category.includes('throughput')) {
-    // Reconciliation for throughput
-
-    if (
-      processedData.station === formData.station &&
-      processedData.downtime === formData.downtime &&
-      processedData.stops === formData.stops
-    ) {
-      alert("Values Do Match");
-      setIsReconciled(true)
-    } else {
-      alert("Values Do Not Match");
-    }
-  } else if (formData.category.includes('quality')) {
+  
+  if (formData.category.includes('quality')) {
 
     // Find the matching group in the processed data
     const matchingGroup = processedData.find(
@@ -644,7 +631,22 @@ const handleReconcile = () => {
     } else {
       alert("Group not found in processed data.");
     }
-  } else {
+  } 
+  else if (formData.category.includes('throughput')) {
+    // Reconciliation for throughput
+
+    if (
+      processedData.station === formData.station &&
+      processedData.downtime === formData.downtime &&
+      processedData.stops === formData.stops
+    ) {
+      alert("Values Do Match");
+      setIsReconciled(true)
+    } else {
+      alert("Values Do Not Match");
+    }
+  }
+  else {
     console.warn("Invalid category selected.");
     alert("Invalid category selected.");
   }
