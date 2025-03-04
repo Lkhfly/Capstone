@@ -1,28 +1,32 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { User } from "firebase/auth"; // Import Firebase User type
-import { auth } from '@/app/firebase/config'; // Make sure the auth module is correctly imported
+import { auth } from '@/app/firebase/config'; // Firebase auth import
 import Image from "next/image";
 import Link from "next/link";
-import Logo from "./logo2.png"
+import Logo from "./logo2.png";
 import { Button } from "@/components/ui/button";
-
+import plantCoordinators from '../../plantcoordinators.json';
 
 const NavBar = () => {
-    // Define the state to accept both User or null
     const [user, setUser] = useState<User | null>(null);
+    const [isCoordinator, setIsCoordinator] = useState(false);
 
-    // Check authentication status
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
             if (user) {
-                setUser(user); // Set user when logged in
+                setUser(user);
+                const storedEmail = localStorage.getItem("email");
+                if (storedEmail && plantCoordinators.plant_coordinators.includes(storedEmail)) {
+                    setIsCoordinator(true);
+                }
             } else {
-                setUser(null); // Set to null when logged out
+                setUser(null);
+                setIsCoordinator(false);
             }
         });
 
-        return () => unsubscribe(); // Clean up the listener on unmount
+        return () => unsubscribe();
     }, []);
 
     return (
@@ -35,13 +39,16 @@ const NavBar = () => {
                     <nav>
                         {user ? (
                             <>
-                                <Button className="bg-transparent text-white hover:bg-[#1A4B8F]">
-                                    <Link href="/data_table">Data Table</Link>
-                                </Button>
-                                {/* Other authenticated user links */}
-                                <Button className="bg-transparent text-white hover:bg-[#1A4B8F] ml-4">
-                                    <Link href="/chart">Chart</Link>
-                                </Button>
+                                {isCoordinator && (
+                                    <>
+                                        <Button className="bg-transparent text-white hover:bg-[#1A4B8F]">
+                                            <Link href="/data_table">Data Table</Link>
+                                        </Button>
+                                        <Button className="bg-transparent text-white hover:bg-[#1A4B8F] ml-4">
+                                            <Link href="/chart">Chart</Link>
+                                        </Button>
+                                    </>
+                                )}
                                 <Button className="bg-transparent text-white hover:bg-[#1A4B8F] ml-4">
                                     <Link href="/add-data">Add new PFC</Link>
                                 </Button>
@@ -51,7 +58,8 @@ const NavBar = () => {
                                 <Button className="bg-transparent text-white hover:bg-[#1A4B8F] ml-4"
                                         onClick={async () => {
                                             await auth.signOut();
-                                            window.location.href = "/"; // Redirect after sign out
+                                            localStorage.removeItem("email"); // Clear email from localStorage on sign out
+                                            window.location.href = "/";
                                         }}
                                 >
                                     Sign Out

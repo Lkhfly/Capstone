@@ -3,7 +3,7 @@
 import axios from 'axios';
 import {data} from '../firebase/large'
 import * as XLSX from 'xlsx';
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useState, useEffect } from 'react';
 import {db} from "../firebase/config";
 import { collection, addDoc } from 'firebase/firestore';
 import NavBar from '@/components/ui/navbar';
@@ -18,6 +18,7 @@ import probability1_image from "../../components/ui/probability1.png"
 import people_image from "../../components/ui/people.png"
 import frequency_image from "../../components/ui/frequency.png"
 import frequency1_image from "../../components/ui/frequency1.png"
+import plantCoordinators from '../../plantcoordinators.json';
 interface FormData {
   title: string;
   station: string;
@@ -130,6 +131,14 @@ const handleLevel1Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
   setLevel3Options([]);
   setSelectedLevel3("");
 };
+
+const [isCoordinator, setIsCoordinator] = useState(false);
+useEffect(() => {
+  const storedEmail = localStorage.getItem("email");
+  if (storedEmail && plantCoordinators.plant_coordinators.includes(storedEmail)) {
+    setIsCoordinator(true);
+  }
+}, []);
 
 const handleLevel2Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
   const stuff = e.target.value;
@@ -951,16 +960,18 @@ const calculateThroughputRanking = (downtime: number, stops: number) => {
                 }
                 label="Throughput"
               />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={formData.category.includes('pipcost')}
-                    onChange={handleChange}
-                    name="pipcost"
-                  />
-                }
-                label="Cost"
-              />
+                    {isCoordinator && (
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={formData.category.includes('pipcost')}
+                      onChange={handleChange}
+                      name="pipcost"
+                    />
+                  }
+                  label="Cost"
+                />
+                    )}
                     {/* <FormControlLabel
                         control={<Checkbox name="NA" />}
                         label="N/A"

@@ -29,6 +29,7 @@ const Register = () => {
             setIsRegistering(true);
             try {
                 await doCreateUserWithEmailAndPassword(email, password);
+                localStorage.setItem('email', email); // Store email in localStorage
                 router.push('/'); // Redirect to home page after successful registration
             } catch (error) {
                 setErrorMessage('Registration failed. Please try again.');
