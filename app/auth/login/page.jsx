@@ -27,6 +27,7 @@ const Login = () => {
             setIsSigningIn(true);
             try {
                 await doSignInWithEmailAndPassword(email, password);
+                localStorage.setItem("email", email); // Store email in localStorage
                 router.push("/");
             } catch (error) {
                 setErrorMessage("Login failed. Please try again.");
@@ -83,7 +84,6 @@ const Login = () => {
                     >
                         {isSigningIn ? "Signing In..." : "Enter"}
                     </button>
-
                 </form>
 
                 <div className="mt-4 text-center">
@@ -93,7 +93,7 @@ const Login = () => {
                             href="/auth/register"
                             className="text-blue-600 hover:underline font-medium"
                         >
-                        Sign up
+                            Sign up
                         </Link>
                     </p>
                 </div>
