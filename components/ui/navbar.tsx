@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { User } from "firebase/auth"; // Import Firebase User type
-import { auth } from '@/app/firebase/config'; // Firebase auth import
+import { User } from "firebase/auth";
+import { auth } from '@/app/firebase/config';
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "./logo2.png";
@@ -11,12 +11,20 @@ import plantCoordinators from '../../plantcoordinators.json';
 const NavBar = () => {
     const [user, setUser] = useState<User | null>(null);
     const [isCoordinator, setIsCoordinator] = useState(false);
+    const [isMounted, setIsMounted] = useState(false); // Flag to check if component has mounted
 
     useEffect(() => {
+        setIsMounted(true); // Mark component as mounted
+    }, []);
+
+    useEffect(() => {
+        if (!isMounted) return; // Prevent localStorage access before mount
+
         const unsubscribe = auth.onAuthStateChanged((user) => {
             if (user) {
                 setUser(user);
-                const storedEmail = localStorage.getItem("email");
+                const storedEmail = localStorage.getItem("email"); // Access only after mount
+                console.log("getting email:"+storedEmail)
                 if (storedEmail && plantCoordinators.plant_coordinators.includes(storedEmail)) {
                     setIsCoordinator(true);
                 }
@@ -27,7 +35,7 @@ const NavBar = () => {
         });
 
         return () => unsubscribe();
-    }, []);
+    }, [isMounted]); // Depend on `isMounted` to ensure it only runs after mount
 
     return (
         <div>
@@ -58,7 +66,9 @@ const NavBar = () => {
                                 <Button className="bg-transparent text-white hover:bg-[#1A4B8F] ml-4"
                                         onClick={async () => {
                                             await auth.signOut();
-                                            localStorage.removeItem("email"); // Clear email from localStorage on sign out
+                                            if (isMounted) {
+                                                localStorage.removeItem("email"); // Clear localStorage after mount
+                                            }
                                             window.location.href = "/";
                                         }}
                                 >
