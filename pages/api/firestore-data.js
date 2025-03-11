@@ -1,4 +1,6 @@
 import db from "../../app/firebase/initFirestore"
+import path from "path";
+import fs from "fs";
 
 export default async function handler(req, res) {
   try {
@@ -17,3 +19,4 @@ export default async function handler(req, res) {
     res.status(500).json({ error: "Failed to fetch data from Firestore" });
   }
 }
+

@@ -82,7 +82,7 @@ const Admin = () => {
 
                         <button
                             type="submit"
-                            className="w-full py-2 font-medium rounded-lg transition duration-300  text-black cursor-not-allowed"
+                            className="w-full py-2 font-medium rounded-lg transition duration-300  text-black"
                         >
                             Enter
                         </button>
