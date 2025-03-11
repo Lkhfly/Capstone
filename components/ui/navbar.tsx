@@ -55,6 +55,9 @@ const NavBar = () => {
                                         <Button className="bg-transparent text-white hover:bg-[#1A4B8F] ml-4">
                                             <Link href="/chart">Chart</Link>
                                         </Button>
+                                        <Button className="bg-transparent text-white hover:bg-[#1A4B8F] ml-4">
+                                            <Link href="/auth/admin">Admin</Link>
+                                        </Button>
                                     </>
                                 )}
                                 <Button className="bg-transparent text-white hover:bg-[#1A4B8F] ml-4">
