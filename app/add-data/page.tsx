@@ -222,7 +222,7 @@ const handleLevel3Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
       priority_score_new = formData.severity * formData.frequency_exposure * formData.occurrence * formData.people_at_risk
     }
     else if (formData.category.includes("pipcost")){
-    priority_score_new = formData.cost + formData.headcount
+    priority_score_new = formData.cost*0.0000001 + formData.headcount*999999
     }
     else if (formData.category.includes("quality")){
     priority_score_new = updatedRankingQuality    

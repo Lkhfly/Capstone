@@ -258,6 +258,14 @@ const COLORS =
                     </Pie>
                     <Tooltip />
                 </PieChart>
+                {/* <iframe
+                    title="Power BI Report"
+                    width="100%"
+                    height="600px"
+                    src="https://uofwaterloo-my.sharepoint.com/:u:/g/personal/k29le_uwaterloo_ca/ETT1omaN9FtDm3kk-_DSFSgBQShYYUmBou5oNw3qKIXnbA?e=3hHHa0"
+                    allowFullScreen
+                /> */}
+
             </ResponsiveContainer>
 
             {/* Scatter Effort x Impact Chart
