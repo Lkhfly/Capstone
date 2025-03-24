@@ -258,13 +258,7 @@ const COLORS =
                     </Pie>
                     <Tooltip />
                 </PieChart>
-                {/* <iframe
-                    title="Power BI Report"
-                    width="100%"
-                    height="600px"
-                    src="https://uofwaterloo-my.sharepoint.com/:u:/g/personal/k29le_uwaterloo_ca/ETT1omaN9FtDm3kk-_DSFSgBQShYYUmBou5oNw3qKIXnbA?e=3hHHa0"
-                    allowFullScreen
-                /> */}
+<iframe src="https://uofwaterloo-my.sharepoint.com/personal/ypokra_uwaterloo_ca/_layouts/15/embed.aspx?UniqueId=8b4c6550-396e-44d7-91c9-4c2b600464ba" width="640" height="360" frameBorder="0" scrolling="no" allowFullScreen title="Overview-Power_BI" />
 
             </ResponsiveContainer>
 
