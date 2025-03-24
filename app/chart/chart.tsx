@@ -214,6 +214,7 @@ const COLORS =
             {/* Pie Chart */}
             <p className="font-bold">PFCs by Category, Status, Shift</p>
             <ResponsiveContainer width="100%" height={400}>
+                <div>
                 <PieChart>
                     <Pie
                         dataKey="value"
@@ -258,8 +259,8 @@ const COLORS =
                     </Pie>
                     <Tooltip />
                 </PieChart>
-<iframe src="https://uofwaterloo-my.sharepoint.com/personal/ypokra_uwaterloo_ca/_layouts/15/embed.aspx?UniqueId=8b4c6550-396e-44d7-91c9-4c2b600464ba" width="640" height="360" frameBorder="0" scrolling="no" allowFullScreen title="Overview-Power_BI" />
-
+<div><iframe src="https://uofwaterloo-my.sharepoint.com/personal/ypokra_uwaterloo_ca/_layouts/15/embed.aspx?UniqueId=8b4c6550-396e-44d7-91c9-4c2b600464ba" width="640" height="360" frameBorder="0" scrolling="no" allowFullScreen title="Overview-Power_BI" /></div>
+            </div>
             </ResponsiveContainer>
 
             {/* Scatter Effort x Impact Chart
