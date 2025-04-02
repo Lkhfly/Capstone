@@ -2,24 +2,45 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { Filter, ChevronDown, X } from "lucide-react";
+import { 
+  LineChart, BarChart, PieChart, Pie, Bar,
+  Line, XAxis, YAxis, CartesianGrid, Tooltip, 
+  Legend, ResponsiveContainer, Cell 
+} from "recharts";
+import { Filter, ChevronDown } from "lucide-react";
 
-const data = [
-  { date: "Jan 2023", revenue: 5000 },
-  { date: "Apr 2023", revenue: 12000 },
-  { date: "Jul 2023", revenue: 25000 },
-  { date: "Oct 2023", revenue: 30000 },
-  { date: "Jan 2024", revenue: 45000 },
-  { date: "Apr 2024", revenue: 48000 },
-  { date: "Jul 2024", revenue: 46000 },
-  { date: "Oct 2024", revenue: 47000 },
-  { date: "Jan 2025", revenue: 49000 },
-  { date: "Apr 2025", revenue: 45000 },
+// Sample data
+const revenueData = [
+  { date: "Jan 2023", revenue: 5000, location: "New York", category: "Electronics" },
+  { date: "Apr 2023", revenue: 12000, location: "California", category: "Furniture" },
+  { date: "Jul 2023", revenue: 25000, location: "Texas", category: "Clothing" },
+  { date: "Oct 2023", revenue: 30000, location: "Florida", category: "Electronics" },
+  { date: "Jan 2024", revenue: 45000, location: "New York", category: "Food" },
+  { date: "Apr 2024", revenue: 48000, location: "California", category: "Electronics" },
+  { date: "Jul 2024", revenue: 46000, location: "Texas", category: "Furniture" },
+  { date: "Oct 2024", revenue: 47000, location: "Florida", category: "Clothing" },
+  { date: "Jan 2025", revenue: 49000, location: "New York", category: "Food" },
+  { date: "Apr 2025", revenue: 45000, location: "California", category: "Electronics" },
 ];
 
+const locationData = [
+  { name: "New York", value: 144000 },
+  { name: "California", value: 153000 },
+  { name: "Texas", value: 71000 },
+  { name: "Florida", value: 77000 },
+];
+
+const categoryData = [
+  { name: "Electronics", value: 148000 },
+  { name: "Furniture", value: 37000 },
+  { name: "Clothing", value: 52000 },
+  { name: "Food", value: 94000 },
+];
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
 export default function Dashboard() {
-  // State for all filters
+  // Filter states (keep all your existing states)
   const [showMainFilter, setShowMainFilter] = useState(false);
   const [timeGroupingOpen, setTimeGroupingOpen] = useState(false);
   const [numberFilterOpen, setNumberFilterOpen] = useState(false);
@@ -27,29 +48,26 @@ export default function Dashboard() {
   const [locationFilterOpen, setLocationFilterOpen] = useState(false);
   const [dateFilterOpen, setDateFilterOpen] = useState(false);
   
-  // Selected values
   const [selectedTimeGroup, setSelectedTimeGroup] = useState("Month");
   const [selectedNumberFilter, setSelectedNumberFilter] = useState("Equal to");
   const [selectedTextFilter, setSelectedTextFilter] = useState("Is");
   const [selectedLocationFilter, setSelectedLocationFilter] = useState("City");
   const [selectedDateFilter, setSelectedDateFilter] = useState("Month and Year");
 
-  // Input values
   const [numberValue, setNumberValue] = useState("");
-  const [numberValue2, setNumberValue2] = useState(""); // For "Between" filter
+  const [numberValue2, setNumberValue2] = useState("");
   const [textValue, setTextValue] = useState("");
-  const [selectedItems, setSelectedItems] = useState<string[]>([]); // For multi-select
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
-  // Filter options
+  // Filter options (keep all your existing options)
   const timeGroupOptions = ["Minute", "Hour", "Day", "Week", "Month", "Quarter", "Year", "More..."];
   const numberFilterOptions = ["Equal to", "Not equal to", "Between", "Greater than or equal to", "Less than or equal to"];
   const textFilterOptions = ["Is", "Is not", "Contains", "Does not contain", "Starts with", "Ends with"];
   const locationFilterOptions = ["City", "State", "ZIP or Postal Code", "Country"];
   const dateFilterOptions = ["Month and Year", "Quarter and Year", "Single Date", "Date Range", "Relative Date", "All Options"];
+  const sampleItems = ["Electronics", "Furniture", "Clothing", "Food"];
 
-  // Sample items for "Is" and "Is not" selections
-  const sampleItems = ["Option 1", "Option 2", "Option 3", "Option 4"];
-
+  // Filter functions (keep all your existing filter logic)
   const handleNumberFilterSelect = (option: string) => {
     setSelectedNumberFilter(option);
     setNumberValue("");
@@ -76,36 +94,70 @@ export default function Dashboard() {
     );
   };
 
-  const FilterInputField = ({ 
-    type = "text", 
-    value, 
-    onChange, 
-    placeholder,
-    className = ""
-  }: {
-    type?: string;
-    value: string;
-    onChange: (value: string) => void;
-    placeholder?: string;
-    className?: string;
-  }) => (
-    <input
-      type={type}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholder}
-      className={`mt-2 p-2 border rounded-md text-sm w-full ${className}`}
-    />
-  );
+  // Filter the data based on current selections
+  const filteredRevenueData = revenueData.filter(item => {
+    // Apply number filter
+    if (numberValue) {
+      const numValue = Number(numberValue);
+      const itemValue = item.revenue;
+      
+      switch(selectedNumberFilter) {
+        case "Equal to": if (itemValue !== numValue) return false; break;
+        case "Not equal to": if (itemValue === numValue) return false; break;
+        case "Greater than or equal to": if (itemValue < numValue) return false; break;
+        case "Less than or equal to": if (itemValue > numValue) return false; break;
+        case "Between": 
+          const numValue2 = Number(numberValue2);
+          if (itemValue < numValue || itemValue > numValue2) return false; 
+          break;
+      }
+    }
+    
+    // Apply text/category filter
+    if (selectedTextFilter === "Is" && selectedItems.length > 0 && !selectedItems.includes(item.category)) {
+      return false;
+    }
+    if (selectedTextFilter === "Is not" && selectedItems.length > 0 && selectedItems.includes(item.category)) {
+      return false;
+    }
+    if (textValue) {
+      switch(selectedTextFilter) {
+        case "Contains": if (!item.category.includes(textValue)) return false; break;
+        case "Does not contain": if (item.category.includes(textValue)) return false; break;
+        case "Starts with": if (!item.category.startsWith(textValue)) return false; break;
+        case "Ends with": if (!item.category.endsWith(textValue)) return false; break;
+      }
+    }
+    
+    return true;
+  });
+
+  const filteredLocationData = locationData.filter(loc => {
+    if (selectedItems.length > 0 && selectedTextFilter === "Is") {
+      return filteredRevenueData.some(item => item.location === loc.name);
+    }
+    return true;
+  });
+
+  const filteredCategoryData = categoryData.filter(cat => {
+    if (selectedItems.length > 0 && selectedTextFilter === "Is") {
+      return selectedItems.includes(cat.name);
+    }
+    return true;
+  });
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="bg-blue-200 p-3 rounded-md text-sm text-gray-700">
-        You're editing this dashboard.
+        Active filters: 
+        {numberValue && ` Revenue ${selectedNumberFilter} ${numberValue}`}
+        {numberValue2 && `-${numberValue2}`}
+        {selectedItems.length > 0 && ` Category ${selectedTextFilter} ${selectedItems.join(", ")}`}
       </div>
       
+      {/* Keep all your original filter controls exactly as they were */}
       <div className="flex justify-between items-center mt-4">
-        <h1 className="text-2xl font-bold">Time grouping</h1>
+        <h1 className="text-2xl font-bold">Sales Dashboard</h1>
         <div className="flex gap-2 flex-wrap">
           {/* Time Grouping Dropdown */}
           <div className="relative">
@@ -168,17 +220,19 @@ export default function Dashboard() {
                 
                 {selectedNumberFilter === "Between" ? (
                   <div className="p-2 space-y-2">
-                    <FilterInputField
+                    <input
                       type="number"
                       value={numberValue}
-                      onChange={setNumberValue}
+                      onChange={(e) => setNumberValue(e.target.value)}
                       placeholder="Min value"
+                      className="mt-2 p-2 border rounded-md text-sm w-full"
                     />
-                    <FilterInputField
+                    <input
                       type="number"
                       value={numberValue2}
-                      onChange={setNumberValue2}
+                      onChange={(e) => setNumberValue2(e.target.value)}
                       placeholder="Max value"
+                      className="mt-2 p-2 border rounded-md text-sm w-full"
                     />
                     <button
                       className="w-full bg-blue-500 text-white py-1 px-3 rounded text-sm mt-2"
@@ -193,12 +247,23 @@ export default function Dashboard() {
                   </div>
                 ) : selectedNumberFilter && selectedNumberFilter !== "Between" && (
                   <div className="p-2">
-                    <FilterInputField
+                    <input
                       type="number"
                       value={numberValue}
-                      onChange={setNumberValue}
+                      onChange={(e) => setNumberValue(e.target.value)}
                       placeholder={`Enter value to compare`}
+                      className="mt-2 p-2 border rounded-md text-sm w-full"
                     />
+                    <button
+                      className="w-full bg-blue-500 text-white py-1 px-3 rounded text-sm mt-2"
+                      onClick={() => {
+                        if (numberValue) {
+                          setNumberFilterOpen(false);
+                        }
+                      }}
+                    >
+                      Apply
+                    </button>
                   </div>
                 )}
               </div>
@@ -266,10 +331,11 @@ export default function Dashboard() {
                   </div>
                 ) : selectedTextFilter && !["Is", "Is not"].includes(selectedTextFilter) && (
                   <div className="p-2">
-                    <FilterInputField
+                    <input
                       value={textValue}
-                      onChange={setTextValue}
+                      onChange={(e) => setTextValue(e.target.value)}
                       placeholder={`Enter text to ${selectedTextFilter.toLowerCase()}`}
+                      className="mt-2 p-2 border rounded-md text-sm w-full"
                     />
                     <button
                       className="w-full bg-blue-500 text-white py-1 px-3 rounded text-sm mt-2"
@@ -380,23 +446,85 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mt-6">
+      {/* Add the new charts while keeping all your original filters */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+        {/* Original Revenue Line Chart */}
         <Card>
           <CardContent className="p-4">
-            <h2 className="text-lg font-semibold mb-2">Revenue</h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <LineChart data={data}>
-                <XAxis 
-                  dataKey="date" 
-                  interval={0}
-                  angle={-45}
-                  dy={10}
-                  tickMargin={15}
-                />
+            <h2 className="text-lg font-semibold mb-2">Revenue Over Time</h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={filteredRevenueData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip />
+                <Legend />
                 <Line type="monotone" dataKey="revenue" stroke="#22c55e" strokeWidth={2} />
               </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* New Location Bar Chart */}
+        <Card>
+          <CardContent className="p-4">
+            <h2 className="text-lg font-semibold mb-2">Revenue by Location</h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={filteredLocationData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="value" fill="#8884d8" name="Revenue" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* New Category Pie Chart */}
+        <Card>
+          <CardContent className="p-4">
+            <h2 className="text-lg font-semibold mb-2">Revenue by Category</h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={filteredCategoryData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                  nameKey="name"
+                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                >
+                  {filteredCategoryData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* New Combo Chart */}
+        <Card>
+          <CardContent className="p-4">
+            <h2 className="text-lg font-semibold mb-2">Sales Overview</h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={filteredRevenueData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+                <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+                <Tooltip />
+                <Legend />
+                <Bar yAxisId="left" dataKey="revenue" fill="#8884d8" name="Revenue" />
+                <Line yAxisId="right" type="monotone" dataKey="revenue" stroke="#82ca9d" name="Trend" />
+              </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
