@@ -64,6 +64,9 @@ const NavBar = () => {
                                     <Link href="/add-data">Add new PFC</Link>
                                 </Button>
                                 <Button className="bg-transparent text-white hover:bg-[#1A4B8F] ml-4">
+                                    <Link href="/holistics">Holistics</Link>
+                                </Button>
+                                <Button className="bg-transparent text-white hover:bg-[#1A4B8F] ml-4">
                                     <Link href="/">Home</Link>
                                 </Button>
                                 <Button className="bg-transparent text-white hover:bg-[#1A4B8F] ml-4"
