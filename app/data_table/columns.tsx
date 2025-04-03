@@ -211,7 +211,9 @@ export const columns: ColumnDef<Task>[] = [
   minSize: 10,
     cell: ({ row, table}) => {
       const task = row.original
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [dateComp, setDateComp] = useState<string>(task.date_completed || '');
       
       // Function to delete task from Firestore
