@@ -405,6 +405,7 @@ export const columns: ColumnDef<Task>[] = [
                       <span className="col-span-2 text-sm">{task.description}</span>
                     </div>
                     <div className="grid grid-cols-3 items-center gap-4 p-3 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors">
+                      {/* eslint-disable-next-line react/no-unescaped-entities */}
                       <span className="text-sm font-medium">Why it's important</span>
                       <span className="col-span-2 text-sm">{task.important}</span>
                     </div>
