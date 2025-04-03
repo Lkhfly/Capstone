@@ -104,15 +104,23 @@ const [data, setData] = React.useState(initialData);
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    columnResizeMode: "onChange",
     state: {
       sorting,
       columnFilters,
       columnVisibility,
     },
+      initialState: {
+    columnVisibility: {
+      date_comp: false,  // Hide this column initially
+      date_sub: false,  // Hide another column
+      // All other columns will be visible by default
+    }
+  },
   })
 
   return (
-    <div>
+    <div >
       <Button variant="outline" size="sm" onClick={rankPFCs}>
   Rank PFCs
 </Button>
@@ -227,11 +235,11 @@ const [data, setData] = React.useState(initialData);
                     if (cell.column.id === "status") {
                       const status = cell.getValue() as string;
                       let bgColor = "";
-                      if (status === "In Progress") {
+                      if (status === "Completed") {
                         bgColor = "bg-green-100 text-green-800";
-                      } else if (status === "Awaiting Review") {
+                      } else if (status === "In Progress") {
                         bgColor = "bg-yellow-100 text-yellow-800";
-                      } else if (status === "Reviewed") {
+                      } else if (status === "Awaiting Review") {
                         bgColor = "bg-red-100 text-red-800";
                       }
                       return (

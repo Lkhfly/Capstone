@@ -208,7 +208,7 @@ const COLORS =
         <Legend formatter={(value) => (value === 'submitted' ? 'Submitted PFCs' : 'Required PFCs')} />
         <CartesianGrid strokeDasharray="3 3" />
         <Bar dataKey="submitted" fill="#8884d8" background={{ fill: '#eee' }} />
-        <Bar dataKey="completed" fill="#82ca9d" />
+        <Bar dataKey="completed" name="required"fill="#82ca9d" />
     </BarChart>
 </ResponsiveContainer>
             {/* Pie Chart */}
