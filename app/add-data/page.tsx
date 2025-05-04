@@ -551,33 +551,68 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     reader.onload = (event) => {
       const data = event.target?.result;
       if (data) {
-        const workbook = XLSX.read(data, { type: 'binary' });
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
+        // const workbook = XLSX.read(data, { type: 'binary' });
+        // const sheetName = workbook.SheetNames[0];
+        // const sheet = workbook.Sheets[sheetName];
+
+      const workbook = XLSX.read(data, { type: 'binary' });
+      const originalSheetName = workbook.SheetNames[0];
+      const originalSheet = workbook.Sheets[originalSheetName];
+      let sheet = originalSheet;
 
         if (formData.category.includes('quality')) {
-          // Process for quality
-          const jsonData = XLSX.utils.sheet_to_json(sheet);
-          const df = jsonData.map((row: any) => ({
-            level1: row['Level 1'],
-            level2: row['Level 2'],
-            level3: row['Level 3'],
-            count: 1 // Assuming count is 1 for each row
-          }));
+          const fullData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: null }) as any[][];
 
-          const group_df = df.reduce((acc: any, curr: any) => {
-            const key = `${curr.level1}-${curr.level2}-${curr.level3}`;
-            if (!acc[key]) {
-              acc[key] = { ...curr, count: 0 };
-            }
-            acc[key].count += 1;
-            return acc;
-          }, {});
 
-          const processedData = Object.values(group_df);
-          setProcessedData(processedData); // Update state
-          console.log(processedData);
-          alert("File processed successfully for quality.");
+
+
+const dataRows = fullData.slice(3);
+
+
+const headerRow = fullData[4];
+console.log('headerRow:', headerRow);
+
+
+
+// Step 3: Convert rows to objects using header row
+const jsonData = dataRows.map((row: any[]) => {
+  const obj: any = {};
+  headerRow.forEach((colName: string, idx: number) => {
+    obj[colName] = row[idx];
+  });
+  return obj;
+});
+console.log('jsonData:', jsonData.slice(0, 5));
+
+// Step 4: Filter rows with valid 'Level 1', 'Level 2', 'Level 3'
+const filteredData = jsonData.filter(
+  (row: any) => row['Level 1'] && row['Level 2'] && row['Level 3']
+);
+console.log('filteredData:', filteredData.slice(0, 5));
+
+// Step 5: Aggregate filtered data
+const df = filteredData.map((row: any) => ({
+  level1: row['Level 1'],
+  level2: row['Level 2'],
+  level3: row['Level 3'],
+  count: 1, // Default count
+}));
+
+const group_df = df.reduce((acc: any, curr: any) => {
+  const key = `${curr.level1}-${curr.level2}-${curr.level3}`;
+  if (!acc[key]) {
+    acc[key] = { ...curr, count: 0 };
+  }
+  acc[key].count += 1;
+  return acc;
+}, {});
+
+const processedData = Object.values(group_df);
+setProcessedData(processedData);
+console.log(processedData);
+alert("File processed successfully for quality.");
+       
+
         } else if (formData.category.includes('throughput')) {
           // Process for throughput
           const value_ay1 = sheet['AY1']?.v;   // Station number
