@@ -563,18 +563,29 @@ const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (formData.category.includes('quality')) {
           const fullData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: null }) as any[][];
 
+// Log raw fullData
+console.log("Full data from sheet:", fullData);
 
+// Step 1: Dynamically find the header row index
+const headerIndex = fullData.findIndex(row =>
+  row.includes('Level 1') && row.includes('Level 2') && row.includes('Level 3')
+);
 
+// Error check
+if (headerIndex === -1) {
+  alert("Header row with 'Level 1', 'Level 2', 'Level 3' not found.");
+  return;
+}
 
-const dataRows = fullData.slice(3);
+// Step 2: Log header and sliced data rows
+const headerRow = fullData[headerIndex];
+const dataRows = fullData.slice(headerIndex + 1);
 
+console.log("Header index:", headerIndex);
+console.log("Detected header row:", headerRow);
+console.log("First 5 data rows after header:", dataRows.slice(0, 5));
 
-const headerRow = fullData[4];
-console.log('headerRow:', headerRow);
-
-
-
-// Step 3: Convert rows to objects using header row
+// Step 3: Convert rows to objects
 const jsonData = dataRows.map((row: any[]) => {
   const obj: any = {};
   headerRow.forEach((colName: string, idx: number) => {
@@ -582,20 +593,20 @@ const jsonData = dataRows.map((row: any[]) => {
   });
   return obj;
 });
-console.log('jsonData:', jsonData.slice(0, 5));
+console.log("Converted JSON data (first 5):", jsonData.slice(0, 5));
 
-// Step 4: Filter rows with valid 'Level 1', 'Level 2', 'Level 3'
+// Step 4: Filter valid entries
 const filteredData = jsonData.filter(
   (row: any) => row['Level 1'] && row['Level 2'] && row['Level 3']
 );
-console.log('filteredData:', filteredData.slice(0, 5));
+console.log("Filtered data (first 5):", filteredData.slice(0, 5));
 
-// Step 5: Aggregate filtered data
+// Step 5: Aggregate
 const df = filteredData.map((row: any) => ({
   level1: row['Level 1'],
   level2: row['Level 2'],
   level3: row['Level 3'],
-  count: 1, // Default count
+  count: 1,
 }));
 
 const group_df = df.reduce((acc: any, curr: any) => {
@@ -608,9 +619,11 @@ const group_df = df.reduce((acc: any, curr: any) => {
 }, {});
 
 const processedData = Object.values(group_df);
+console.log("Final grouped data:", processedData);
+
 setProcessedData(processedData);
-console.log(processedData);
 alert("File processed successfully for quality.");
+
        
 
         } else if (formData.category.includes('throughput')) {
