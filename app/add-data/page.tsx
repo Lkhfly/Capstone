@@ -891,7 +891,7 @@ const calculateThroughputRanking = (downtime: number, stops: number) => {
             </div>
             <div>
               <label className="font-medium">
-                Shift #:
+                Crew:
                 <input
                   type="number"
                   required
